@@ -13,12 +13,8 @@ def index(request):
 
 @staff_member_required
 def project_detail_view(request, project_id):
-    """Detailed view of a project for admin users"""
+    """Detailed view of a project for public users"""
     project = get_object_or_404(Project, id=project_id)
-    
-    # Get admin context for sidebar navigation
-    from django.contrib.admin import site
-    admin_context = site.each_context(request)
     
     context = {
         'project': project,
@@ -32,11 +28,8 @@ def project_detail_view(request, project_id):
         'project_overview': getattr(project, 'overview', None),
         'title': f'Project Details - {project.name}',
     }
-    
-    # Add admin context for sidebar navigation
-    context.update(admin_context)
-    
-    return render(request, 'admin/projects/project_detail.html', context)
+
+    return render(request, 'pages/project_detail.html', context)
 
 
 def project_create(request):
