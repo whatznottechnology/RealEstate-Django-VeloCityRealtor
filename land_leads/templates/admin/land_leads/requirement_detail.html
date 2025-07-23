@@ -1,0 +1,287 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Land Requirement Details - {{ requirement.name }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Home</a> &rsaquo;
+    <a href="{% url 'admin:land_leads_landrequirement_changelist' %}">Land Requirements</a> &rsaquo;
+    {{ requirement.name }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-map"></i> Land Requirement Details
+                        <small class="text-muted">{{ requirement.name }}</small>
+                    </h3>
+                    <div class="card-tools">
+                        <a href="{% url 'admin:land_leads_landrequirement_change' requirement.pk %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-edit"></i> Edit Requirement
+                        </a>
+                        <a href="{% url 'admin:land_leads_landrequirement_changelist' %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-list"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Contact Information -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-primary"><i class="fas fa-user"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Contact Person</span>
+                                    <span class="info-box-number">{{ requirement.name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-success"><i class="fas fa-phone"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Contact Number</span>
+                                    <span class="info-box-number">{{ requirement.contact_number }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if requirement.email %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-info"><i class="fas fa-envelope"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Email Address</span>
+                                    <span class="info-box-number">{{ requirement.email }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-warning"><i class="fas fa-calendar"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Submitted On</span>
+                                    <span class="info-box-number">{{ requirement.created_at|date:"M d, Y" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Requirement Details -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-clipboard-list"></i> Land Requirement Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6><strong>Requirement Type:</strong></h6>
+                                            <span class="badge badge-{% if requirement.requirement_type == 'buy' %}success{% elif requirement.requirement_type == 'sale' %}primary{% else %}info{% endif %} badge-lg">
+                                                {{ requirement.get_requirement_type_display }}
+                                            </span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><strong>Budget:</strong></h6>
+                                            <p class="lead">{{ requirement.budget }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if requirement.location %}
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h6><strong>Preferred Location:</strong></h6>
+                                            <p><i class="fas fa-map-marker-alt text-danger"></i> {{ requirement.location }}</p>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if requirement.area %}
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6><strong>Land Area:</strong></h6>
+                                            <p class="text-primary">{{ requirement.area }} {{ requirement.get_area_unit_display|default:"units" }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><strong>Area Unit:</strong></h6>
+                                            <span class="badge badge-secondary">{{ requirement.get_area_unit_display|default:"Not specified" }}</span>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Agreement Status -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-handshake"></i> Agreement Status</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6><strong>Terms & Conditions:</strong></h6>
+                                            {% if requirement.agreed_to_terms %}
+                                                <span class="badge badge-success badge-lg">
+                                                    <i class="fas fa-check"></i> Agreed to Terms
+                                                </span>
+                                            {% else %}
+                                                <span class="badge badge-danger badge-lg">
+                                                    <i class="fas fa-times"></i> Not Agreed
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><strong>Status:</strong></h6>
+                                            <span class="badge badge-info badge-lg">
+                                                <i class="fas fa-clock"></i> Pending Review
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Timeline -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-history"></i> Timeline</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="timeline">
+                                        <div class="time-label">
+                                            <span class="bg-primary">{{ requirement.created_at|date:"M Y" }}</span>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-plus bg-success"></i>
+                                            <div class="timeline-item">
+                                                <span class="time"><i class="fas fa-clock"></i> {{ requirement.created_at|date:"M d, Y H:i" }}</span>
+                                                <h3 class="timeline-header">Land Requirement Submitted</h3>
+                                                <div class="timeline-body">
+                                                    {{ requirement.name }} submitted a {{ requirement.get_requirement_type_display|lower }} requirement for land
+                                                    {% if requirement.location %}in {{ requirement.location }}{% endif %}.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <a href="tel:{{ requirement.contact_number }}" class="btn btn-success">
+                                        <i class="fas fa-phone"></i> Call {{ requirement.name }}
+                                    </a>
+                                    {% if requirement.email %}
+                                    <a href="mailto:{{ requirement.email }}" class="btn btn-primary">
+                                        <i class="fas fa-envelope"></i> Send Email
+                                    </a>
+                                    {% endif %}
+                                    <a href="{% url 'admin:land_leads_landrequirement_change' requirement.pk %}" class="btn btn-warning">
+                                        <i class="fas fa-edit"></i> Edit Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer Info -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <hr>
+                            <small class="text-muted">
+                                <strong>Requirement ID:</strong> #{{ requirement.id }} | 
+                                <strong>Submitted:</strong> {{ requirement.created_at }} | 
+                                <strong>Last Viewed:</strong> Just now
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.info-box {
+    margin-bottom: 20px;
+}
+.card {
+    margin-bottom: 20px;
+}
+.badge-lg {
+    font-size: 14px;
+    padding: 8px 12px;
+}
+.timeline {
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+.timeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 30px;
+    height: 100%;
+    width: 4px;
+    background: #dee2e6;
+}
+.timeline .time-label span {
+    font-weight: 600;
+    color: #fff;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 5px 10px;
+}
+.timeline > div > .timeline-item {
+    background: #fff;
+    border-radius: 3px;
+    width: calc(100% - 60px);
+    margin-left: 60px;
+    margin-top: 10px;
+    color: #333;
+    border: 1px solid #dee2e6;
+    padding: 10px;
+}
+.timeline > div > i {
+    background: #adb5bd;
+    border-radius: 50%;
+    color: #fff;
+    float: left;
+    font-size: 16px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    width: 30px;
+    margin-top: 5px;
+}
+</style>
+{% endblock %}

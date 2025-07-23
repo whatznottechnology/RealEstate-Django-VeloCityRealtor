@@ -1,0 +1,751 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}VeloCity Realtor - Your Real Estate Partner{% endblock %}
+
+{% block meta_description %}Find your dream property with VeloCity Realtor. Explore residential, commercial, land and investment properties in prime locations across India.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+{% include 'components/hero.html' %}
+
+<!-- Projects Section - Horizontal Scrolling -->
+<!-- Featured Projects -->
+{% if featured_projects %}
+<section class="py-12 lg:py-16 bg-white">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-4">
+            <div class="flex-1">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Featured Projects</h2>
+                <p class="text-sm sm:text-base lg:text-lg text-gray-600">Handpicked premium properties for discerning buyers</p>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2 lg:space-x-3">
+                <button onclick="scrollCarousel('featured-carousel', -1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button onclick="scrollCarousel('featured-carousel', 1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="featured-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-4">
+            {% for project in featured_projects %}
+                <div class="property-card bg-white rounded-xl shadow-lg overflow-hidden min-w-[280px] sm:min-w-[300px] lg:min-w-[320px] max-w-[280px] sm:max-w-[300px] lg:max-w-[320px] scroll-snap-start">
+                    <div class="relative">
+                        {% if project.banner_image %}
+                            <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" class="w-full h-48 object-cover">
+                        {% else %}
+                            <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                                <span class="text-gray-500">No Image</span>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Project Status Badge -->
+                        {% if project.status %}
+                            <div class="absolute top-3 left-3">
+                                <span class="px-2 py-1 rounded-full text-xs font-semibold
+                                    {% if project.status == 'ready_to_move' %}bg-green-100 text-green-800
+                                    {% elif project.status == 'under_construction' %}bg-yellow-100 text-yellow-800
+                                    {% elif project.status == 'upcoming' %}bg-blue-100 text-blue-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ project.get_status_display }}
+                                </span>
+                            </div>
+                        {% endif %}
+
+                        <!-- Feature Badges -->
+                        {% if project.is_featured or project.is_hot_deal or project.trending_tag %}
+                            <div class="absolute top-3 right-3">
+                                {% if project.is_featured %}
+                                    <span class="px-2 py-1 bg-red-600 text-white rounded-full text-xs font-semibold mb-1 block">Featured</span>
+                                {% endif %}
+                                {% if project.is_hot_deal %}
+                                    <span class="px-2 py-1 bg-orange-500 text-white rounded-full text-xs font-semibold mb-1 block">🔥 Hot Deal</span>
+                                {% endif %}
+                                {% if project.trending_tag %}
+                                    <span class="px-2 py-1 bg-purple-600 text-white rounded-full text-xs font-semibold block">{{ project.get_trending_tag_display }}</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="mb-2">
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">{{ project.name }}</h3>
+                            {% if project.project_by %}
+                                <p class="text-sm text-gray-500">by {{ project.project_by }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        {% if project.location or project.city %}
+                            <p class="text-gray-600 text-sm mb-3 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                {{ project.location }}{% if project.city %}, {{ project.city.name }}{% endif %}
+                            </p>
+                        {% endif %}
+                        
+                        <div class="flex items-center justify-between mb-4">
+                            {% if project.bhk %}
+                                <span class="text-sm text-gray-600">{{ project.bhk }}</span>
+                            {% endif %}
+                            {% if project.build_up_area %}
+                                <span class="text-sm text-gray-600">{{ project.build_up_area }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if project.onwards_price %}
+                            <div class="mb-4">
+                                <p class="text-2xl font-bold text-red-600">
+                                    ₹{% if project.onwards_price >= 10000000 %}{{ project.onwards_price|floatformat:1|add:"0"|cut:".0" }}{{ project.onwards_price|floatformat:1|slice:"1:" }} Cr{% elif project.onwards_price >= 100000 %}{{ project.onwards_price|floatformat:1|add:"0"|cut:".0" }}{{ project.onwards_price|floatformat:1|slice:"1:" }} L{% else %}{{ project.onwards_price|floatformat:0 }}{% endif %}
+                                    <span class="text-sm text-gray-500 font-normal">onwards</span>
+                                </p>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="flex items-center justify-between">
+                            <a href="{% url 'theme:project_detail' project.id %}" 
+                               class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 transition-colors">
+                                View Details
+                            </a>
+                            {% if project.views %}
+                                <span class="text-xs text-gray-500">{{ project.views }} views</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Projects by Category Section -->
+<!-- Residential Projects -->
+{% if residential_projects %}
+<section class="py-12 lg:py-16 bg-gray-50">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-4">
+            <div class="flex-1">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Residential Projects</h2>
+                <p class="text-sm sm:text-base lg:text-lg text-gray-600">Find your perfect home in prime residential locations</p>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2 lg:space-x-3">
+                <button onclick="scrollCarousel('residential-carousel', -1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button onclick="scrollCarousel('residential-carousel', 1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="residential-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-4">
+            {% for project in residential_projects %}
+                {% include 'components/project_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Commercial Projects -->
+{% if commercial_projects %}
+<section class="py-12 lg:py-16 bg-white">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-4">
+            <div class="flex-1">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Commercial Projects</h2>
+                <p class="text-sm sm:text-base lg:text-lg text-gray-600">Premium commercial spaces for business growth</p>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2 lg:space-x-3">
+                <button onclick="scrollCarousel('commercial-carousel', -1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button onclick="scrollCarousel('commercial-carousel', 1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="commercial-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-4">
+            {% for project in commercial_projects %}
+                {% include 'components/project_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Hot Deals Section -->
+{% if hot_deal_projects %}
+<section class="py-12 lg:py-16 bg-gradient-to-r from-orange-50 to-red-50">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-4">
+            <div class="flex-1">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">🔥 Hot Deals</h2>
+                <p class="text-sm sm:text-base lg:text-lg text-gray-600">Limited time offers on premium properties</p>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2 lg:space-x-3">
+                <button onclick="scrollCarousel('hotdeals-carousel', -1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button onclick="scrollCarousel('hotdeals-carousel', 1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="hotdeals-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-4">
+            {% for project in hot_deal_projects %}
+                {% include 'components/project_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Ready to Move Section -->
+{% if ready_to_move_projects %}
+<section class="py-12 lg:py-16 bg-white">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-4">
+            <div class="flex-1">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Ready to Move</h2>
+                <p class="text-sm sm:text-base lg:text-lg text-gray-600">Move-in ready properties for immediate possession</p>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2 lg:space-x-3">
+                <button onclick="scrollCarousel('readytomove-carousel', -1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button onclick="scrollCarousel('readytomove-carousel', 1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="readytomove-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-4">
+            {% for project in ready_to_move_projects %}
+                {% include 'components/project_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Trending Properties Section -->
+{% if trending_projects %}
+<section class="py-12 lg:py-16 bg-gray-50">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-4">
+            <div class="flex-1">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Trending Properties</h2>
+                <p class="text-sm sm:text-base lg:text-lg text-gray-600">Most viewed and popular properties this month</p>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2 lg:space-x-3">
+                <button onclick="scrollCarousel('trending-carousel', -1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button onclick="scrollCarousel('trending-carousel', 1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="trending-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-4">
+            {% for project in trending_projects %}
+                {% include 'components/project_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Recently Viewed Section -->
+{% if recently_viewed_projects %}
+<section class="py-12 lg:py-16 bg-white">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-4">
+            <div class="flex-1">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Recently Viewed</h2>
+                <p class="text-sm sm:text-base lg:text-lg text-gray-600">Properties you might be interested in</p>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2 lg:space-x-3">
+                <button onclick="scrollCarousel('recent-carousel', -1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button onclick="scrollCarousel('recent-carousel', 1)" class="carousel-scroll-btn bg-white border border-gray-300 rounded-full p-2 lg:p-3 hover:bg-gray-50 transition-all">
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="recent-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-4">
+            {% for project in recently_viewed_projects %}
+                {% include 'components/project_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Simple CTA -->
+<section class="py-12 lg:py-16 bg-red-600">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12 text-center">
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">Ready to Find Your Dream Property?</h2>
+        <p class="text-red-100 text-base sm:text-lg lg:text-xl mb-6 lg:mb-8 max-w-3xl mx-auto">Get in touch with our expert consultants for personalized recommendations.</p>
+        <a href="{% url 'theme:search_properties' %}" 
+           class="inline-block bg-white text-red-600 px-6 sm:px-8 py-3 lg:py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base lg:text-lg">
+            Explore Properties
+        </a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Scrollbar Hide */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Smooth scroll snap */
+    .scroll-snap-x {
+        scroll-snap-type: x mandatory;
+    }
+    .scroll-snap-start {
+        scroll-snap-align: start;
+    }
+
+    /* Animations */
+    @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+    .animation-delay-4000 {
+        animation-delay: 4s;
+    }
+
+    /* Carousel Indicators */
+    .indicator-dot.active {
+        background-color: #dc2626;
+    }
+
+    /* Tab switching functionality for hero section */
+    .tab-button.tab-active {
+        background-color: #dc2626;
+        color: white;
+        border-color: #dc2626;
+    }
+    .tab-button.tab-inactive {
+        background-color: #f3f4f6;
+        color: #374151;
+        border-color: #e5e7eb;
+    }
+    .tab-button.tab-inactive:hover {
+        background-color: #e5e7eb;
+    }
+
+    /* Property card hover effects */
+    .property-card {
+        transition: all 0.3s ease;
+    }
+    .property-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Carousel specific styles */
+    .carousel-scroll-btn {
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .carousel-scroll-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Project card content styles */
+    .line-clamp-1 {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Smooth cursor changes for draggable carousels */
+    [id$="-carousel"] {
+        cursor: grab;
+    }
+    [id$="-carousel"]:active,
+    [id$="-carousel"].cursor-grabbing {
+        cursor: grabbing;
+    }
+
+    /* Badge styles for consistency */
+    .property-card .absolute span {
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+
+    /* Price formatting */
+    .property-card .text-red-600 {
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+
+    /* Background patterns */
+    .bg-pattern {
+        background-image: 
+            radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+        background-size: 20px 20px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab switching functionality for hero section
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const filterForms = document.querySelectorAll('.filter-form');
+
+    function switchTab(activeTab) {
+        tabButtons.forEach(btn => {
+            if (btn.dataset.tab === activeTab) {
+                btn.classList.remove('tab-inactive');
+                btn.classList.add('tab-active');
+            } else {
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            }
+        });
+        filterForms.forEach(form => {
+            if (form.id === `${activeTab}-form`) {
+                form.classList.remove('hidden');
+            } else {
+                form.classList.add('hidden');
+            }
+        });
+    }
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            switchTab(btn.dataset.tab);
+        });
+    });
+
+    // More Filters toggle for Residential
+    function setupMoreFiltersToggle(btnId, iconId) {
+        const btn = document.getElementById(btnId);
+        const icon = document.getElementById(iconId);
+        const advancedFilters = document.getElementById('advanced-filters-residential');
+        if (btn && icon && advancedFilters) {
+            btn.addEventListener('click', () => {
+                const isHidden = advancedFilters.classList.contains('hidden');
+                if (isHidden) {
+                    advancedFilters.classList.remove('hidden');
+                    icon.style.transform = 'rotate(180deg)';
+                    btn.querySelector('span').textContent = 'Less';
+                } else {
+                    advancedFilters.classList.add('hidden');
+                    icon.style.transform = '';
+                    btn.querySelector('span').textContent = 'More';
+                }
+            });
+        }
+    }
+    setupMoreFiltersToggle('more-filters-residential-desktop', 'more-filters-icon-residential-desktop');
+    setupMoreFiltersToggle('more-filters-residential-mobile', 'more-filters-icon-residential-mobile');
+
+    // Carousel Scroll Function with responsive scroll amount
+    function scrollCarousel(carouselId, direction) {
+        const carousel = document.getElementById(carouselId);
+        if (carousel) {
+            // Responsive scroll amount based on screen size
+            let scrollAmount = 320; // Desktop default
+            if (window.innerWidth < 640) { // Mobile
+                scrollAmount = 280;
+            } else if (window.innerWidth < 1024) { // Tablet
+                scrollAmount = 300;
+            }
+            
+            carousel.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    // Update carousel indicators (if any carousels use indicators)
+    function updateCarouselIndicators() {
+        document.querySelectorAll('[id$="-carousel"]').forEach(carousel => {
+            const indicators = document.querySelectorAll(`[data-carousel="${carousel.id}"]`);
+            if (indicators.length > 0) {
+                const scrollLeft = carousel.scrollLeft;
+                const cardWidth = 320;
+                const activeIndex = Math.round(scrollLeft / cardWidth);
+                
+                indicators.forEach((indicator, index) => {
+                    if (index === activeIndex) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
+        });
+    }
+
+    // Initialize carousel functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize default hero tab
+        switchTab('residential');
+
+        // Add scroll listeners to carousels for smooth scrolling
+        document.querySelectorAll('[id$="-carousel"]').forEach(carousel => {
+            // Add scroll listener for indicators (if applicable)
+            carousel.addEventListener('scroll', updateCarouselIndicators);
+            
+            // Add touch/swipe support
+            let startX = 0;
+            let scrollLeft = 0;
+            let isDown = false;
+
+            carousel.addEventListener('mousedown', (e) => {
+                isDown = true;
+                carousel.classList.add('cursor-grabbing');
+                startX = e.pageX - carousel.offsetLeft;
+                scrollLeft = carousel.scrollLeft;
+            });
+
+            carousel.addEventListener('mouseleave', () => {
+                isDown = false;
+                carousel.classList.remove('cursor-grabbing');
+            });
+
+            carousel.addEventListener('mouseup', () => {
+                isDown = false;
+                carousel.classList.remove('cursor-grabbing');
+            });
+
+            carousel.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - carousel.offsetLeft;
+                const walk = (x - startX) * 2;
+                carousel.scrollLeft = scrollLeft - walk;
+            });
+
+            // Touch support for mobile
+            carousel.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].pageX - carousel.offsetLeft;
+                scrollLeft = carousel.scrollLeft;
+            });
+
+            carousel.addEventListener('touchmove', (e) => {
+                if (!startX) return;
+                const x = e.touches[0].pageX - carousel.offsetLeft;
+                const walk = (x - startX) * 2;
+                carousel.scrollLeft = scrollLeft - walk;
+            });
+
+            carousel.addEventListener('touchend', () => {
+                startX = 0;
+            });
+        });
+        
+        // Initialize indicators
+        updateCarouselIndicators();
+
+        // Auto-hide scroll buttons on mobile and small tablets
+        function toggleScrollButtons() {
+            const isSmallScreen = window.innerWidth < 640; // Only hide on mobile
+            document.querySelectorAll('.carousel-scroll-btn').forEach(btn => {
+                btn.style.display = isSmallScreen ? 'none' : 'flex';
+            });
+        }
+        
+        window.addEventListener('resize', toggleScrollButtons);
+        toggleScrollButtons();
+
+        // Add keyboard navigation for carousels
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                const focusedCarousel = document.querySelector('[id$="-carousel"]:hover');
+                if (focusedCarousel) {
+                    const direction = e.key === 'ArrowLeft' ? -1 : 1;
+                    scrollCarousel(focusedCarousel.id, direction);
+                    e.preventDefault();
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+/* Responsive Enhancements */
+@media (max-width: 640px) {
+    /* Mobile specific carousel button adjustments */
+    .carousel-scroll-btn {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+    }
+    
+    /* Mobile property card adjustments */
+    .property-card {
+        min-width: 260px !important;
+        max-width: 280px !important;
+    }
+    
+    .property-card img {
+        height: 160px !important;
+        object-fit: cover;
+    }
+    
+    /* Mobile section spacing */
+    .py-12 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
+    /* Mobile text adjustments */
+    .text-3xl {
+        font-size: 1.5rem !important;
+        line-height: 2rem !important;
+    }
+    
+    .text-2xl {
+        font-size: 1.25rem !important;
+        line-height: 1.75rem !important;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    /* Tablet specific adjustments */
+    .carousel-scroll-btn {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+    }
+    
+    .property-card {
+        min-width: 280px !important;
+        max-width: 300px !important;
+    }
+    
+    .property-card img {
+        height: 180px !important;
+    }
+}
+
+@media (min-width: 1025px) {
+    /* Desktop specific adjustments */
+    .carousel-scroll-btn {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+    }
+    
+    .property-card {
+        min-width: 300px !important;
+        max-width: 320px !important;
+    }
+    
+    .property-card img {
+        height: 200px !important;
+    }
+}
+
+/* Enhanced carousel scrolling */
+.carousel-container {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Better button hover states */
+.carousel-scroll-btn:hover {
+    background-color: rgba(59, 130, 246, 0.9) !important;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+/* Improved property card hover effects */
+.property-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+/* Better badge positioning */
+.property-card .absolute {
+    z-index: 10;
+}
+
+/* Improved gradient overlays */
+.bg-gradient-to-t {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+}
+</style>
+
+<!-- About Us Section -->
+{% include 'components/about_us.html' %}
+
+<!-- Our Esteemed Developers Section -->
+{% include 'components/developers.html' %}
+
+<!-- Why Choose Us Section -->
+{% include 'components/why_choose_us.html' %}
+
+<!-- Client Reviews Section -->
+{% include 'components/reviews.html' %}
+
+<!-- Call to Action Section -->
+{% include 'components/cta_section.html' %}
+
+{% endblock %}

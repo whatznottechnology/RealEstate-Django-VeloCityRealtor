@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}VeloCity Realtor - Your Real Estate Partner{% endblock %}
+
+{% block meta_description %}Find your dream property with VeloCity Realtor. Explore residential, commercial, land and investment properties in prime locations across India.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+{% include 'components/hero.html' %}
+
+<!-- Simple Features Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose VeloCity Realtor?</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">We provide comprehensive real estate services with expertise, transparency, and personalized attention.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl p-8 shadow-sm text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Premium Properties</h3>
+                <p class="text-gray-600">Handpicked premium residential and commercial properties in prime locations.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 shadow-sm text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Smart Search</h3>
+                <p class="text-gray-600">Advanced search filters to find your perfect property based on your preferences.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 shadow-sm text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Verified Listings</h3>
+                <p class="text-gray-600">All properties are thoroughly verified for legal compliance and authenticity.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Simple Property Display -->
+{% if featured_projects %}
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Featured Properties</h2>
+            <p class="text-gray-600">Handpicked premium properties for discerning buyers</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for project in featured_projects|slice:":6" %}
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
+                    {% if project.banner_image %}
+                        <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" class="w-full h-48 object-cover">
+                    {% endif %}
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ project.name }}</h3>
+                        <p class="text-gray-600 text-sm mb-4">{{ project.location }}</p>
+                        {% if project.price_range %}
+                            <p class="text-lg font-bold text-red-600">{{ project.price_range }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Simple CTA -->
+<section class="py-16 bg-red-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-white mb-4">Ready to Find Your Dream Property?</h2>
+        <p class="text-red-100 text-lg mb-8">Get in touch with our expert consultants for personalized recommendations.</p>
+        <a href="{% url 'theme:search_properties' %}" 
+           class="bg-white text-red-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            Explore Properties
+        </a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Scrollbar Hide */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Smooth scroll snap */
+    .scroll-snap-x {
+        scroll-snap-type: x mandatory;
+    }
+    .scroll-snap-start {
+        scroll-snap-align: start;
+    }
+
+    /* Animations */
+    @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+    .animation-delay-4000 {
+        animation-delay: 4s;
+    }
+
+    /* Carousel Indicators */
+    .indicator-dot.active {
+        background-color: #dc2626;
+    }
+
+    /* Tab switching functionality for hero section */
+    .tab-button.tab-active {
+        background-color: #dc2626;
+        color: white;
+        border-color: #dc2626;
+    }
+    .tab-button.tab-inactive {
+        background-color: #f3f4f6;
+        color: #374151;
+        border-color: #e5e7eb;
+    }
+    .tab-button.tab-inactive:hover {
+        background-color: #e5e7eb;
+    }
+
+    /* Property card hover effects */
+    .property-card {
+        transition: all 0.3s ease;
+    }
+    .property-card:hover {
+        transform: translateY(-4px);
+    }
+
+    /* Background patterns */
+    .bg-pattern {
+        background-image: 
+            radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+        background-size: 20px 20px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab switching functionality for hero section
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const filterForms = document.querySelectorAll('.filter-form');
+
+    function switchTab(activeTab) {
+        tabButtons.forEach(btn => {
+            if (btn.dataset.tab === activeTab) {
+                btn.classList.remove('tab-inactive');
+                btn.classList.add('tab-active');
+            } else {
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            }
+        });
+        filterForms.forEach(form => {
+            if (form.id === `${activeTab}-form`) {
+                form.classList.remove('hidden');
+            } else {
+                form.classList.add('hidden');
+            }
+        });
+    }
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            switchTab(btn.dataset.tab);
+        });
+    });
+
+    // More Filters toggle for Residential
+    function setupMoreFiltersToggle(btnId, iconId) {
+        const btn = document.getElementById(btnId);
+        const icon = document.getElementById(iconId);
+        const advancedFilters = document.getElementById('advanced-filters-residential');
+        if (btn && icon && advancedFilters) {
+            btn.addEventListener('click', () => {
+                const isHidden = advancedFilters.classList.contains('hidden');
+                if (isHidden) {
+                    advancedFilters.classList.remove('hidden');
+                    icon.style.transform = 'rotate(180deg)';
+                    btn.querySelector('span').textContent = 'Less';
+                } else {
+                    advancedFilters.classList.add('hidden');
+                    icon.style.transform = '';
+                    btn.querySelector('span').textContent = 'More';
+                }
+            });
+        }
+    }
+    setupMoreFiltersToggle('more-filters-residential-desktop', 'more-filters-icon-residential-desktop');
+    setupMoreFiltersToggle('more-filters-residential-mobile', 'more-filters-icon-residential-mobile');
+
+    // Carousel Scroll Function
+    function scrollCarousel(carouselId, direction) {
+        const carousel = document.getElementById(carouselId);
+        if (carousel) {
+            const scrollAmount = 320; // Width of one card + gap
+            carousel.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    // Update carousel indicators
+    function updateCarouselIndicators() {
+        document.querySelectorAll('[id$="-carousel"]').forEach(carousel => {
+            const indicators = document.querySelectorAll(`[data-carousel="${carousel.id}"]`);
+            const scrollLeft = carousel.scrollLeft;
+            const cardWidth = 320;
+            const activeIndex = Math.round(scrollLeft / cardWidth);
+            
+            indicators.forEach((indicator, index) => {
+                if (index === activeIndex) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        });
+    }
+
+    // Initialize carousel scroll listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize default hero tab
+        switchTab('residential');
+
+        // Add scroll listeners to carousels for indicators
+        document.querySelectorAll('[id$="-carousel"]').forEach(carousel => {
+            carousel.addEventListener('scroll', updateCarouselIndicators);
+        });
+        
+        // Initialize indicators
+        updateCarouselIndicators();
+
+        // Auto-hide scroll buttons on mobile
+        function toggleScrollButtons() {
+            const isMobile = window.innerWidth < 768;
+            document.querySelectorAll('.carousel-scroll-btn').forEach(btn => {
+                btn.style.display = isMobile ? 'none' : 'block';
+            });
+        }
+        
+        window.addEventListener('resize', toggleScrollButtons);
+        toggleScrollButtons();
+    });
+
+    // Touch/Swipe support for carousels
+    let startX = 0;
+    let scrollLeft = 0;
+
+    document.querySelectorAll('[id$="-carousel"]').forEach(carousel => {
+        carousel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].pageX - carousel.offsetLeft;
+            scrollLeft = carousel.scrollLeft;
+        });
+
+        carousel.addEventListener('touchmove', (e) => {
+            if (!startX) return;
+            e.preventDefault();
+            const x = e.touches[0].pageX - carousel.offsetLeft;
+            const walk = (x - startX) * 2;
+            carousel.scrollLeft = scrollLeft - walk;
+        });
+
+        carousel.addEventListener('touchend', () => {
+            startX = 0;
+        });
+    });
+</script>
+{% endblock %}

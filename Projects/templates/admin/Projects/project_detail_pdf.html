@@ -1,0 +1,117 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+ 
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 13px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .banner { width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; }
+        .section { margin-bottom: 18px; }
+        .section-title { font-size: 18px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #ccc; }
+        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .info-table th, .info-table td { border: 1px solid #ddd; padding: 6px 8px; }
+        .badge { display: inline-block; background: #eee; color: #333; border-radius: 4px; padding: 2px 8px; margin: 1px; font-size: 12px; }
+        .img-thumb { height: 80px; object-fit: cover; border-radius: 4px; margin: 2px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>{{ project.name }}</h2>
+        <div>by {{ project.project_by }}</div>
+        {% if project.logo %}<img src="{{ project.logo.url }}" style="max-height:60px;max-width:120px;" />{% endif %}
+    </div>
+    {% if project.banner_image %}
+    <img src="{{ project.banner_image.url }}" class="banner" />
+    {% endif %}
+    <div class="section">
+        <div class="section-title">Basic Info</div>
+        <table class="info-table">
+            <tr><th>Developer</th><td>{{ project.developers }}</td><th>Location</th><td>{{ project.location }}</td></tr>
+            <tr><th>City</th><td>{{ project.city }}</td><th>Category/Type</th><td>{{ project.category }} / {{ project.project_type }}</td></tr>
+            <tr><th>BHK</th><td>{{ project.bhk }}</td><th>Area</th><td>{{ project.build_up_area }}</td></tr>
+            <tr><th>Blocks</th><td>{{ project.no_of_blocks }}</td><th>Units</th><td>{{ project.no_of_units }}</td></tr>
+            <tr><th>Status</th><td>{{ project.get_status_display }}</td><th>Possession</th><td>{{ project.possession_date }}</td></tr>
+            <tr><th>Price</th><td colspan="3">₹{{ project.onwards_price|floatformat:0 }}</td></tr>
+        </table>
+        <div>
+            <strong>Tags:</strong> {% for tag in project.tags.all %}<span class="badge">{{ tag.name }}</span>{% endfor %}
+            <strong>Amenities:</strong> {% for amenity in project.amenities.all %}<span class="badge">{{ amenity.name }}</span>{% endfor %}
+        </div>
+    </div>
+    {% if project.brochure %}
+    <div class="section"><strong>Brochure:</strong> <a href="{{ project.brochure.url }}">Download</a></div>
+    {% endif %}
+    {% if nearest_areas %}
+    <div class="section">
+        <div class="section-title">Nearby Areas</div>
+        {% for area in nearest_areas %}
+            <span class="badge">{{ area.name }} ({{ area.get_area_type_display }}) - {{ area.distance }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if floor_plans %}
+    <div class="section">
+        <div class="section-title">Floor Plans</div>
+        {% for fp in floor_plans %}
+            <div><img src="{{ fp.image.url }}" class="img-thumb" /> <strong>{{ fp.name }}</strong> - {{ fp.area }} - ₹{{ fp.price|floatformat:0 }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if construction_updates %}
+    <div class="section">
+        <div class="section-title">Construction Updates</div>
+        {% for cu in construction_updates %}
+            <div><img src="{{ cu.image.url }}" class="img-thumb" /> <strong>{{ cu.title }}</strong> - {{ cu.update_date }}<br>{{ cu.description }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if why_choose_us %}
+    <div class="section">
+        <div class="section-title">Why Choose Us</div>
+        {% for wcu in why_choose_us %}
+            <div><span class="badge">{{ wcu.title }}</span> {{ wcu.description }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if specifications %}
+    <div class="section">
+        <div class="section-title">Specifications</div>
+        <table class="info-table">
+            <thead><tr><th>Category</th><th>Name</th><th>Description</th></tr></thead>
+            <tbody>
+            {% for spec in specifications %}
+            <tr><td>{{ spec.category }}</td><td>{{ spec.name }}</td><td>{{ spec.description }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    {% if amenity_images %}
+    <div class="section">
+        <div class="section-title">Amenity Images</div>
+        {% for ai in amenity_images %}
+            <div><img src="{{ ai.image.url }}" class="img-thumb" /> <strong>{{ ai.amenity_name }}</strong></div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if project_overview %}
+    <div class="section">
+        <div class="section-title">Project Overview</div>
+        <div>{{ project_overview.short_description|linebreaks }}</div>
+    </div>
+    {% endif %}
+    <div class="section">
+        <div class="section-title">SEO & Metadata</div>
+        <div><strong>Meta Title:</strong> {{ project.meta_title }}</div>
+        <div><strong>Meta Description:</strong> {{ project.meta_description }}</div>
+        <div><strong>Keywords:</strong> {{ project.keywords }}</div>
+        <div><strong>Description:</strong> {{ project.description }}</div>
+    </div>
+    <div class="section">
+        <small>Created: {{ project.created_at }} | Updated: {{ project.updated_at }} | Status: {% if project.is_active %}Active{% else %}Inactive{% endif %}</small>
+    </div>
+</body>
+</html>
