@@ -38,7 +38,6 @@ ALLOWED_HOSTS = ['*']  # Railway requires this for deployment
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',  # Modern admin theme - must be first
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,14 +45,31 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'tailwind', # Tailwind CSS integration
-    'theme',   # Custom theme app for Tailwind CSS
-    'django_browser_reload', # For live reloading during development
+    'theme',   # Custom theme app
     
     'Projects', # Custom app for core functionality
     'land_leads',  # Land requirements app
     'investment_leads',  # Investment requirements app
 ]
+
+# Conditionally add Jazzmin and Tailwind for development
+try:
+    import jazzmin
+    INSTALLED_APPS.insert(0, 'jazzmin')  # Must be first
+except ImportError:
+    pass
+
+try:
+    import tailwind
+    INSTALLED_APPS.insert(-3, 'tailwind')  # Add before custom apps
+except ImportError:
+    pass
+
+try:
+    import django_browser_reload
+    INSTALLED_APPS.append('django_browser_reload')
+except ImportError:
+    pass
 
 
 TAILWIND_APP_NAME = 'theme' # This is the name of the app that will be used to generate the tailwind files
@@ -82,9 +98,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Add browser reload middleware only in development
+# Add browser reload middleware only in development and if available
 if DEBUG:
-    MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
+    try:
+        import django_browser_reload
+        MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
+    except ImportError:
+        pass
 
 ROOT_URLCONF = 'Source.urls'
 
