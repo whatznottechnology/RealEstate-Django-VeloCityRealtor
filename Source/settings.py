@@ -29,10 +29,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-8!zqd-sbw8z9u!^lp^@tx&g%l(_e6)#v(q(z*@foszhft5)*8u')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'  # Enable debug temporarily to see errors
 
 # Railway deployment and local development hosts
 ALLOWED_HOSTS = ['*']  # Railway requires this for deployment
+
+# CSRF settings for Railway deployment
+CSRF_TRUSTED_ORIGINS = [
+    'https://django-app-production-4881.up.railway.app',
+    'https://*.railway.app',
+    'https://*.up.railway.app',
+]
+
+# CSRF cookie settings for production
+CSRF_COOKIE_SECURE = not DEBUG  # Only secure in production
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Session cookie settings for production
+SESSION_COOKIE_SECURE = not DEBUG  # Only secure in production
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
 
 
 # Application definition
