@@ -1,17 +1,15 @@
 [phases.setup]
-nixPkgs = ['python311', 'nodejs-18_x', 'yarn', 'gcc', 'pkg-config', 'cairo', 'pango', 'libpng', 'jpeg', 'giflib', 'librsvg']
+nixPkgs = ['python311', 'nodejs-18_x']
 
 [phases.install]
 cmds = [
-    'pip install -r requirements.txt',
-    'cd theme/static_src && npm install && npm run build'
+    'pip install -r requirements.txt'
 ]
 
 [phases.build]
 cmds = [
-    'python manage.py collectstatic --noinput',
-    'python manage.py migrate'
+    'python manage.py collectstatic --noinput'
 ]
 
 [start]
-cmd = 'gunicorn Source.wsgi:application --bind 0.0.0.0:$PORT'
+cmd = 'python manage.py migrate && gunicorn Source.wsgi:application --bind 0.0.0.0:$PORT'
