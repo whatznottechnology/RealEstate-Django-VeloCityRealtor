@@ -46,9 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'tailwind',  # Tailwind CSS integration
-    'theme',   # Custom theme app for Tailwind CSS
-    'django_browser_reload', # For live reloading during development
+    'theme',   # Custom theme app
     
     'Projects', # Custom app for core functionality
     'land_leads',  # Land requirements app
@@ -80,7 +78,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "django_browser_reload.middleware.BrowserReloadMiddleware",  # Always include for development
 ]
 
 ROOT_URLCONF = 'Source.urls'
