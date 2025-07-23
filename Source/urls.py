@@ -21,7 +21,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("__reload__/", include("django_browser_reload.urls")),
     path('', include('theme.urls')),  # Frontend theme URLs
     path('projects/', include('Projects.urls')),
     path('land-leads/', include('land_leads.urls')),
