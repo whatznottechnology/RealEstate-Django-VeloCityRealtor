@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 import shutil
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8!zqd-sbw8z9u!^lp^@tx&g%l(_e6)#v(q(z*@foszhft5)*8u'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-8!zqd-sbw8z9u!^lp^@tx&g%l(_e6)#v(q(z*@foszhft5)*8u')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # Railway requires this for deployment
 
 
 # Application definition
@@ -68,6 +72,7 @@ NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Added for static files on Railway
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -105,12 +110,26 @@ WSGI_APPLICATION = 'Source.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Railway PostgreSQL Database Configuration
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('PGDATABASE', 'railway'),
+        'USER': os.getenv('PGUSER', 'postgres'),
+        'PASSWORD': os.getenv('PGPASSWORD', ''),
+        'HOST': os.getenv('PGHOST', 'localhost'),
+        'PORT': os.getenv('PGPORT', '5432'),
     }
 }
+
+# Fallback to SQLite for local development
+if not os.getenv('RAILWAY_ENVIRONMENT'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -154,6 +173,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'theme' / 'static',
     BASE_DIR / 'static',
 ]
+
+# Static files storage for Railway
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
