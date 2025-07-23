@@ -36,9 +36,10 @@ ALLOWED_HOSTS = ['*']  # Railway requires this for deployment
 
 # CSRF settings for Railway deployment
 CSRF_TRUSTED_ORIGINS = [
-    'https://django-app-production-4881.up.railway.app',
+    'https://velocityrealtor.up.railway.app',
     'https://*.railway.app',
     'https://*.up.railway.app',
+    'https://django-app.railway.internal'
 ]
 
 # CSRF cookie settings for production
