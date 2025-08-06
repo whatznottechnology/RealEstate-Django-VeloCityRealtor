@@ -19,4 +19,8 @@ urlpatterns = [
     # AJAX endpoints
     path('increment-views/<int:project_id>/', views.increment_project_views, name='increment_project_views'),
     path('ajax/project-types/', views.ajax_project_types, name='ajax_project_types'),
+
+    # Legal pages
+    path('terms-and-conditions/', views.terms_and_conditions, name='terms_and_conditions'),
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
 ]

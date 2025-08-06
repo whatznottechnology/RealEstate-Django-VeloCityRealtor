@@ -1,3 +1,8 @@
+def terms_and_conditions(request):
+    return render(request, 'pages/terms_and_conditions.html')
+
+def privacy_policy(request):
+    return render(request, 'pages/privacy_policy.html')
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
@@ -10,6 +15,7 @@ import json
 from Projects.models import Project, Category, ProjectType, City, Amenity
 from land_leads.models import LandRequirement
 from investment_leads.models import InvestmentRequirement
+from .models import SiteConfig
 
 
 def home(request):
@@ -303,6 +309,10 @@ def search_properties(request):
         'amenities': amenities,
         'applied_filters': applied_filters,
     }
+    
+    # Handle AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render(request, 'pages/search_properties_ajax.html', context)
     
     return render(request, 'pages/search_properties.html', context)
 

@@ -5,16 +5,24 @@ register = template.Library()
 
 @register.filter
 def format_price(value):
-    """Format price in Indian numbering system"""
+    """Format price in Indian numbering system with INR symbol"""
     if not value:
         return ""
     
     try:
         price = float(value)
         if price >= 10000000:  # 1 crore
-            return f"₹{price / 10000000:.1f} Cr".replace('.0 ', ' ')
+            formatted = price / 10000000
+            if formatted == int(formatted):
+                return f"₹{int(formatted)} Cr"
+            else:
+                return f"₹{formatted:.1f} Cr"
         elif price >= 100000:  # 1 lakh
-            return f"₹{price / 100000:.1f} L".replace('.0 ', ' ')
+            formatted = price / 100000
+            if formatted == int(formatted):
+                return f"₹{int(formatted)} L"
+            else:
+                return f"₹{formatted:.1f} L"
         else:
             return f"₹{price:,.0f}"
     except (ValueError, TypeError):

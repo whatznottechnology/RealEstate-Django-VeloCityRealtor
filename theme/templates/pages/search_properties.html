@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load theme_filters %}
 
 {% block title %}Search Properties - VeloCity Realtor{% endblock %}
 
@@ -7,26 +8,26 @@
 
 {% block content %}
 <!-- Hero Search Section -->
-<section class="bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white py-12 lg:py-16">
-    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div class="text-center mb-8 lg:mb-12">
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 lg:mb-6">Find Your Perfect Property</h1>
-            <p class="text-base sm:text-lg lg:text-xl text-red-100 max-w-3xl mx-auto">Discover your dream home from our extensive collection of premium properties</p>
+<section class="bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white py-8 lg:py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-6 lg:mb-8">
+            <h1 class="text-lg sm:text-xl lg:text-2xl font-bold mb-3 lg:mb-4">Find Your Perfect Property</h1>
+            <p class="text-xs sm:text-sm lg:text-base text-red-100 max-w-2xl mx-auto">Discover your dream home from our extensive collection of premium properties</p>
         </div>
         
         <!-- Quick Search Bar -->
-        <div class="max-w-6xl mx-auto">
-            <form method="GET" action="{% url 'theme:search_properties' %}" class="bg-white rounded-xl lg:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="max-w-5xl mx-auto">
+            <form method="GET" action="{% url 'theme:search_properties' %}" class="bg-white/95 backdrop-blur-sm rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 shadow-2xl border border-white/20">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
                     <div class="lg:col-span-2">
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Search Location</label>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Search Location</label>
                         <input type="text" name="q" value="{{ request.GET.q }}" 
                                placeholder="Enter location, project, or developer name..."
-                               class="w-full px-3 sm:px-4 py-3 lg:py-4 border border-gray-200 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-gray-900 placeholder-gray-500 text-sm lg:text-base">
+                               class="w-full px-3 sm:px-4 py-3 lg:py-3.5 border border-gray-200 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-gray-900 placeholder-gray-500 text-xs lg:text-sm font-medium shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Category</label>
-                        <select name="category" class="w-full px-3 sm:px-4 py-3 lg:py-4 border border-gray-200 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-gray-900 bg-white text-sm lg:text-base">
+                        <label class="block text-xs font-bold text-gray-700 mb-2">Category</label>
+                <select name="category" class="appearance-none w-full px-3 sm:px-4 py-3 lg:py-3.5 border border-gray-200 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-gray-900 bg-white text-xs lg:text-sm font-medium shadow-sm">
                             <option value="">All Categories</option>
                             {% for category in categories %}
                                 <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
@@ -36,8 +37,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">&nbsp;</label>
-                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 lg:py-4 px-4 lg:px-6 rounded-lg lg:rounded-xl font-bold text-sm lg:text-base transition-colors flex items-center justify-center">
+                        <label class="block text-xs font-bold text-gray-700 mb-2">&nbsp;</label>
+                        <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-3 lg:py-3.5 px-4 lg:px-6 rounded-lg lg:rounded-xl font-bold text-xs lg:text-sm transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
                             <svg class="w-4 h-4 lg:w-5 lg:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
@@ -52,31 +53,36 @@
 
 <!-- Main Content Section -->
 <section class="py-6 lg:py-8 bg-gray-50 min-h-screen">
-    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col xl:flex-row gap-6 lg:gap-8">
             
             <!-- Filters Sidebar -->
             <div class="xl:w-72 xl:flex-shrink-0">
                 <!-- Mobile Filter Toggle -->
-                <div class="xl:hidden mb-6">
-                    <button id="filterToggle" class="w-full bg-white border border-gray-200 text-gray-800 py-3 lg:py-4 px-4 lg:px-6 rounded-lg lg:rounded-xl font-semibold transition-colors flex items-center justify-between shadow-sm">
-                        <span class="flex items-center text-sm lg:text-base">
-                            <svg class="w-4 h-4 lg:w-5 lg:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="xl:hidden mb-4">
+                    <button id="filterToggle" class="w-full bg-white border border-gray-200 text-gray-800 py-3 px-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-between shadow-sm hover:shadow-md">
+                        <span class="flex items-center text-xs">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 2v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                             </svg>
                             Filters & Sort
                         </span>
-                        <svg class="w-4 h-4 lg:w-5 lg:h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                 </div>
                 
                 <!-- Filter Panel -->
-                <div id="filterPanel" class="hidden xl:block bg-white rounded-lg lg:rounded-2xl shadow-sm p-4 lg:p-6 xl:sticky xl:top-8">
-                    <div class="flex items-center justify-between mb-4 lg:mb-6">
-                        <h3 class="text-lg lg:text-xl font-bold text-gray-900">Advanced Filters</h3>
-                        <button type="button" onclick="clearFilters()" class="text-xs lg:text-sm text-red-600 hover:text-red-700 font-semibold">
+                <div id="filterPanel" class="hidden xl:block bg-white rounded-xl shadow-lg border border-gray-100 p-4 lg:p-5 xl:sticky xl:top-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-gray-900 flex items-center">
+                            <svg class="w-4 h-4 mr-1.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
+                            </svg>
+                            Advanced Filters
+                        </h3>
+                        <button type="button" onclick="clearFilters()" class="text-xs text-red-600 hover:text-red-700 font-semibold hover:bg-red-50 px-2 py-1 rounded-md transition-colors">
                             Clear All
                         </button>
                     </div>
@@ -88,9 +94,15 @@
                         {% endif %}
                         
                         <!-- City Filter -->
-                        <div class="mb-4 lg:mb-6">
-                            <label class="block text-xs lg:text-sm font-bold text-gray-900 mb-2 lg:mb-3">Location</label>
-                            <select name="city" class="w-full px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none bg-white text-gray-900 text-sm lg:text-base">
+                        <div class="mb-4">
+                            <label class="flex text-xs font-bold text-gray-900 mb-2 items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                Location
+                            </label>
+                            <select name="city" class="appearance-none w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none bg-white text-gray-900 text-xs font-medium shadow-sm transition-all">
                                 <option value="">All Cities</option>
                                 {% for city in cities %}
                                     <option value="{{ city.id }}" {% if request.GET.city == city.id|stringformat:"s" %}selected{% endif %}>
@@ -101,9 +113,14 @@
                         </div>
                         
                         <!-- Property Type -->
-                        <div class="mb-4 lg:mb-6">
-                            <label class="block text-xs lg:text-sm font-bold text-gray-900 mb-2 lg:mb-3">Property Type</label>
-                            <select name="project_type" class="w-full px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none bg-white text-gray-900 text-sm lg:text-base">
+                        <div class="mb-4">
+                            <label class="flex text-xs font-bold text-gray-900 mb-2 items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                Property Type
+                            </label>
+                            <select name="project_type" class="appearance-none w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none bg-white text-gray-900 text-xs font-medium shadow-sm transition-all">
                                 <option value="">All Types</option>
                                 {% for project_type in project_types %}
                                     <option value="{{ project_type.id }}" {% if request.GET.project_type == project_type.id|stringformat:"s" %}selected{% endif %}>
@@ -114,78 +131,114 @@
                         </div>
                         
                         <!-- BHK Selection -->
-                        <div class="mb-4 lg:mb-6">
-                            <label class="block text-xs lg:text-sm font-bold text-gray-900 mb-2 lg:mb-3">BHK Configuration</label>
-                            <div class="grid grid-cols-2 gap-2 lg:gap-3">
-                                <label class="flex items-center justify-center px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:border-red-300 hover:bg-red-50 transition-all text-xs lg:text-sm {% if request.GET.bhk == '1' %}border-red-500 bg-red-50 text-red-700{% endif %}">
+                        <div class="mb-4">
+                            <label class="flex text-xs font-bold text-gray-900 mb-2 items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21v-4a2 2 0 012-2h4a2 2 0 012 2v4"/>
+                                </svg>
+                                BHK Configuration
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="flex items-center justify-center px-3 py-2.5 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-300 hover:bg-red-50 transition-all text-xs font-semibold {% if request.GET.bhk == '1' %}border-red-500 bg-red-50 text-red-700{% endif %}">
                                     <input type="radio" name="bhk" value="1" {% if request.GET.bhk == "1" %}checked{% endif %} class="sr-only">
-                                    <span class="font-bold">1 BHK</span>
+                                    <span>1 BHK</span>
                                 </label>
-                                <label class="flex items-center justify-center px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:border-red-300 hover:bg-red-50 transition-all text-xs lg:text-sm {% if request.GET.bhk == '2' %}border-red-500 bg-red-50 text-red-700{% endif %}">
+                                <label class="flex items-center justify-center px-3 py-2.5 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-300 hover:bg-red-50 transition-all text-xs font-semibold {% if request.GET.bhk == '2' %}border-red-500 bg-red-50 text-red-700{% endif %}">
                                     <input type="radio" name="bhk" value="2" {% if request.GET.bhk == "2" %}checked{% endif %} class="sr-only">
-                                    <span class="font-bold">2 BHK</span>
+                                    <span>2 BHK</span>
                                 </label>
-                                <label class="flex items-center justify-center px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:border-red-300 hover:bg-red-50 transition-all text-xs lg:text-sm {% if request.GET.bhk == '3' %}border-red-500 bg-red-50 text-red-700{% endif %}">
+                                <label class="flex items-center justify-center px-3 py-2.5 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-300 hover:bg-red-50 transition-all text-xs font-semibold {% if request.GET.bhk == '3' %}border-red-500 bg-red-50 text-red-700{% endif %}">
                                     <input type="radio" name="bhk" value="3" {% if request.GET.bhk == "3" %}checked{% endif %} class="sr-only">
-                                    <span class="font-bold">3 BHK</span>
+                                    <span>3 BHK</span>
                                 </label>
-                                <label class="flex items-center justify-center px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:border-red-300 hover:bg-red-50 transition-all text-xs lg:text-sm {% if request.GET.bhk == '4' %}border-red-500 bg-red-50 text-red-700{% endif %}">
+                                <label class="flex items-center justify-center px-3 py-2.5 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-300 hover:bg-red-50 transition-all text-xs font-semibold {% if request.GET.bhk == '4' %}border-red-500 bg-red-50 text-red-700{% endif %}">
                                     <input type="radio" name="bhk" value="4" {% if request.GET.bhk == "4" %}checked{% endif %} class="sr-only">
-                                    <span class="font-bold">4+ BHK</span>
+                                    <span>4+ BHK</span>
                                 </label>
                             </div>
                         </div>
                         
                         <!-- Budget Range -->
-                        <div class="mb-4 lg:mb-6">
-                            <label class="block text-xs lg:text-sm font-bold text-gray-900 mb-2 lg:mb-3">Budget Range</label>
-                            <div class="space-y-1 lg:space-y-2">
-                                <label class="flex items-center px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs lg:text-sm {% if request.GET.budget == '0-2000000' %}bg-red-50 border-red-500{% endif %}">
-                                    <input type="radio" name="budget" value="0-2000000" {% if request.GET.budget == "0-2000000" %}checked{% endif %} class="text-red-600 focus:ring-red-500">
-                                    <span class="ml-2 lg:ml-3 font-semibold text-gray-900">Under ₹20L</span>
+                        <div class="mb-4">
+                            <label class="flex text-xs font-bold text-gray-900 mb-2 items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Budget Range
+                            </label>
+                            <div class="space-y-2">
+                                <label class="flex items-center px-3 py-2.5 border border-gray-200 rounded-lg cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs {% if request.GET.budget == '0-2000000' %}bg-red-50 border-red-500{% endif %}">
+                                    <input type="radio" name="budget" value="0-2000000" {% if request.GET.budget == "0-2000000" %}checked{% endif %} class="text-red-600 focus:ring-red-500 w-4 h-4">
+                                    <span class="ml-3 font-semibold text-gray-900">Under ₹20L</span>
                                 </label>
-                                <label class="flex items-center px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs lg:text-sm {% if request.GET.budget == '2000000-5000000' %}bg-red-50 border-red-500{% endif %}">
-                                    <input type="radio" name="budget" value="2000000-5000000" {% if request.GET.budget == "2000000-5000000" %}checked{% endif %} class="text-red-600 focus:ring-red-500">
-                                    <span class="ml-2 lg:ml-3 font-semibold text-gray-900">₹20L - ₹50L</span>
+                                <label class="flex items-center px-3 py-2.5 border border-gray-200 rounded-lg cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs {% if request.GET.budget == '2000000-5000000' %}bg-red-50 border-red-500{% endif %}">
+                                    <input type="radio" name="budget" value="2000000-5000000" {% if request.GET.budget == "2000000-5000000" %}checked{% endif %} class="text-red-600 focus:ring-red-500 w-4 h-4">
+                                    <span class="ml-3 font-semibold text-gray-900">₹20L - ₹50L</span>
                                 </label>
-                                <label class="flex items-center px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs lg:text-sm {% if request.GET.budget == '5000000-10000000' %}bg-red-50 border-red-500{% endif %}">
-                                    <input type="radio" name="budget" value="5000000-10000000" {% if request.GET.budget == "5000000-10000000" %}checked{% endif %} class="text-red-600 focus:ring-red-500">
-                                    <span class="ml-2 lg:ml-3 font-semibold text-gray-900">₹50L - ₹1Cr</span>
+                                <label class="flex items-center px-3 py-2.5 border border-gray-200 rounded-lg cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs {% if request.GET.budget == '5000000-10000000' %}bg-red-50 border-red-500{% endif %}">
+                                    <input type="radio" name="budget" value="5000000-10000000" {% if request.GET.budget == "5000000-10000000" %}checked{% endif %} class="text-red-600 focus:ring-red-500 w-4 h-4">
+                                    <span class="ml-3 font-semibold text-gray-900">₹50L - ₹1Cr</span>
                                 </label>
-                                <label class="flex items-center px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs lg:text-sm {% if request.GET.budget == '10000000-20000000' %}bg-red-50 border-red-500{% endif %}">
-                                    <input type="radio" name="budget" value="10000000-20000000" {% if request.GET.budget == "10000000-20000000" %}checked{% endif %} class="text-red-600 focus:ring-red-500">
-                                    <span class="ml-2 lg:ml-3 font-semibold text-gray-900">₹1Cr - ₹2Cr</span>
+                                <label class="flex items-center px-3 py-2.5 border border-gray-200 rounded-lg cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs {% if request.GET.budget == '10000000-20000000' %}bg-red-50 border-red-500{% endif %}">
+                                    <input type="radio" name="budget" value="10000000-20000000" {% if request.GET.budget == "10000000-20000000" %}checked{% endif %} class="text-red-600 focus:ring-red-500 w-4 h-4">
+                                    <span class="ml-3 font-semibold text-gray-900">₹1Cr - ₹2Cr</span>
                                 </label>
-                                <label class="flex items-center px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs lg:text-sm {% if request.GET.budget == '20000000-' %}bg-red-50 border-red-500{% endif %}">
-                                    <input type="radio" name="budget" value="20000000-" {% if request.GET.budget == "20000000-" %}checked{% endif %} class="text-red-600 focus:ring-red-500">
-                                    <span class="ml-2 lg:ml-3 font-semibold text-gray-900">₹2Cr+</span>
+                                <label class="flex items-center px-3 py-2.5 border border-gray-200 rounded-lg cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs {% if request.GET.budget == '20000000-' %}bg-red-50 border-red-500{% endif %}">
+                                    <input type="radio" name="budget" value="20000000-" {% if request.GET.budget == "20000000-" %}checked{% endif %} class="text-red-600 focus:ring-red-500 w-4 h-4">
+                                    <span class="ml-3 font-semibold text-gray-900">₹2Cr+</span>
                                 </label>
                             </div>
                         </div>
                         
                         <!-- Project Status -->
-                        <div class="mb-4 lg:mb-6">
-                            <label class="block text-xs lg:text-sm font-bold text-gray-900 mb-2 lg:mb-3">Project Status</label>
-                            <div class="space-y-1 lg:space-y-2">
-                                <label class="flex items-center px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs lg:text-sm {% if request.GET.status == 'ready_to_move' %}bg-red-50 border-red-500{% endif %}">
-                                    <input type="radio" name="status" value="ready_to_move" {% if request.GET.status == "ready_to_move" %}checked{% endif %} class="text-red-600 focus:ring-red-500">
-                                    <span class="ml-2 lg:ml-3 font-semibold text-gray-900">Ready to Move</span>
+                        <div class="mb-4">
+                            <label class="flex text-xs font-bold text-gray-900 mb-2 items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Project Status
+                            </label>
+                            <div class="space-y-2 lg:space-y-3">
+                                <label class="flex items-center px-3 lg:px-4 py-3 lg:py-3.5 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-green-50 hover:border-green-300 transition-all text-xs {% if request.GET.status == 'ready_to_move' %}bg-green-50 border-green-500{% endif %}">
+                                    <input type="radio" name="status" value="ready_to_move" {% if request.GET.status == "ready_to_move" %}checked{% endif %} class="text-green-600 focus:ring-green-500 w-4 h-4">
+                                    <span class="ml-3 font-semibold text-gray-900 flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        Ready to Move
+                                    </span>
                                 </label>
-                                <label class="flex items-center px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs lg:text-sm {% if request.GET.status == 'under_construction' %}bg-red-50 border-red-500{% endif %}">
-                                    <input type="radio" name="status" value="under_construction" {% if request.GET.status == "under_construction" %}checked{% endif %} class="text-red-600 focus:ring-red-500">
-                                    <span class="ml-2 lg:ml-3 font-semibold text-gray-900">Under Construction</span>
+                                <label class="flex items-center px-3 lg:px-4 py-3 lg:py-3.5 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-300 transition-all text-xs {% if request.GET.status == 'under_construction' %}bg-yellow-50 border-yellow-500{% endif %}">
+                                    <input type="radio" name="status" value="under_construction" {% if request.GET.status == "under_construction" %}checked{% endif %} class="text-yellow-600 focus:ring-yellow-500 w-4 h-4">
+                                    <span class="ml-3 font-semibold text-gray-900 flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                                        </svg>
+                                        Under Construction
+                                    </span>
                                 </label>
-                                <label class="flex items-center px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-red-50 hover:border-red-300 transition-all text-xs lg:text-sm {% if request.GET.status == 'upcoming' %}bg-red-50 border-red-500{% endif %}">
-                                    <input type="radio" name="status" value="upcoming" {% if request.GET.status == "upcoming" %}checked{% endif %} class="text-red-600 focus:ring-red-500">
-                                    <span class="ml-2 lg:ml-3 font-semibold text-gray-900">Upcoming</span>
+                                <label class="flex items-center px-3 lg:px-4 py-3 lg:py-3.5 border border-gray-200 rounded-lg lg:rounded-xl cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all text-xs {% if request.GET.status == 'upcoming' %}bg-blue-50 border-blue-500{% endif %}">
+                                    <input type="radio" name="status" value="upcoming" {% if request.GET.status == "upcoming" %}checked{% endif %} class="text-blue-600 focus:ring-blue-500 w-4 h-4">
+                                    <span class="ml-3 font-semibold text-gray-900 flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                        Upcoming
+                                    </span>
                                 </label>
                             </div>
                         </div>
                         
                         <!-- Sort Options -->
-                        <div class="mb-4 lg:mb-6">
-                            <label class="block text-xs lg:text-sm font-bold text-gray-900 mb-2 lg:mb-3">Sort By</label>
-                            <select name="sort" class="w-full px-3 lg:px-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none bg-white text-gray-900 text-sm lg:text-base">
+                        <div class="mb-6 lg:mb-8">
+                            <label class="block text-xs font-bold text-gray-900 mb-3 flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"/>
+                                </svg>
+                                Sort By
+                            </label>
+                            <select name="sort" class="appearance-none w-full px-3 lg:px-4 py-3 lg:py-3.5 border border-gray-200 rounded-lg lg:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none bg-white text-gray-900 text-xs font-medium shadow-sm transition-all">
                                 <option value="-created_at" {% if request.GET.sort == "-created_at" %}selected{% endif %}>Latest First</option>
                                 <option value="onwards_price" {% if request.GET.sort == "onwards_price" %}selected{% endif %}>Price: Low to High</option>
                                 <option value="-onwards_price" {% if request.GET.sort == "-onwards_price" %}selected{% endif %}>Price: High to Low</option>
@@ -195,7 +248,7 @@
                         </div>
                         
                         <!-- Apply Filters Button -->
-                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 lg:py-4 px-4 lg:px-6 rounded-lg lg:rounded-xl font-bold transition-colors flex items-center justify-center text-sm lg:text-base">
+                        <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-3 lg:py-4 px-4 lg:px-6 rounded-lg lg:rounded-xl font-bold transition-all duration-200 flex items-center justify-center text-xs shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
                             <svg class="w-4 h-4 lg:w-5 lg:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
@@ -208,260 +261,316 @@
             <!-- Results Section -->
             <div class="flex-1">
                 <!-- Results Header -->
-                <div class="bg-white rounded-lg lg:rounded-2xl shadow-sm p-4 lg:p-6 mb-4 lg:mb-6">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 lg:gap-4">
+                <div class="bg-white rounded-xl shadow-lg p-5 lg:p-6 mb-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
                         <div>
-                            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">
-                                {% if projects %}
-                                    {{ projects|length }} Properties Found
-                                {% else %}
-                                    No Properties Found
-                                {% endif %}
-                            </h2>
-                            <p class="text-xs sm:text-sm lg:text-base text-gray-600">
+                            <h3 class="text-lg font-bold text-gray-900 flex items-center">
+                                <svg class="w-5 h-5 lg:w-6 lg:h-6 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                Search Results
+                            </h3>
+                            <p class="text-xs text-gray-600 mt-1">
                                 {% if request.GET.q %}
-                                    Results for "{{ request.GET.q }}"
+                                    <span class="font-semibold text-red-600">{{ projects.paginator.count }}</span> result{{ projects.paginator.count|pluralize }} found for "<span class="font-semibold">{{ request.GET.q }}</span>"
                                 {% else %}
-                                    Showing all available properties
+                                    <span class="font-semibold text-red-600">{{ projects.paginator.count }}</span> propert{{ projects.paginator.count|pluralize:"y,ies" }} available
                                 {% endif %}
                             </p>
                         </div>
                         
-                        <!-- View Toggle -->
-                        <div class="flex items-center space-x-1 lg:space-x-2 bg-gray-100 rounded-lg lg:rounded-xl p-1">
-                            <button id="gridView" class="px-3 lg:px-4 py-2 rounded-lg font-semibold transition-colors bg-white text-gray-900 shadow-sm text-xs lg:text-sm">
-                                <svg class="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                                </svg>
+                        <!-- Quick Sort Options -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 lg:gap-3 w-full max-w-xl">
+                            <form method="GET" class="hidden" id="sort-form">
+                                {% for key, value in request.GET.items %}
+                                    {% if key != 'sort' %}
+                                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                                    {% endif %}
+                                {% endfor %}
+                                <input type="hidden" name="sort" id="sort-input">
+                            </form>
+                            <button type="button" class="sort-card-btn {% if request.GET.sort == '-created_at' or not request.GET.sort %}sort-card-active{% endif %}" data-sort="-created_at">
+                                <span class="flex items-center justify-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Latest
+                                </span>
                             </button>
-                            <button id="listView" class="px-3 lg:px-4 py-2 rounded-lg font-semibold transition-colors text-gray-600 hover:text-gray-900 text-xs lg:text-sm">
-                                <svg class="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-                                </svg>
+                            <button type="button" class="sort-card-btn {% if request.GET.sort == 'onwards_price' %}sort-card-active{% endif %}" data-sort="onwards_price">
+                                <span class="flex items-center justify-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/>
+                                    </svg>
+                                    Price Low
+                                </span>
+                            </button>
+                            <button type="button" class="sort-card-btn {% if request.GET.sort == '-onwards_price' %}sort-card-active{% endif %}" data-sort="-onwards_price">
+                                <span class="flex items-center justify-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/>
+                                    </svg>
+                                    Price High
+                                </span>
                             </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Properties Display -->
+                <!-- Properties Grid -->
                 {% if projects %}
-                    <!-- Grid View -->
-                    <div id="propertiesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+                    <div class="property-grid grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 lg:gap-6">
                         {% for project in projects %}
-                            <div class="bg-white rounded-lg lg:rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group property-card">
-                                <!-- Property Image -->
-                                <div class="relative h-48 lg:h-52 overflow-hidden">
+                            <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden transform hover:scale-[1.02] border border-gray-100">
+                                <!-- Project Image -->
+                                <div class="relative overflow-hidden">
                                     {% if project.banner_image %}
-                                        <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" 
-                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                        <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" class="w-full h-56 lg:h-64 object-cover transition-transform duration-300 hover:scale-105">
                                     {% else %}
-                                        <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                                            <svg class="w-12 h-12 lg:w-16 lg:h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                        <div class="w-full h-56 lg:h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                                             </svg>
                                         </div>
                                     {% endif %}
                                     
                                     <!-- Status Badge -->
-                                    {% if project.status %}
-                                        <div class="absolute top-3 left-3">
-                                            <span class="bg-red-600 text-white px-2 lg:px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
-                                                {{ project.get_status_display }}
+                                    <div class="absolute top-4 left-4">
+                                        {% if project.status == 'ready_to_move' %}
+                                            <span class="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                                Ready to Move
                                             </span>
+                                        {% elif project.status == 'under_construction' %}
+                                            <span class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                                                </svg>
+                                                Under Construction
+                                            </span>
+                                        {% elif project.status == 'upcoming' %}
+                                            <span class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                </svg>
+                                                Upcoming
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Feature Badges -->
+                                    <div class="absolute top-4 right-4 flex flex-col gap-2">
+                                        {% if project.is_featured %}
+                                            <span class="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                </svg>
+                                                Featured
+                                            </span>
+                                        {% endif %}
+                                        {% if project.is_hot_deal %}
+                                            <span class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/>
+                                                </svg>
+                                                Hot Deal
+                                            </span>
+                                        {% endif %}
+                                        {% if project.is_premium_listing %}
+                                            <span class="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
+                                                </svg>
+                                                Premium
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Price Overlay -->
+                                    {% if project.onwards_price %}
+                                        <div class="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg">
+                                            <p class="text-sm font-bold text-red-600">{{ project.onwards_price|format_price }}</p>
+                                            <p class="text-xs text-gray-600">onwards</p>
                                         </div>
                                     {% endif %}
-                                    
-                                    <!-- Wishlist Button -->
-                                    <button class="absolute top-3 right-3 w-8 h-8 lg:w-10 lg:h-10 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105">
-                                        <svg class="w-4 h-4 lg:w-5 lg:h-5 text-gray-600 hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                        </svg>
-                                    </button>
                                 </div>
                                 
-                                <!-- Property Details -->
+                                <!-- Project Details -->
                                 <div class="p-4 lg:p-5">
-                                    <!-- Property Name -->
-                                    <h3 class="text-base lg:text-lg font-bold text-gray-900 mb-2 line-clamp-2">{{ project.name }}</h3>
+                                    <!-- Project Name -->
+                                    <h4 class="text-sm font-bold text-gray-900 mb-2 line-clamp-2">{{ project.name }}</h4>
                                     
-                                    <!-- Location -->
+                                    <!-- Location & Developer -->
                                     <div class="flex items-center text-gray-600 mb-3">
-                                        <svg class="w-3 h-3 lg:w-4 lg:h-4 mr-1 lg:mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <svg class="w-4 h-4 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                         </svg>
-                                        <span class="text-xs lg:text-sm truncate">{{ project.location|default:"Location not specified" }}</span>
-                                    </div>
-                                    
-                                    <!-- Property Features -->
-                                    <div class="flex items-center justify-between mb-3 text-xs lg:text-sm text-gray-600">
-                                        {% if project.bhk %}
-                                            <div class="flex items-center">
-                                                <svg class="w-3 h-3 lg:w-4 lg:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z"></path>
-                                                </svg>
-                                                <span>{{ project.bhk }}</span>
-                                            </div>
-                                        {% endif %}
-                                        
-                                        {% if project.carpet_area %}
-                                            <div class="flex items-center">
-                                                <svg class="w-3 h-3 lg:w-4 lg:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
-                                                </svg>
-                                                <span>{{ project.carpet_area }} sq ft</span>
-                                            </div>
+                                        <span class="text-xs font-semibold">{{ project.city.name }}</span>
+                                        {% if project.developer_name %}
+                                            <span class="mx-2 text-gray-400">•</span>
+                                            <span class="text-xs text-gray-500">by {{ project.developer_name }}</span>
                                         {% endif %}
                                     </div>
                                     
-                                    <!-- Price -->
-                                    {% if project.onwards_price %}
+                                    <!-- Property Details Grid -->
+                                    <div class="grid grid-cols-2 gap-3 mb-4 p-3 bg-gray-50 rounded-xl">
+                                        <div class="text-center">
+                                            <div class="flex items-center justify-center mb-1">
+                                                <svg class="w-4 h-4 text-gray-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                                </svg>
+                                                <p class="text-xs text-gray-500 font-semibold">Type</p>
+                                            </div>
+                                            <p class="text-xs font-bold text-gray-900">{{ project.project_type.name }}</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="flex items-center justify-center mb-1">
+                                                <svg class="w-4 h-4 text-gray-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21v-4a2 2 0 012-2h4a2 2 0 012 2v4"/>
+                                                </svg>
+                                                <p class="text-xs text-gray-500 font-semibold">BHK</p>
+                                            </div>
+                                            <p class="text-xs font-bold text-gray-900">
+                                                {% if project.bhk %}{{ project.bhk }} BHK{% else %}N/A{% endif %}
+                                            </p>
+                                        </div>
+                                        {% if project.area_sqft %}
+                                        <div class="text-center col-span-2 border-t border-gray-200 pt-2">
+                                            <div class="flex items-center justify-center mb-1">
+                                                <svg class="w-4 h-4 text-gray-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                                                </svg>
+                                                <p class="text-xs text-gray-500 font-semibold">Area</p>
+                                            </div>
+                                            <p class="text-xs font-bold text-gray-900">{{ project.area_sqft }} sq ft</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Amenities Preview -->
+                                    {% if project.amenities.all %}
                                         <div class="mb-4">
-                                            <span class="text-lg lg:text-xl font-bold text-red-600">₹{{ project.onwards_price|floatformat:0 }}</span>
-                                            <span class="text-gray-500 text-xs lg:text-sm ml-1">onwards</span>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Key Amenities</p>
+                                            <div class="flex flex-wrap gap-1">
+                                                {% for amenity in project.amenities.all|slice:":4" %}
+                                                    <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-md font-medium">{{ amenity.name }}</span>
+                                                {% endfor %}
+                                                {% if project.amenities.count > 4 %}
+                                                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-md font-medium">+{{ project.amenities.count|add:"-4" }} more</span>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     {% endif %}
                                     
                                     <!-- Action Buttons -->
-                                    <div class="flex gap-2 lg:gap-3">
-                                        <a href="{% url 'theme:project_detail' project.id %}" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 lg:py-3 px-3 lg:px-4 rounded-lg lg:rounded-xl font-bold transition-colors text-xs lg:text-sm text-center">
-                                            View Details
-                                        </a>
-                                        <button class="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 hover:border-red-300 text-gray-700 hover:text-red-600 rounded-lg lg:rounded-xl transition-colors">
-                                            <svg class="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    
-    <!-- Pagination -->
-    {% if projects.has_other_pages %}
-        <div class="mt-6 lg:mt-8 flex justify-center">
-            <div class="flex items-center space-x-1 lg:space-x-2">
-                {% if projects.has_previous %}
-                    <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ projects.previous_page_number }}" 
-                       class="px-3 lg:px-4 py-2 text-sm lg:text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </a>
-                {% endif %}
-                
-                {% for page_num in projects.paginator.page_range %}
-                    {% if page_num == projects.number %}
-                        <span class="px-3 lg:px-4 py-2 text-sm lg:text-base font-bold text-white bg-red-600 border border-red-600 rounded-lg">{{ page_num }}</span>
-                    {% elif page_num > projects.number|add:'-3' and page_num < projects.number|add:'3' %}
-                        <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_num }}" 
-                           class="px-3 lg:px-4 py-2 text-sm lg:text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">{{ page_num }}</a>
-                    {% endif %}
-                {% endfor %}
-                
-                {% if projects.has_next %}
-                    <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ projects.next_page_number }}" 
-                       class="px-3 lg:px-4 py-2 text-sm lg:text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    {% endif %}                    <!-- List View (Hidden by default) -->
-                    <div id="propertiesList" class="hidden space-y-4 lg:space-y-6">
-                        {% for project in projects %}
-                            <div class="bg-white rounded-lg lg:rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
-                                <div class="flex flex-col lg:flex-row">
-                                    <!-- Property Image -->
-                                    <div class="lg:w-72 h-48 lg:h-40 flex-shrink-0 overflow-hidden">
-                                        {% if project.banner_image %}
-                                            <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" 
-                                                 class="w-full h-full object-cover">
-                                        {% else %}
-                                            <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                                                <svg class="w-10 h-10 lg:w-12 lg:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                    <div class="flex flex-col sm:flex-row gap-3">
+                                        <a href="{% url 'theme:project_detail' project.id %}" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-3 px-4 rounded-xl font-bold text-center transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-xs">
+                                            <span class="flex items-center justify-center">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                 </svg>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <!-- Property Details -->
-                                    <div class="flex-1 p-4 lg:p-6">
-                                        <div class="flex justify-between items-start mb-3 lg:mb-4">
-                                            <div>
-                                                <h3 class="text-lg lg:text-2xl font-bold text-gray-900 mb-2">{{ project.name }}</h3>
-                                                <div class="flex items-center text-gray-600 mb-2">
-                                                    <svg class="w-3 h-3 lg:w-4 lg:h-4 mr-1 lg:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                    </svg>
-                                                    <span class="text-xs lg:text-sm">{{ project.location|default:"Location not specified" }}</span>
-                                                </div>
-                                            </div>
-                                            {% if project.onwards_price %}
-                                                <div class="text-right">
-                                                    <span class="text-xl lg:text-3xl font-bold text-red-600">₹{{ project.onwards_price|floatformat:0 }}</span>
-                                                    <div class="text-gray-500 text-xs lg:text-sm">onwards</div>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                        
-                                        <div class="flex items-center space-x-4 mb-3 lg:mb-4 text-xs lg:text-sm text-gray-600">
-                                            {% if project.bhk %}
-                                                <div class="flex items-center">
-                                                    <svg class="w-3 h-3 lg:w-4 lg:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z"></path>
-                                                    </svg>
-                                                    <span>{{ project.bhk }}</span>
-                                                </div>
-                                            {% endif %}
-                                            {% if project.carpet_area %}
-                                                <div class="flex items-center">
-                                                    <svg class="w-3 h-3 lg:w-4 lg:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
-                                                    </svg>
-                                                    <span>{{ project.carpet_area }} sq ft</span>
-                                                </div>
-                                            {% endif %}
-                                            {% if project.status %}
-                                                <span class="bg-red-100 text-red-800 px-2 lg:px-3 py-1 rounded-full text-xs font-bold">
-                                                    {{ project.get_status_display }}
-                                                </span>
-                                            {% endif %}
-                                        </div>
-                                        
-                                        <div class="flex gap-3 lg:gap-4">
-                                            <a href="{% url 'theme:project_detail' project.id %}" class="bg-red-600 hover:bg-red-700 text-white py-2 lg:py-3 px-4 lg:px-6 rounded-lg lg:rounded-xl font-bold transition-colors text-xs lg:text-sm">
                                                 View Details
-                                            </a>
-                                            <button class="border-2 border-gray-200 hover:border-red-300 text-gray-700 hover:text-red-600 py-2 lg:py-3 px-4 lg:px-6 rounded-lg lg:rounded-xl transition-colors text-xs lg:text-sm">
+                                            </span>
+                                        </a>
+                                        <button class="flex-1 bg-white border-2 border-red-600 text-red-600 hover:bg-red-50 py-3 px-4 rounded-xl font-bold transition-all duration-200 text-xs hover:shadow-lg transform hover:scale-105">
+                                            <span class="flex items-center justify-center">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                                </svg>
                                                 Contact
-                                            </button>
-                                        </div>
+                                            </span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <!-- No Properties Found -->
-                    <div class="bg-white rounded-lg lg:rounded-2xl shadow-sm p-8 lg:p-16 text-center">
-                        <svg class="w-16 h-16 lg:w-24 lg:h-24 text-gray-300 mx-auto mb-4 lg:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                        <h3 class="text-xl lg:text-2xl font-bold text-gray-500 mb-3 lg:mb-4">No Properties Found</h3>
-                        <p class="text-gray-400 text-sm lg:text-lg mb-6 lg:mb-8">Try adjusting your search criteria or browse all properties.</p>
-                        <div class="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center">
-                            <button onclick="clearFilters()" class="bg-red-600 hover:bg-red-700 text-white px-6 lg:px-8 py-2 lg:py-3 rounded-lg lg:rounded-xl font-bold transition-colors text-sm lg:text-base">
-                                Clear Filters
-                            </button>
-                            <a href="{% url 'theme:search_properties' %}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 lg:px-8 py-2 lg:py-3 rounded-lg lg:rounded-xl font-bold transition-colors text-sm lg:text-base">
-                                Browse All
-                            </a>
+                    <!-- No Results Message -->
+                    <div class="bg-white rounded-2xl shadow-xl p-8 lg:p-12 text-center">
+                        <div class="w-24 h-24 lg:w-32 lg:h-32 mx-auto mb-6 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center">
+                            <svg class="w-12 lg:w-16 h-12 lg:h-16 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">No Properties Found</h3>
+                        <p class="text-sm text-gray-600 mb-8 max-w-md mx-auto">Sorry, we couldn't find any properties matching your criteria. Try adjusting your filters or search terms.</p>
+                        <a href="{% url 'theme:search_properties' %}" class="inline-block bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-4 px-8 rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm">
+                            <span class="flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                View All Properties
+                            </span>
+                        </a>
+                    </div>
+                {% endif %}
+                
+                <!-- Pagination -->
+                {% if projects.has_other_pages %}
+                    <div class="mt-8 lg:mt-10">
+                        <div class="bg-white rounded-xl shadow-lg p-5 lg:p-6">
+                            <div class="flex flex-col items-center space-y-4">
+                                <div class="text-xs text-gray-600 text-center">
+                                    Showing {{ projects.start_index }}-{{ projects.end_index }} of {{ projects.paginator.count }} properties
+                                </div>
+                                
+                                <!-- Load More Button (for mobile-first approach) -->
+                                {% if projects.has_next %}
+                                    <div class="flex flex-col sm:flex-row items-center gap-3 w-full">
+                                        <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ projects.next_page_number }}" 
+                                           class="w-full sm:w-auto bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-3 px-6 rounded-lg font-bold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-center flex items-center justify-center text-xs">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                                            </svg>
+                                            Load More Properties
+                                        </a>
+                                        <span class="text-xs text-gray-500">or use page navigation below</span>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Traditional Pagination -->
+                                <div class="flex flex-wrap items-center justify-center gap-2">
+                                    {% if projects.has_previous %}
+                                        <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ projects.previous_page_number }}" 
+                                           class="px-3 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                            </svg>
+                                            Previous
+                                        </a>
+                                    {% endif %}
+                                    
+                                    {% for num in projects.paginator.page_range %}
+                                        {% if projects.number == num %}
+                                            <span class="px-3 lg:px-4 py-2 lg:py-3 text-xs font-bold text-white bg-red-600 border border-red-600 rounded-lg">
+                                                {{ num }}
+                                            </span>
+                                        {% elif num > projects.number|add:'-3' and num < projects.number|add:'3' %}
+                                            <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}" 
+                                               class="px-3 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                                {{ num }}
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if projects.has_next %}
+                                        <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ projects.next_page_number }}" 
+                                           class="px-3 lg:px-4 py-2 lg:py-3 text-xs font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center">
+                                            Next
+                                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                            </svg>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 {% endif %}
@@ -472,117 +581,41 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Search Properties JavaScript -->
+<script src="{% static 'js/search-properties.js' %}"></script>
+
 <script>
-    // Mobile Filter Toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        const filterToggle = document.getElementById('filterToggle');
-        const filterPanel = document.getElementById('filterPanel');
-        
-        if (filterToggle && filterPanel) {
-            filterToggle.addEventListener('click', function() {
-                filterPanel.classList.toggle('hidden');
-                filterPanel.classList.toggle('block');
-                
-                // Rotate arrow icon
-                const arrow = this.querySelector('svg:last-child');
-                if (arrow) {
-                    arrow.classList.toggle('rotate-180');
-                }
-            });
-        }
-
-        // View Toggle Functionality
-        const gridView = document.getElementById('gridView');
-        const listView = document.getElementById('listView');
-        const propertiesGrid = document.getElementById('propertiesGrid');
-        const propertiesList = document.getElementById('propertiesList');
-
-        if (gridView && listView && propertiesGrid && propertiesList) {
-            gridView.addEventListener('click', function() {
-                // Update buttons
-                gridView.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
-                gridView.classList.remove('text-gray-600');
-                listView.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
-                listView.classList.add('text-gray-600');
-                
-                // Update views
-                propertiesGrid.classList.remove('hidden');
-                propertiesList.classList.add('hidden');
-            });
-
-            listView.addEventListener('click', function() {
-                // Update buttons
-                listView.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
-                listView.classList.remove('text-gray-600');
-                gridView.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
-                gridView.classList.add('text-gray-600');
-                
-                // Update views
-                propertiesList.classList.remove('hidden');
-                propertiesGrid.classList.add('hidden');
-            });
-        }
-
-        // Auto-submit form on filter change
-        const form = document.getElementById('advanced-search-form');
-        if (form) {
-            form.addEventListener('change', function() {
-                this.submit();
-            });
-        }
-
-        // Visual feedback for radio buttons
-        document.querySelectorAll('input[type="radio"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                // Remove active state from other options in the same group
-                document.querySelectorAll(`input[name="${this.name}"]`).forEach(otherRadio => {
-                    const label = otherRadio.closest('label');
-                    if (otherRadio !== this && label) {
-                        label.classList.remove('border-red-500', 'bg-red-50', 'text-red-700');
-                        label.classList.add('border-gray-200');
-                    }
-                });
-                
-                // Add active state to selected option
-                if (this.checked) {
-                    const label = this.closest('label');
-                    if (label) {
-                        label.classList.add('border-red-500', 'bg-red-50', 'text-red-700');
-                        label.classList.remove('border-gray-200');
-                    }
-                }
-            });
-        });
-
-        // Initialize selected states
-        document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
-            const label = radio.closest('label');
-            if (label) {
-                label.classList.add('border-red-500', 'bg-red-50', 'text-red-700');
-                label.classList.remove('border-gray-200');
+// Sort button click handler
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('button[data-sort]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var sortValue = btn.getAttribute('data-sort');
+            var sortInput = document.getElementById('sort-input');
+            var sortForm = document.getElementById('sort-form');
+            if (sortInput && sortForm) {
+                sortInput.value = sortValue;
+                sortForm.submit();
             }
         });
     });
-
-    // Clear all filters
-    function clearFilters() {
-        window.location.href = '{% url "theme:search_properties" %}';
-    }
+});
 </script>
 
 <style>
     /* Custom styles for better appearance */
     .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
         overflow: hidden;
-        line-clamp: 2;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
     }
     
     /* Smooth transitions */
     .transition-all {
-        transition: all 0.3s ease;
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 200ms;
     }
     
     /* Hover effects */
@@ -595,112 +628,150 @@
         transform: rotate(180deg);
     }
     
-    /* Card hover animations */
-    .property-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Property grid layout fixes */
+    .property-grid {
+        grid-auto-rows: min-content;
+        contain: layout;
     }
     
+    .property-grid > div {
+        align-self: start;
+        contain: layout;
+    }
+    
+    /* Loading overlay styles */
+    #loadingOverlay {
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 9999;
+    }
+    
+    /* Disable button styles */
+    .opacity-50 {
+        opacity: 0.5;
+    }
+    
+    .cursor-not-allowed {
+        cursor: not-allowed;
+    }
+    
+    /* Card hover animations */
+    .property-card {
+        transition: all 0.3s ease;
+    }
     .property-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
+
+    /* Sort card button styles */
+    .sort-card-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 2px solid #e5e7eb;
+        border-radius: 1rem;
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #374151;
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.03);
+        transition: all 0.2s;
+        cursor: pointer;
+        min-width: 0;
+    }
+    .sort-card-btn:hover {
+        background: #fef2f2;
+        border-color: #fca5a5;
+        color: #b91c1c;
+        box-shadow: 0 4px 16px 0 rgba(239,68,68,0.08);
+        transform: translateY(-2px) scale(1.03);
+    }
+    .sort-card-active {
+        background: linear-gradient(90deg, #fee2e2 0%, #fecaca 100%);
+        border-color: #ef4444;
+        color: #b91c1c;
+        box-shadow: 0 4px 16px 0 rgba(239,68,68,0.12);
+        transform: scale(1.04);
+    }
+    @media (max-width: 640px) {
+        .sort-card-btn {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+        }
+    }
     
     /* Form enhancements */
     select, input[type="text"] {
-        appearance: none;
-        background-image: none;
+        transition: all 0.2s ease;
     }
     
     select {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-        background-position: right 12px center;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
         background-repeat: no-repeat;
-        background-size: 16px;
-        padding-right: 40px;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+    
+    /* AJAX transition effects */
+    .ajax-fade-out {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease-out;
+    }
+    
+    .ajax-fade-in {
+        opacity: 1;
+        transform: translateY(0);
+        transition: all 0.3s ease-out;
+    }
+    
+    /* Enhanced filter styles */
+    .filter-active {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border-color: #ef4444;
+        color: #dc2626;
     }
     
     /* Responsive adjustments */
     @media (max-width: 640px) {
-        .xl\:grid-cols-4 {
-            grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        .property-grid {
+            gap: 1rem;
         }
         
-        .lg\:grid-cols-3 {
-            grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        .line-clamp-2 {
+            -webkit-line-clamp: 1;
         }
         
-        .sm\:grid-cols-2 {
-            grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-        }
-        
-        .xl\:w-72 {
-            width: 100%;
-        }
-        
-        .xl\:flex-row {
-            flex-direction: column;
-        }
-        
-        .xl\:sticky {
-            position: static;
+        #loadingOverlay {
+            backdrop-filter: blur(2px);
         }
     }
     
-    @media (min-width: 641px) and (max-width: 1023px) {
-        .xl\:grid-cols-4 {
-            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        }
-        
-        .lg\:grid-cols-3 {
-            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        }
-        
-        .xl\:w-72 {
-            width: 100%;
-        }
-        
-        .xl\:flex-row {
-            flex-direction: column;
+    /* Loading animation keyframes */
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
         }
     }
     
-    @media (min-width: 1024px) and (max-width: 1279px) {
-        .xl\:grid-cols-4 {
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
         }
     }
     
-    @media (min-width: 1280px) {
-        .xl\:grid-cols-4 {
-            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        }
+    .animate-spin {
+        animation: spin 1s linear infinite;
     }
     
-    /* Better mobile spacing */
-    @media (max-width: 768px) {
-        .property-card {
-            margin-bottom: 0.75rem;
-        }
-        
-        .property-card:hover {
-            transform: translateY(-2px);
-        }
-        
-        .lg\:h-48 {
-            height: 12rem;
-        }
-        
-        .lg\:flex-row {
-            flex-direction: column;
-        }
-        
-        .lg\:sticky {
-            position: static;
-        }
-        
-        .lg\:top-8 {
-            top: 0;
-        }
+    .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 </style>
 {% endblock %}

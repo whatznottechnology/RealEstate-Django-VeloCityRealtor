@@ -1,3 +1,13 @@
+# CKEditor config
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_IMAGE_BACKEND = "pillow"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+    },
+}
 """
 Django settings for Source project.
 
@@ -69,6 +79,9 @@ INSTALLED_APPS = [
     'Projects', # Custom app for core functionality
     'land_leads',  # Land requirements app
     'investment_leads',  # Investment requirements app
+    'ckeditor',  # HTML editor support
+    'blogs',     # New blogs app
+    'career',    # Career app for job listings and applications
 ]
 
 
@@ -115,6 +128,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
+                'theme.context_processors.site_config',
             ],
         },
     },

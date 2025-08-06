@@ -1,0 +1,661 @@
+/* Custom Admin CSS for Real Estate Project Management */
+
+/* Increase table width for better visibility */
+.results {
+    width: 100% !important;
+    max-width: none !important;
+    overflow-x: auto !important;
+}
+
+.changelist-results {
+    width: 100% !important;
+    max-width: none !important;
+    overflow-x: auto !important;
+}
+
+.changelist .results table {
+    width: 100% !important;
+    min-width: 1800px !important; /* Increased from 1600px to 1800px for larger images */
+    table-layout: auto !important;
+}
+
+/* Make admin content area much wider */
+.main {
+    max-width: none !important;
+    width: 100% !important;
+}
+
+.content {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 15px !important;
+}
+
+/* Ensure full width container */
+.container-fluid {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 15px !important;
+}
+
+/* Remove max-width constraints */
+#container {
+    max-width: none !important;
+    width: 100% !important;
+}
+
+#content {
+    max-width: none !important;
+    width: 100% !important;
+}
+
+/* Improve table column widths and spacing */
+.changelist .results table th,
+.changelist .results table td {
+    padding: 12px 15px !important;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    font-size: 13px;
+}
+
+/* Better table header styling */
+.changelist .results table th {
+    background-color: #f8f9fa !important;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    color: #495057 !important;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+/* Specific column width adjustments */
+.changelist .results table .action-column {
+    min-width: 220px !important;
+    width: 220px;
+}
+
+/* Action buttons layout */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.action-buttons .button {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+/* Improve status badge styling */
+.status-badge {
+    display: inline-block;
+    min-width: 120px;
+    text-align: center;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    white-space: nowrap !important;
+}
+
+.changelist .results table .image-column {
+    width: 320px !important;
+    min-width: 320px;
+    text-align: center;
+}
+
+.changelist .results table .status-column {
+    width: 180px !important;
+    min-width: 180px;
+    text-align: center;
+    white-space: nowrap !important;
+}
+
+.changelist .results table .price-column {
+    width: 120px !important;
+    min-width: 120px;
+    text-align: right;
+}
+
+.changelist .results table .name-column {
+    min-width: 200px !important;
+    width: auto;
+    max-width: 250px;
+}
+
+.changelist .results table .feature-column {
+    min-width: 300px !important;
+    width: auto;
+    max-width: 400px;
+}
+
+.changelist .results table .city-column {
+    min-width: 150px !important;
+    width: 150px;
+}
+
+.changelist .results table .bhk-column {
+    min-width: 80px !important;
+    width: 80px;
+    text-align: center;
+}
+
+.changelist .results table .views-column {
+    min-width: 80px !important;
+    width: 80px;
+    text-align: center;
+}
+
+.changelist .results table .date-column {
+    min-width: 120px !important;
+    width: 120px;
+    font-size: 11px;
+}
+
+/* Feature badges styling */
+.feature-badges-container {
+    line-height: 1.8 !important;
+    max-width: 420px !important;
+    word-wrap: break-word;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    align-items: center;
+}
+
+.feature-badges-container .badge {
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+    color: white !important;
+    text-decoration: none !important;
+    margin: 1px !important;
+}
+
+/* Badge color schemes */
+.badge-featured { background: #ff6b6b !important; }
+.badge-most-viewed { background: #74b9ff !important; }
+.badge-hot-deal { background: #ff9f43 !important; }
+.badge-premium { background: #a55eea !important; }
+.badge-editors-choice { background: #26de81 !important; }
+.badge-nearby { background: #00b894 !important; }
+.badge-recent { background: #fdcb6e !important; }
+.badge-more { background: #6c757d !important; }
+
+/* Trending tag colors */
+.badge-trend-just-launched { background: #e74c3c !important; }
+.badge-trend-hot { background: #f39c12 !important; }
+.badge-trend-premium { background: #9b59b6 !important; }
+.badge-trend-ultra-luxury { background: #8e44ad !important; }
+.badge-trend-ready-to-move { background: #27ae60 !important; }
+.badge-trend-affordable { background: #3498db !important; }
+
+/* Tag badges use custom colors */
+.badge-tag {
+    color: white !important;
+    font-weight: 500 !important;
+}
+
+/* No features state */
+.no-features {
+    color: #666 !important;
+    font-style: italic !important;
+    font-size: 11px !important;
+}
+
+/* Better table column widths and spacing */
+.changelist .results table th,
+.changelist .results table td {
+    padding: 10px 12px !important;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    font-size: 12px;
+}
+
+/* Prevent wrapping on specific columns */
+.changelist .results table .status-column,
+.changelist .results table .action-column,
+.changelist .results table .price-column,
+.changelist .results table .bhk-column,
+.changelist .results table .views-column {
+    white-space: nowrap !important;
+}
+
+/* Specific column width adjustments */
+.changelist .results table .action-column {
+    min-width: 200px !important;
+    width: 200px;
+}
+
+.changelist .results table .feature-column {
+    min-width: 420px !important;
+    width: auto;
+    max-width: 450px;
+    white-space: normal !important;
+}
+
+/* Better responsive table scrolling */
+.changelist .results {
+    overflow-x: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Horizontal scroll styling */
+.changelist .results::-webkit-scrollbar {
+    height: 12px;
+}
+
+.changelist .results::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 6px;
+}
+
+.changelist .results::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 6px;
+}
+
+.changelist .results::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Improve sidebar width for better navigation */
+.main-sidebar {
+    width: 250px !important;
+    transition: width 0.2s;
+    z-index: 1050;
+}
+
+.sidebar-collapse .main-sidebar {
+    width: 60px !important;
+    min-width: 60px !important;
+    overflow-x: hidden !important;
+}
+
+.content-wrapper {
+    margin-left: 250px !important;
+}
+
+.sidebar-collapse .content-wrapper {
+    margin-left: 0 !important;
+}
+
+/* Adjust for when sidebar is collapsed */
+.sidebar-collapse .content-wrapper {
+    margin-left: 0 !important;
+}
+
+/* Better content wrapper padding */
+.content-wrapper {
+    padding: 0 !important;
+}
+
+.content-header {
+    padding: 15px 20px !important;
+}
+
+.content {
+    padding: 0 20px 20px 20px !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .main-sidebar {
+        width: 80px !important;
+    }
+    
+    .content-wrapper {
+        margin-left: 0 !important;
+    }
+    
+    .changelist .results table {
+        min-width: 1200px !important;
+    }
+    
+    .content {
+        padding: 0 10px 10px 10px !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .main-sidebar {
+        left: -280px;
+        position: fixed;
+    }
+    .sidebar-collapse .main-sidebar {
+        left: 0;
+    }
+    .content-wrapper {
+        margin-left: 0 !important;
+    }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1400px) {
+    .changelist .results table {
+        min-width: 1800px !important;
+    }
+}
+
+/* Responsive adjustments for large images */
+@media (max-width: 1600px) {
+    .changelist .results table .image-column {
+        width: 250px !important;
+        min-width: 250px;
+    }
+    
+    .changelist .results table .image-column img,
+    .changelist .results table .image-column div {
+        width: 240px !important;
+        height: 160px !important;
+    }
+    
+    .changelist .results table tbody tr {
+        min-height: 180px !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .changelist .results table .image-column {
+        width: 200px !important;
+        min-width: 200px;
+    }
+    
+    .changelist .results table .image-column img,
+    .changelist .results table .image-column div {
+        width: 180px !important;
+        height: 120px !important;
+    }
+    
+    .changelist .results table tbody tr {
+        min-height: 140px !important;
+    }
+}
+
+/* Large image optimization for ultra-wide screens */
+@media (min-width: 2000px) {
+    .changelist .results table {
+        min-width: 2200px !important;
+    }
+    
+    .changelist .results table .image-column {
+        width: 350px !important;
+        min-width: 350px;
+    }
+}
+
+/* Improve form layout */
+.form-row {
+    margin-bottom: 15px;
+}
+
+/* Better spacing for fieldsets */
+.module fieldset {
+    margin-bottom: 20px;
+}
+
+/* Improve inline table appearance */
+.inline-related fieldset {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* Enhance button styling */
+.button {
+    border-radius: 4px !important;
+    font-weight: 500;
+    margin: 2px !important;
+}
+
+/* Better admin header spacing */
+.module h2 {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Improve filter sidebar */
+#changelist-filter {
+    width: 280px !important;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: white;
+    border-left: 1px solid #ddd;
+    z-index: 1000;
+}
+
+.filtered .changelist .results {
+    margin-right: 290px !important;
+}
+
+.filtered .changelist #toolbar {
+    margin-right: 290px !important;
+}
+
+/* Improve pagination */
+.paginator {
+    margin: 20px 0 !important;
+    text-align: center;
+}
+
+/* Better table row hover effects */
+.changelist .results table tbody tr:hover {
+    background-color: #f5f5f5 !important;
+}
+
+/* Improve action checkboxes */
+.changelist .results table .action-checkbox-column {
+    width: 50px !important;
+    min-width: 50px;
+    text-align: center;
+}
+
+/* Better date/time column widths */
+.changelist .results table .datetime-column {
+    width: 150px !important;
+    min-width: 150px;
+}
+
+/* Improve numeric columns alignment */
+.changelist .results table .numeric-column {
+    text-align: right !important;
+}
+
+/* Better boolean field display */
+.changelist .results table .boolean-column {
+    width: 80px !important;
+    min-width: 80px;
+    text-align: center;
+}
+
+.changelist .results table .boolean-column img {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+/* Ensure images don't break layout */
+.changelist .results table img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Fix any text overflow issues */
+.changelist .results table td {
+    overflow: visible !important;
+    text-overflow: ellipsis;
+}
+
+/* Improve link styling in tables */
+.changelist .results table a {
+    color: #007cba;
+    text-decoration: none;
+}
+
+.changelist .results table a:hover {
+    text-decoration: underline;
+    color: #005a87;
+}
+
+/* Better table striping */
+.changelist .results table tbody tr:nth-child(even) {
+    background-color: #f8f9fa !important;
+}
+
+.changelist .results table tbody tr:nth-child(odd) {
+    background-color: #ffffff !important;
+}
+
+/* Better mobile responsiveness */
+@media (max-width: 1200px) {
+    .feature-badges-container {
+        max-width: 280px !important;
+    }
+    
+    .changelist .results table .feature-column {
+        min-width: 280px !important;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 992px) {
+    .changelist .results table {
+        min-width: 1400px !important;
+    }
+    
+    .feature-badges-container {
+        max-width: 220px !important;
+    }
+    
+    .changelist .results table .feature-column {
+        min-width: 220px !important;
+        max-width: 240px;
+    }
+}
+
+/* Status badge specific styling to prevent line breaks */
+.changelist .results table .status-column span {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 170px;
+    display: inline-block;
+}
+
+/* Ensure status text displays properly */
+.changelist .results table td[class*="status"] {
+    white-space: nowrap !important;
+    text-align: center !important;
+}
+
+/* Better status badge layout */
+span[style*="background-color"][style*="border-radius"] {
+    white-space: nowrap !important;
+    display: inline-block !important;
+    line-height: 1.2 !important;
+}
+
+/* Enhanced image display for larger thumbnails */
+.changelist .results table tbody tr {
+    min-height: 220px !important;
+}
+
+.changelist .results table td {
+    vertical-align: middle !important;
+    padding: 20px 12px !important;
+}
+
+/* Improved image quality and styling */
+.changelist .results table img {
+    border: 3px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    max-width: 300px;
+    max-height: 200px;
+}
+
+.changelist .results table img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    border-color: #007cba;
+}
+
+/* Better spacing for larger images */
+.changelist .results table .image-column img,
+.changelist .results table .image-column div {
+    margin: 0 auto;
+    display: block;
+}
+
+/* Ensure proper cell heights */
+.changelist .results table .image-column {
+    vertical-align: middle !important;
+    padding: 15px !important;
+    text-align: center;
+}
+
+/* --- SIDEBAR FIXES --- */
+.main-sidebar {
+    transition: width 0.2s;
+    z-index: 1050;
+}
+.sidebar-collapse .main-sidebar {
+    width: 60px !important;
+    min-width: 60px !important;
+    overflow-x: hidden !important;
+}
+.sidebar-collapse .content-wrapper {
+    margin-left: 60px !important;
+}
+@media (max-width: 991px) {
+    .main-sidebar {
+        left: -280px;
+        position: fixed;
+    }
+    .sidebar-collapse .main-sidebar {
+        left: 0;
+    }
+    .content-wrapper {
+        margin-left: 0 !important;
+    }
+}
+/* --- END SIDEBAR FIXES --- */
+
+/* --- Fix: Restore default sidebar width and margin for Jazzmin/AdminLTE --- */
+.main-sidebar {
+    width: 250px !important;
+}
+.content-wrapper {
+    margin-left: 250px !important;
+}
+
+/* When sidebar is collapsed, remove margin */
+.sidebar-collapse .content-wrapper {
+    margin-left: 0 !important;
+}
+
+/* Remove any forced width on .main-sidebar for mobile */
+@media (max-width: 768px) {
+    .main-sidebar {
+        width: 80px !important;
+    }
+    .content-wrapper {
+        margin-left: 0 !important;
+    }
+}

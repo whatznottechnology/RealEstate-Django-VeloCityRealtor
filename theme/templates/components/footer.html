@@ -99,9 +99,8 @@
                     © {{ current_year|default:"2024" }} VeloCity Realtor. All rights reserved.
                 </div>
                 <div class="flex space-x-6 text-sm">
-                    <a href="#" class="text-gray-400 hover:text-red-600 transition-colors">Privacy Policy</a>
-                    <a href="#" class="text-gray-400 hover:text-red-600 transition-colors">Terms of Service</a>
-                    <a href="#" class="text-gray-400 hover:text-red-600 transition-colors">Cookie Policy</a>
+                    <a href="{% url 'theme:privacy_policy' %}" class="text-gray-400 hover:text-red-600 transition-colors">Privacy Policy</a>
+                    <a href="{% url 'theme:terms_and_conditions' %}" class="text-gray-400 hover:text-red-600 transition-colors">Terms &amp; Conditions</a>
                 </div>
             </div>
         </div>

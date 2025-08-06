@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load theme_filters %}
 
 {% block title %}VeloCity Realtor - Your Real Estate Partner{% endblock %}
 
@@ -35,24 +36,24 @@
         
         <div id="featured-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-4">
             {% for project in featured_projects %}
-                <div class="property-card bg-white rounded-xl shadow-lg overflow-hidden min-w-[280px] sm:min-w-[300px] lg:min-w-[320px] max-w-[280px] sm:max-w-[300px] lg:max-w-[320px] scroll-snap-start">
+                <div class="property-card bg-white rounded-xl shadow-lg overflow-hidden min-w-[320px] sm:min-w-[350px] lg:min-w-[380px] max-w-[320px] sm:max-w-[350px] lg:max-w-[380px] scroll-snap-start hover:shadow-2xl transition-all duration-300">
                     <div class="relative">
                         {% if project.banner_image %}
-                            <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" class="w-full h-48 object-cover">
+                            <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" class="w-full h-52 sm:h-56 lg:h-60 object-cover">
                         {% else %}
-                            <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-                                <span class="text-gray-500">No Image</span>
+                            <div class="w-full h-52 sm:h-56 lg:h-60 bg-gradient-to-r from-gray-200 to-gray-300 flex items-center justify-center">
+                                <span class="text-gray-500 text-sm">No Image Available</span>
                             </div>
                         {% endif %}
                         
                         <!-- Project Status Badge -->
                         {% if project.status %}
                             <div class="absolute top-3 left-3">
-                                <span class="px-2 py-1 rounded-full text-xs font-semibold
-                                    {% if project.status == 'ready_to_move' %}bg-green-100 text-green-800
-                                    {% elif project.status == 'under_construction' %}bg-yellow-100 text-yellow-800
-                                    {% elif project.status == 'upcoming' %}bg-blue-100 text-blue-800
-                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm
+                                    {% if project.status == 'ready_to_move' %}bg-green-500/90 text-white
+                                    {% elif project.status == 'under_construction' %}bg-yellow-500/90 text-white
+                                    {% elif project.status == 'upcoming' %}bg-blue-500/90 text-white
+                                    {% else %}bg-gray-500/90 text-white{% endif %}">
                                     {{ project.get_status_display }}
                                 </span>
                             </div>
@@ -60,63 +61,109 @@
 
                         <!-- Feature Badges -->
                         {% if project.is_featured or project.is_hot_deal or project.trending_tag %}
-                            <div class="absolute top-3 right-3">
+                            <div class="absolute top-3 right-3 space-y-1">
                                 {% if project.is_featured %}
-                                    <span class="px-2 py-1 bg-red-600 text-white rounded-full text-xs font-semibold mb-1 block">Featured</span>
+                                    <span class="px-2 py-1 bg-red-600/90 text-white rounded-full text-xs font-semibold block backdrop-blur-sm">★ Featured</span>
                                 {% endif %}
                                 {% if project.is_hot_deal %}
-                                    <span class="px-2 py-1 bg-orange-500 text-white rounded-full text-xs font-semibold mb-1 block">🔥 Hot Deal</span>
+                                    <span class="px-2 py-1 bg-orange-500/90 text-white rounded-full text-xs font-semibold block backdrop-blur-sm">🔥 Hot Deal</span>
                                 {% endif %}
                                 {% if project.trending_tag %}
-                                    <span class="px-2 py-1 bg-purple-600 text-white rounded-full text-xs font-semibold block">{{ project.get_trending_tag_display }}</span>
+                                    <span class="px-2 py-1 bg-purple-600/90 text-white rounded-full text-xs font-semibold block backdrop-blur-sm">{{ project.get_trending_tag_display }}</span>
                                 {% endif %}
                             </div>
                         {% endif %}
                     </div>
                     
-                    <div class="p-6">
-                        <div class="mb-2">
-                            <h3 class="text-xl font-bold text-gray-900 mb-1">{{ project.name }}</h3>
-                            {% if project.project_by %}
-                                <p class="text-sm text-gray-500">by {{ project.project_by }}</p>
+                    <div class="p-5 sm:p-6">
+                        <!-- Project Name -->
+                        <div class="mb-4">
+                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 line-clamp-2">{{ project.name }}</h3>
+                            
+                            <!-- Starting Price -->
+                            {% if project.onwards_price %}
+                                <div class="mb-3">
+                                    <div class="flex items-center text-orange-600 mb-1">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        <span class="text-xs font-medium">Starting</span>
+                                    </div>
+                                    <p class="text-2xl sm:text-3xl font-bold text-orange-600">
+                                        {{ project.onwards_price|format_price }}
+                                        <span class="text-sm text-gray-500 font-normal">onwards</span>
+                                    </p>
+                                </div>
                             {% endif %}
                         </div>
                         
+                        <!-- Location -->
                         {% if project.location or project.city %}
-                            <p class="text-gray-600 text-sm mb-3 flex items-center">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="mb-4 flex items-start">
+                                <svg class="w-4 h-4 mr-2 mt-0.5 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
-                                {{ project.location }}{% if project.city %}, {{ project.city.name }}{% endif %}
-                            </p>
-                        {% endif %}
-                        
-                        <div class="flex items-center justify-between mb-4">
-                            {% if project.bhk %}
-                                <span class="text-sm text-gray-600">{{ project.bhk }}</span>
-                            {% endif %}
-                            {% if project.build_up_area %}
-                                <span class="text-sm text-gray-600">{{ project.build_up_area }}</span>
-                            {% endif %}
-                        </div>
-                        
-                        {% if project.onwards_price %}
-                            <div class="mb-4">
-                                <p class="text-2xl font-bold text-red-600">
-                                    ₹{% if project.onwards_price >= 10000000 %}{{ project.onwards_price|floatformat:1|add:"0"|cut:".0" }}{{ project.onwards_price|floatformat:1|slice:"1:" }} Cr{% elif project.onwards_price >= 100000 %}{{ project.onwards_price|floatformat:1|add:"0"|cut:".0" }}{{ project.onwards_price|floatformat:1|slice:"1:" }} L{% else %}{{ project.onwards_price|floatformat:0 }}{% endif %}
-                                    <span class="text-sm text-gray-500 font-normal">onwards</span>
+                                <p class="text-gray-600 text-sm font-medium line-clamp-2">
+                                    {{ project.location }}{% if project.city %}, {{ project.city.name }}{% endif %}
                                 </p>
                             </div>
                         {% endif %}
                         
+                        <!-- Developer -->
+                        {% if project.project_by %}
+                            <div class="mb-4 flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                <div>
+                                    <p class="text-xs text-gray-500">Developer</p>
+                                    <p class="text-sm font-semibold text-gray-800">{{ project.project_by }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Property Details Grid -->
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <!-- Area -->
+                            {% if project.build_up_area %}
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                                    </svg>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Area</p>
+                                        <p class="text-sm font-semibold text-gray-800">{{ project.build_up_area }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- BHK -->
+                            {% if project.bhk %}
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21v-4a2 2 0 012-2h4a2 2 0 012 2v4"/>
+                                    </svg>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Configuration</p>
+                                        <p class="text-sm font-semibold text-gray-800">{{ project.bhk }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
                         <div class="flex items-center justify-between">
                             <a href="{% url 'theme:project_detail' project.id %}" 
-                               class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 transition-colors">
-                                View Details
+                               class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center flex-1 shadow-lg hover:shadow-xl">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                Explore
                             </a>
                             {% if project.views %}
-                                <span class="text-xs text-gray-500">{{ project.views }} views</span>
+                                <span class="text-xs text-gray-500 ml-3">{{ project.views }} views</span>
                             {% endif %}
                         </div>
                     </div>
@@ -320,24 +367,9 @@
 </section>
 {% endif %}
 
-<!-- Simple CTA -->
-<section class="py-12 lg:py-16 bg-red-600">
-    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12 text-center">
-        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">Ready to Find Your Dream Property?</h2>
-        <p class="text-red-100 text-base sm:text-lg lg:text-xl mb-6 lg:mb-8 max-w-3xl mx-auto">Get in touch with our expert consultants for personalized recommendations.</p>
-        <a href="{% url 'theme:search_properties' %}" 
-           class="inline-block bg-white text-red-600 px-6 sm:px-8 py-3 lg:py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base lg:text-lg">
-            Explore Properties
-        </a>
-    </div>
-</section>
 
 
-<!-- About Us Section -->
-{% include 'components/about_us.html' %}
 
-<!-- Our Esteemed Developers Section -->
-{% include 'components/developers.html' %}
 
 <!-- Why Choose Us Section -->
 {% include 'components/why_choose_us.html' %}
@@ -461,8 +493,112 @@
             radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
         background-size: 20px 20px;
     }
-</style>
 
+    /* Responsive Enhancements */
+    @media (max-width: 640px) {
+        /* Mobile specific carousel button adjustments */
+        .carousel-scroll-btn {
+            width: 32px !important;
+            height: 32px !important;
+            min-width: 32px !important;
+        }
+        
+        /* Mobile property card adjustments */
+        .property-card {
+            min-width: 300px !important;
+            max-width: 320px !important;
+        }
+        
+        .property-card img {
+            height: 200px !important;
+            object-fit: cover;
+        }
+        
+        /* Mobile section spacing */
+        .py-12 {
+            padding-top: 2rem !important;
+            padding-bottom: 2rem !important;
+        }
+        
+        /* Mobile text adjustments */
+        .text-3xl {
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+        }
+        
+        .text-2xl {
+            font-size: 1.25rem !important;
+            line-height: 1.75rem !important;
+        }
+    }
+
+    @media (min-width: 641px) and (max-width: 1024px) {
+        /* Tablet specific adjustments */
+        .carousel-scroll-btn {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+        }
+        
+        .property-card {
+            min-width: 330px !important;
+            max-width: 350px !important;
+        }
+        
+        .property-card img {
+            height: 220px !important;
+        }
+    }
+
+    @media (min-width: 1025px) {
+        /* Desktop specific adjustments */
+        .carousel-scroll-btn {
+            width: 48px !important;
+            height: 48px !important;
+            min-width: 48px !important;
+        }
+        
+        .property-card {
+            min-width: 360px !important;
+            max-width: 380px !important;
+        }
+        
+        .property-card img {
+            height: 240px !important;
+        }
+    }
+
+    /* Enhanced carousel scrolling */
+    .carousel-container {
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Better button hover states */
+    .carousel-scroll-btn:hover {
+        background-color: rgba(59, 130, 246, 0.9) !important;
+        transform: scale(1.05);
+        transition: all 0.2s ease;
+    }
+
+    /* Improved property card hover effects */
+    .property-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    /* Better badge positioning */
+    .property-card .absolute {
+        z-index: 10;
+    }
+
+    /* Improved gradient overlays */
+    .bg-gradient-to-t {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+    }
+</style>
+{% endblock %}
 
 {% block extra_js %}
 <script>
@@ -522,12 +658,12 @@
     function scrollCarousel(carouselId, direction) {
         const carousel = document.getElementById(carouselId);
         if (carousel) {
-            // Responsive scroll amount based on screen size
-            let scrollAmount = 320; // Desktop default
+            // Responsive scroll amount based on screen size and new card dimensions
+            let scrollAmount = 380; // Desktop default (matches new card width)
             if (window.innerWidth < 640) { // Mobile
-                scrollAmount = 280;
+                scrollAmount = 320;
             } else if (window.innerWidth < 1024) { // Tablet
-                scrollAmount = 300;
+                scrollAmount = 350;
             }
             
             carousel.scrollBy({
@@ -543,7 +679,7 @@
             const indicators = document.querySelectorAll(`[data-carousel="${carousel.id}"]`);
             if (indicators.length > 0) {
                 const scrollLeft = carousel.scrollLeft;
-                const cardWidth = 320;
+                const cardWidth = window.innerWidth < 640 ? 320 : window.innerWidth < 1024 ? 350 : 380;
                 const activeIndex = Math.round(scrollLeft / cardWidth);
                 
                 indicators.forEach((indicator, index) => {
@@ -642,113 +778,4 @@
         });
     });
 </script>
-
-<style>
-/* Responsive Enhancements */
-@media (max-width: 640px) {
-    /* Mobile specific carousel button adjustments */
-    .carousel-scroll-btn {
-        width: 32px !important;
-        height: 32px !important;
-        min-width: 32px !important;
-    }
-    
-    /* Mobile property card adjustments */
-    .property-card {
-        min-width: 260px !important;
-        max-width: 280px !important;
-    }
-    
-    .property-card img {
-        height: 160px !important;
-        object-fit: cover;
-    }
-    
-    /* Mobile section spacing */
-    .py-12 {
-        padding-top: 2rem !important;
-        padding-bottom: 2rem !important;
-    }
-    
-    /* Mobile text adjustments */
-    .text-3xl {
-        font-size: 1.5rem !important;
-        line-height: 2rem !important;
-    }
-    
-    .text-2xl {
-        font-size: 1.25rem !important;
-        line-height: 1.75rem !important;
-    }
-}
-
-@media (min-width: 641px) and (max-width: 1024px) {
-    /* Tablet specific adjustments */
-    .carousel-scroll-btn {
-        width: 40px !important;
-        height: 40px !important;
-        min-width: 40px !important;
-    }
-    
-    .property-card {
-        min-width: 280px !important;
-        max-width: 300px !important;
-    }
-    
-    .property-card img {
-        height: 180px !important;
-    }
-}
-
-@media (min-width: 1025px) {
-    /* Desktop specific adjustments */
-    .carousel-scroll-btn {
-        width: 48px !important;
-        height: 48px !important;
-        min-width: 48px !important;
-    }
-    
-    .property-card {
-        min-width: 300px !important;
-        max-width: 320px !important;
-    }
-    
-    .property-card img {
-        height: 200px !important;
-    }
-}
-
-/* Enhanced carousel scrolling */
-.carousel-container {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Better button hover states */
-.carousel-scroll-btn:hover {
-    background-color: rgba(59, 130, 246, 0.9) !important;
-    transform: scale(1.05);
-    transition: all 0.2s ease;
-}
-
-/* Improved property card hover effects */
-.property-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-}
-
-/* Better badge positioning */
-.property-card .absolute {
-    z-index: 10;
-}
-
-/* Improved gradient overlays */
-.bg-gradient-to-t {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
-}
-</style>
-
-
-
 {% endblock %}

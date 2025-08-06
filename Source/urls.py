@@ -25,6 +25,8 @@ urlpatterns = [
     path('projects/', include('Projects.urls')),
     path('land-leads/', include('land_leads.urls')),
     path('investment-leads/', include('investment_leads.urls')),
+    path('blog/', include('blogs.urls')),
+    path('careers/', include('career.urls')),
 ]
 
 # Serve static and media files during development
