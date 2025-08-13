@@ -21,12 +21,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('theme.urls')),  # Frontend theme URLs
-    path('projects/', include('Projects.urls')),
+    path('projects/', include('Projects.urls')),  # Project management URLs
+    path('project/', include('Projects.urls')),   # Public project URLs
     path('land-leads/', include('land_leads.urls')),
     path('investment-leads/', include('investment_leads.urls')),
+    path('requirements/', include('requirements.urls')),  # New requirements app
     path('blog/', include('blogs.urls')),
     path('careers/', include('career.urls')),
+    path('', include('theme.urls')),  # Frontend theme URLs - keep last to catch remaining patterns
 ]
 
 # Serve static and media files during development

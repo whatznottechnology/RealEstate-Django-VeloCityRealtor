@@ -39,7 +39,7 @@
                                 <span class="info-box-icon bg-primary"><i class="fas fa-user"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Contact Person</span>
-                                    <span class="info-box-number">{{ requirement.name }}</span>
+                                    <span class="info-box-number">{{ requirement.name|default:"Not provided" }}</span>
                                 </div>
                             </div>
                         </div>
@@ -48,20 +48,31 @@
                                 <span class="info-box-icon bg-success"><i class="fas fa-phone"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Contact Number</span>
-                                    <span class="info-box-number">{{ requirement.contact_number }}</span>
+                                    <span class="info-box-number">
+                                        {% if requirement.contact_number %}
+                                            {{ requirement.contact_number }}
+                                        {% else %}
+                                            <span class="text-muted">Not provided</span>
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    {% if requirement.email %}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="info-box">
                                 <span class="info-box-icon bg-info"><i class="fas fa-envelope"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Email Address</span>
-                                    <span class="info-box-number">{{ requirement.email }}</span>
+                                    <span class="info-box-number">
+                                        {% if requirement.email %}
+                                            {{ requirement.email }}
+                                        {% else %}
+                                            <span class="text-muted">Not provided</span>
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -75,7 +86,6 @@
                             </div>
                         </div>
                     </div>
-                    {% endif %}
                     
                     <!-- Requirement Details -->
                     <div class="row mt-4">
@@ -196,17 +206,36 @@
                                     <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
                                 </div>
                                 <div class="card-body">
+                                    {% if requirement.contact_number %}
                                     <a href="tel:{{ requirement.contact_number }}" class="btn btn-success">
                                         <i class="fas fa-phone"></i> Call {{ requirement.name }}
                                     </a>
+                                    {% else %}
+                                    <button class="btn btn-success" disabled title="Contact number not available">
+                                        <i class="fas fa-phone"></i> Call {{ requirement.name }}
+                                    </button>
+                                    {% endif %}
+                                    
                                     {% if requirement.email %}
                                     <a href="mailto:{{ requirement.email }}" class="btn btn-primary">
                                         <i class="fas fa-envelope"></i> Send Email
                                     </a>
+                                    {% else %}
+                                    <button class="btn btn-primary" disabled title="Email address not available">
+                                        <i class="fas fa-envelope"></i> Send Email
+                                    </button>
                                     {% endif %}
+                                    
                                     <a href="{% url 'admin:land_leads_landrequirement_change' requirement.pk %}" class="btn btn-warning">
                                         <i class="fas fa-edit"></i> Edit Details
                                     </a>
+                                    
+                                    <!-- WhatsApp Action if phone number is available -->
+                                    {% if requirement.contact_number %}
+                                    <a href="https://wa.me/{{ requirement.contact_number|slice:'1:' }}" target="_blank" class="btn btn-info">
+                                        <i class="fab fa-whatsapp"></i> WhatsApp
+                                    </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -223,6 +252,33 @@
                             </small>
                         </div>
                     </div>
+                    
+                    <!-- Debug Information (remove in production) -->
+                    {% if debug %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card border-warning">
+                                <div class="card-header bg-warning">
+                                    <h6><i class="fas fa-bug"></i> Debug Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <small>
+                                        <strong>Raw Data:</strong><br>
+                                        Name: "{{ requirement.name }}"<br>
+                                        Contact Number: "{{ requirement.contact_number }}"<br>
+                                        Email: "{{ requirement.email }}"<br>
+                                        Location: "{{ requirement.location }}"<br>
+                                        Budget: "{{ requirement.budget }}"<br>
+                                        Requirement Type: "{{ requirement.requirement_type }}"<br>
+                                        Status: "{{ requirement.status }}"<br>
+                                        Object ID: {{ requirement.id }}<br>
+                                        Created: {{ requirement.created_at }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

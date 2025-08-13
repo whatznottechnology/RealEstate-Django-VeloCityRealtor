@@ -10,11 +10,13 @@ def land_requirement_detail_view(request, requirement_id):
     
     # Get admin context for sidebar navigation
     from django.contrib.admin import site
+    from django.conf import settings
     admin_context = site.each_context(request)
     
     context = {
         'requirement': requirement,
         'title': f'Land Requirement Details - {requirement.name}',
+        'debug': settings.DEBUG,  # Enable debug info in development
     }
     
     # Add admin context for sidebar navigation

@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Property Requirements - Find Your Dream Property{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-r from-green-600 to-blue-700 text-white py-16 lg:py-20">
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    <div class="relative w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                Property Requirements
+            </h1>
+            <p class="text-xl text-green-100 mb-8">
+                Find your perfect property - residential, commercial, or industrial. Let us help you discover the ideal space for your needs.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Breadcrumb -->
+<div class="bg-gray-50 py-4">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="{% url 'theme:home' %}" class="text-gray-700 hover:text-green-600 transition-colors">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="ml-1 md:ml-2 text-gray-500 font-medium">Requirements</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Main Content -->
+<section class="py-8 lg:py-12 min-h-screen bg-gray-50">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                <!-- Left Side - Form -->
+                <div class="order-2 lg:order-1">
+                    <!-- Form Container -->
+                    <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 border border-gray-100">
+                        <div class="mb-6 lg:mb-8">
+                            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 lg:mb-4">Find Your Dream Property</h2>
+                            <p class="text-gray-600 text-base sm:text-lg">Share your requirements and let our experts find the perfect property for you.</p>
+                        </div>
+
+                <!-- Form - Matching the hero section structure exactly -->
+                <form method="POST" action="{% url 'theme:requirements_submission' %}" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- Contact Information - Improved mobile layout -->
+                    <div class="space-y-4 lg:space-y-6">
+                        <!-- Name, Email, Contact row -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Name *</label>
+                                <input type="text" name="name" placeholder="Enter your full name" required
+                                       class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                                <input type="email" name="email" placeholder="Enter your email"
+                                       class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Contact Number *</label>
+                                <input type="tel" name="contact_number" placeholder="Enter your WhatsApp number" required
+                                       class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Location, Budget, Budget Range row -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Preferred Location</label>
+                                <input type="text" name="location" placeholder="Enter preferred location"
+                                       class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Budget *</label>
+                                <input type="text" name="budget" placeholder="Enter your budget" required
+                                       class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Budget Range</label>
+                                <select name="budget_range"
+                                        class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                                    <option value="">Select Budget Range</option>
+                                    {% for value, label in budget_ranges %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Property Type and Requirement Type -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Property Type *</label>
+                                <select name="property_type" required
+                                        class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                                    <option value="">Select Property Type</option>
+                                    {% for value, label in property_types %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Requirement Type *</label>
+                                <select name="requirement_type" required
+                                        class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                                    <option value="">Select Requirement Type</option>
+                                    {% for value, label in requirement_types %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Area Needed -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Area Needed</label>
+                            <input type="text" name="area_needed" placeholder="e.g., 2000 sq ft, 1 acre"
+                                   class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                        </div>
+
+                        <!-- Specific Requirements -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Specific Requirements</label>
+                            <textarea name="specific_requirements" rows="4"
+                                      placeholder="Describe your specific requirements..."
+                                      class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all resize-vertical"></textarea>
+                        </div>
+
+                        <!-- Terms Agreement -->
+                        <div>
+                            <label class="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+                                <input type="checkbox" name="agreed_to_terms" required
+                                       class="mt-1 rounded border-gray-300 text-green-600 focus:ring-green-500 focus:ring-2">
+                                <span class="text-sm text-gray-700">I agree to the <a href="#" class="text-green-600 hover:text-green-700 font-medium underline">Privacy Policy</a> & <a href="#" class="text-green-600 hover:text-green-700 font-medium underline">Terms of Service</a></span>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-2">
+                            <button type="submit"
+                                    class="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-lg text-base transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                                Submit Property Requirement
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+            
+            <!-- Right Side - Informational Cards -->
+            <div class="order-1 lg:order-2 space-y-6">
+                <!-- Why Choose Us Card -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Why Choose Our Services?</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Personalized Service</h4>
+                                <p class="text-gray-600 text-sm">Tailored property solutions for your specific needs</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Verified Properties</h4>
+                                <p class="text-gray-600 text-sm">All properties are legally verified and documented</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Quick Response</h4>
+                                <p class="text-gray-600 text-sm">Fast turnaround with property matching</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information Card -->
+                <div class="bg-gradient-to-br from-green-600 to-blue-600 text-white rounded-2xl p-6 shadow-xl">
+                    <h3 class="text-xl font-bold mb-4">Need Immediate Assistance?</h3>
+                    <div class="space-y-4">
+                        {% if site_config.contact_phone %}
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 text-green-200 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                            <a href="tel:{{ site_config.contact_phone }}" class="text-white hover:text-green-200 transition-colors">{{ site_config.contact_phone }}</a>
+                        </div>
+                        {% endif %}
+                        {% if site_config.contact_email %}
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 text-green-200 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            <a href="mailto:{{ site_config.contact_email }}" class="text-white hover:text-green-200 transition-colors">{{ site_config.contact_email }}</a>
+                        </div>
+                        {% endif %}
+                        {% if not site_config.contact_phone and not site_config.contact_email %}
+                        <div class="text-green-200">
+                            <p>Contact information will be available soon.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-green-500">
+                        <p class="text-green-100 text-sm">Our team responds within 24 hours</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Information Section -->
+        <div class="mt-12">
+            <!-- Property Types -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Property Types We Handle</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Residential</h4>
+                        <p class="text-gray-600 text-sm">Apartments, Villas, Independent Houses</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Commercial</h4>
+                        <p class="text-gray-600 text-sm">Shops, Malls, Business Centers</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Office Space</h4>
+                        <p class="text-gray-600 text-sm">IT Parks, Co-working Spaces</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732L14.146 12.8l-1.179 4.456a1 1 0 01-1.934 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732L9.854 7.2l1.179-4.456A1 1 0 0112 2z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Industrial</h4>
+                        <p class="text-gray-600 text-sm">Warehouses, Manufacturing Units</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

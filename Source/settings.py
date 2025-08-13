@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     'Projects', # Custom app for core functionality
     'land_leads',  # Land requirements app
     'investment_leads',  # Investment requirements app
+    'requirements',  # Property requirements app
     'ckeditor',  # HTML editor support
     'blogs',     # New blogs app
     'career',    # Career app for job listings and applications

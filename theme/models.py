@@ -1,6 +1,25 @@
 from django.db import models
 
 
+class ContactForm(models.Model):
+    """Contact form submissions"""
+    name = models.CharField(max_length=100, verbose_name="Full Name")
+    email = models.EmailField(verbose_name="Email Address")
+    phone = models.CharField(max_length=20, verbose_name="Phone Number")
+    subject = models.CharField(max_length=200, verbose_name="Subject")
+    message = models.TextField(verbose_name="Message")
+    submitted_at = models.DateTimeField(auto_now_add=True, verbose_name="Submitted At")
+    is_read = models.BooleanField(default=False, verbose_name="Is Read")
+    
+    class Meta:
+        verbose_name = "Contact Form Submission"
+        verbose_name_plural = "Contact Form Submissions"
+        ordering = ['-submitted_at']
+    
+    def __str__(self):
+        return f"{self.name} - {self.subject} ({self.submitted_at.strftime('%Y-%m-%d %H:%M')})"
+
+
 class SiteConfig(models.Model):
     # Promotional Popup
     promo_popup_image = models.ImageField(
@@ -89,6 +108,12 @@ class SiteConfig(models.Model):
         null=True,
         help_text="Primary contact phone number"
     )
+    office_address = models.TextField(
+        verbose_name="Office Address",
+        blank=True,
+        null=True,
+        help_text="Complete office address including city, state, country"
+    )
     
     # Settings
     show_social_media = models.BooleanField(
@@ -127,6 +152,7 @@ class SiteConfig(models.Model):
                 'linkedin_url': '#',
                 'whatsapp_number': '',
                 'show_social_media': True,
+                'office_address': 'VeloCity Realtor Office,\nKolkata, West Bengal,\nIndia',
             }
         )
         return config

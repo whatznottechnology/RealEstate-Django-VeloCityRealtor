@@ -15,7 +15,8 @@ import json
 from Projects.models import Project, Category, ProjectType, City, Amenity
 from land_leads.models import LandRequirement
 from investment_leads.models import InvestmentRequirement
-from .models import SiteConfig
+from requirements.models import Requirement
+from .models import SiteConfig, ContactForm
 
 
 def home(request):
@@ -318,53 +319,11 @@ def search_properties(request):
 
 
 def project_detail(request, project_id):
-    """Project detail page"""
-    project = get_object_or_404(
-        Project.objects.select_related('city', 'category', 'project_type').prefetch_related(
-            'amenities', 'gallery_images', 'floor_plans', 'nearest_areas', 'amenity_images'
-        ),
-        id=project_id,
-        is_active=True
-    )
+    """Redirect to the new Projects app project detail view"""
+    from django.shortcuts import redirect
     
-    # Get related projects (same category, excluding current)
-    related_projects = Project.objects.filter(
-        category=project.category,
-        is_active=True
-    ).exclude(id=project.id).select_related('city', 'project_type')[:3]
-    
-    # Get project overview
-    project_overview = getattr(project, 'overview', None)
-    
-    # Get gallery images
-    gallery_images = project.gallery_images.filter(is_active=True).order_by('order')
-    
-    # Get floor plans
-    floor_plans = project.floor_plans.filter(is_active=True).order_by('order')
-    
-    # Get nearest areas
-    nearest_areas = project.nearest_areas.all().order_by('area_type', 'name')
-    
-    # Get specifications - check if the model has this field
-    specifications = None
-    if hasattr(project, 'specifications'):
-        specifications = project.specifications.all().order_by('order')
-    
-    # Get amenity images
-    amenity_images = project.amenity_images.filter(is_active=True).order_by('amenity_name')
-    
-    context = {
-        'project': project,
-        'project_overview': project_overview,
-        'gallery_images': gallery_images,
-        'floor_plans': floor_plans,
-        'nearest_areas': nearest_areas,
-        'specifications': specifications,
-        'amenity_images': amenity_images,
-        'related_projects': related_projects,
-    }
-    
-    return render(request, 'pages/project_detail.html', context)
+    # Redirect to the Projects app public project detail view
+    return redirect('public_project_detail', project_id=project_id)
 
 
 @require_POST
@@ -421,45 +380,116 @@ def investment_requirement(request):
             'location': request.POST.get('location'),
             'budget': request.POST.get('budget'),
             'requirement_type': request.POST.get('requirement_type'),
-            'property_type': request.POST.get('property_type'),
-            'enquiry_from': request.POST.get('enquiry_from'),
-            'property_details': request.POST.get('property_details'),
+            'how_did_you_know': request.POST.get('how_did_you_know'),
             'agreed_to_terms': request.POST.get('agreed_to_terms') == 'on',
         }
         
         # Validate required fields
-        if not data['name'] or not data['contact_number']:
+        if not data['name'] or not data['contact_number'] or not data['budget'] or not data['requirement_type']:
             messages.error(request, 'Please fill in all required fields.')
-            return redirect('theme:home')
+            return redirect('theme:investment_page')
         
         # Create investment requirement
         investment_req = InvestmentRequirement.objects.create(**data)
         
-        messages.success(request, 'Thank you! Your investment requirement has been submitted successfully. We will contact you soon.')
-        return redirect('theme:home')
+        messages.success(request, 'Thank you! Your investment inquiry has been submitted successfully. We will contact you soon.')
+        return redirect('theme:investment_page')
         
     except Exception as e:
-        messages.error(request, 'Sorry, there was an error submitting your requirement. Please try again.')
-        return redirect('theme:home')
+        messages.error(request, 'Sorry, there was an error submitting your inquiry. Please try again.')
+        return redirect('theme:investment_page')
 
 
 def land_page(request):
     """Land page view with form"""
+    from .models import SiteConfig
+    
+    # Get site configuration for contact information
+    site_config = SiteConfig.get_config()
+    
     context = {
         'page_title': 'Land Requirements',
         'area_units': LandRequirement.AREA_UNIT_CHOICES,
         'requirement_types': LandRequirement.REQUIREMENT_TYPE_CHOICES,
+        'site_config': site_config,
     }
     return render(request, 'pages/land.html', context)
 
 
+def requirements_page(request):
+    """Requirements page view with form"""
+    from .models import SiteConfig
+    from requirements.models import Requirement
+    
+    # Get site configuration for contact information
+    site_config = SiteConfig.get_config()
+    
+    context = {
+        'page_title': 'Property Requirements',
+        'requirement_types': Requirement.REQUIREMENT_TYPE_CHOICES,
+        'property_types': Requirement.PROPERTY_TYPE_CHOICES,
+        'budget_ranges': Requirement.BUDGET_RANGE_CHOICES,
+        'site_config': site_config,
+    }
+    return render(request, 'pages/requirements.html', context)
+
+
+def requirements_submission(request):
+    """Handle requirements form submission"""
+    from requirements.models import Requirement
+    
+    if request.method == 'POST':
+        try:
+            # Get form data
+            name = request.POST.get('name')
+            contact_number = request.POST.get('contact_number')
+            email = request.POST.get('email', '')
+            location = request.POST.get('location', '')
+            budget = request.POST.get('budget')
+            budget_range = request.POST.get('budget_range', '')
+            requirement_type = request.POST.get('requirement_type')
+            property_type = request.POST.get('property_type')
+            area_needed = request.POST.get('area_needed', '')
+            specific_requirements = request.POST.get('specific_requirements', '')
+            agreed_to_terms = request.POST.get('agreed_to_terms') == 'on'
+            
+            # Create requirement
+            requirement = Requirement.objects.create(
+                name=name,
+                contact_number=contact_number,
+                email=email,
+                location=location,
+                budget=budget,
+                budget_range=budget_range,
+                requirement_type=requirement_type,
+                property_type=property_type,
+                area_needed=area_needed,
+                specific_requirements=specific_requirements,
+                agreed_to_terms=agreed_to_terms
+            )
+            
+            messages.success(request, 'Your property requirement has been submitted successfully! Our team will contact you soon.')
+            return redirect('theme:requirements_page')
+            
+        except Exception as e:
+            messages.error(request, 'Sorry, there was an error submitting your requirement. Please try again.')
+            return redirect('theme:requirements_page')
+    
+    return redirect('theme:requirements_page')
+
+
 def investment_page(request):
-    """Investment page view with form"""
+    """Investment page view with form - Updated for investment opportunities"""
+    from .models import SiteConfig
+    
+    # Get site configuration for contact information
+    site_config = SiteConfig.get_config()
+    
     context = {
         'page_title': 'Investment Opportunities',
         'requirement_types': InvestmentRequirement.REQUIREMENT_TYPE_CHOICES,
-        'property_types': InvestmentRequirement.PROPERTY_TYPE_CHOICES,
-        'enquiry_from_choices': InvestmentRequirement.ENQUIRY_FROM_CHOICES,
+        'how_did_you_know_choices': InvestmentRequirement.HOW_DID_YOU_KNOW_CHOICES,
+        'site_config': site_config,
     }
     return render(request, 'pages/investment.html', context)
 
@@ -475,16 +505,26 @@ def contact_us(request):
             subject = request.POST.get('subject')
             message = request.POST.get('message')
             
-            # Here you can add email sending logic or save to database
-            # For now, just show success message
+            # Save to database
+            contact_submission = ContactForm.objects.create(
+                name=name,
+                email=email,
+                phone=phone,
+                subject=subject,
+                message=message
+            )
+            
             messages.success(request, 'Thank you for contacting us! We will get back to you soon.')
             return redirect('theme:contact_us')
             
         except Exception as e:
             messages.error(request, 'Sorry, there was an error sending your message. Please try again.')
     
+    # Get site config (singleton)
+    site_config = SiteConfig.get_config()
     context = {
         'page_title': 'Contact Us',
+        'site_config': site_config,
     }
     return render(request, 'pages/contact_us.html', context)
 

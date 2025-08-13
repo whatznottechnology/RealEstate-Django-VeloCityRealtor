@@ -86,6 +86,8 @@ class Amenity(models.Model):
     """Amenities like Pool, Clubhouse, Gym, Security"""
     name = models.CharField(max_length=100, unique=True)
     icon = models.ImageField(upload_to='amenities/icons/', blank=True, null=True, help_text="Amenity icon/image")
+    feature_image = models.ImageField(upload_to='amenities/images/', blank=True, null=True, help_text="Amenity feature image")
+    font_awesome_icon = models.CharField(max_length=50, blank=True, null=True, help_text="Font Awesome icon class (e.g., fas fa-swimming-pool)")
     
     # Metadata fields
     description = models.TextField(blank=True, null=True, help_text="Amenity description for SEO")
@@ -102,6 +104,45 @@ class Amenity(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def get_default_icon_class(self):
+        """Return default Font Awesome icon class based on amenity name"""
+        name_lower = self.name.lower()
+        icon_mapping = {
+            'swimming pool': 'fas fa-swimmer',
+            'pool': 'fas fa-swimmer',
+            'gym': 'fas fa-dumbbell',
+            'fitness': 'fas fa-dumbbell',
+            'parking': 'fas fa-car',
+            'security': 'fas fa-shield-alt',
+            'playground': 'fas fa-child',
+            'garden': 'fas fa-leaf',
+            'clubhouse': 'fas fa-building',
+            'community hall': 'fas fa-building',
+            'lift': 'fas fa-elevator',
+            'elevator': 'fas fa-elevator',
+            'power backup': 'fas fa-bolt',
+            'generator': 'fas fa-bolt',
+            'cctv': 'fas fa-video',
+            'intercom': 'fas fa-phone',
+            'wifi': 'fas fa-wifi',
+            'tennis': 'fas fa-table-tennis',
+            'badminton': 'fas fa-shuttlecock',
+            'basketball': 'fas fa-basketball-ball',
+            'jogging': 'fas fa-running',
+            'yoga': 'fas fa-meditate',
+            'spa': 'fas fa-spa',
+            'library': 'fas fa-book',
+            'restaurant': 'fas fa-utensils',
+            'cafe': 'fas fa-coffee',
+        }
+        
+        # Try to find matching icon
+        for key, icon in icon_mapping.items():
+            if key in name_lower:
+                return icon
+        
+        return self.font_awesome_icon or 'fas fa-star'
 
 
 class Project(models.Model):
@@ -126,12 +167,20 @@ class Project(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='projects', help_text="Select city", null=True, blank=True)
     developers = models.CharField(max_length=200, help_text="Developer name", blank=True, null=True)
     build_up_area = models.CharField(max_length=100, help_text="e.g. 1200 sq ft", blank=True, null=True)
+    total_area = models.CharField(max_length=100, help_text="e.g. 5.2 Acres", blank=True, null=True)
     bhk = models.CharField(max_length=50, help_text="e.g. 2, 3, 4 BHK", blank=True, null=True)
     no_of_blocks = models.PositiveIntegerField(validators=[MinValueValidator(1)], blank=True, null=True)
+    tower_count = models.PositiveIntegerField(validators=[MinValueValidator(1)], blank=True, null=True, help_text="Number of towers/blocks")
     no_of_units = models.PositiveIntegerField(validators=[MinValueValidator(1)], blank=True, null=True)
+    rera_number = models.CharField(max_length=100, blank=True, null=True, help_text="RERA approval number")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='under_construction', blank=True, null=True)
     possession_date = models.DateField(blank=True, null=True)
     onwards_price = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))], blank=True, null=True)
+    
+    # Contact Information
+    contact_phone = models.CharField(max_length=20, blank=True, null=True, help_text="Primary contact number")
+    contact_email = models.EmailField(blank=True, null=True, help_text="Contact email")
+    sales_office_address = models.TextField(blank=True, null=True, help_text="Sales office address")
     
     # Map Integration
     latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
@@ -233,6 +282,12 @@ class NearestArea(models.Model):
         ('park', 'Park'),
         ('airport', 'Airport'),
         ('bus_stop', 'Bus Stop'),
+        ('bank', 'Bank'),
+        ('atm', 'ATM'),
+        ('gym', 'Gym'),
+        ('temple', 'Temple'),
+        ('church', 'Church'),
+        ('mosque', 'Mosque'),
         ('other', 'Other'),
     ]
     
@@ -240,12 +295,34 @@ class NearestArea(models.Model):
     name = models.CharField(max_length=200)
     area_type = models.CharField(max_length=20, choices=AREA_TYPES)
     distance = models.CharField(max_length=50, blank=True, help_text="e.g. 2 km, 5 min walk")
+    icon = models.ImageField(upload_to='locations/icons/', blank=True, null=True, help_text="Location type icon")
     
     class Meta:
         ordering = ['area_type', 'name']
     
     def __str__(self):
         return f"{self.name} ({self.get_area_type_display()})"
+    
+    def get_default_icon_class(self):
+        """Return default Font Awesome icon class based on area type"""
+        icon_mapping = {
+            'school': 'fas fa-graduation-cap',
+            'hospital': 'fas fa-hospital',
+            'metro': 'fas fa-subway',
+            'mall': 'fas fa-shopping-bag',
+            'restaurant': 'fas fa-utensils',
+            'park': 'fas fa-tree',
+            'airport': 'fas fa-plane',
+            'bus_stop': 'fas fa-bus',
+            'bank': 'fas fa-university',
+            'atm': 'fas fa-credit-card',
+            'gym': 'fas fa-dumbbell',
+            'temple': 'fas fa-pray',
+            'church': 'fas fa-cross',
+            'mosque': 'fas fa-moon',
+            'other': 'fas fa-map-marker-alt',
+        }
+        return icon_mapping.get(self.area_type, 'fas fa-map-marker-alt')
 
 
 class FloorPlan(models.Model):

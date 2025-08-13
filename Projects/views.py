@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from .models import Project, Category, ProjectType, GalleryImage, FloorPlan
 from .forms import ProjectForm
+from theme.models import SiteConfig
 
 
 def index(request):
@@ -13,7 +16,7 @@ def index(request):
 
 @staff_member_required
 def project_detail_view(request, project_id):
-    """Detailed view of a project for public users"""
+    """Detailed view of a project for admin users"""
     project = get_object_or_404(Project, id=project_id)
     
     context = {
@@ -30,6 +33,46 @@ def project_detail_view(request, project_id):
     }
 
     return render(request, 'pages/project_detail.html', context)
+
+
+def public_project_detail_view(request, project_id):
+    """Public detailed view of a project using the new template"""
+    project = get_object_or_404(Project, id=project_id, is_active=True)
+    
+    # Increment view count
+    project.increment_views()
+    
+    # Get site configuration
+    site_config = SiteConfig.get_config()
+    
+    # Get related projects (same category or city)
+    related_projects = Project.objects.filter(
+        is_active=True
+    ).exclude(id=project.id)
+    
+    if project.category:
+        related_projects = related_projects.filter(category=project.category)
+    elif project.city:
+        related_projects = related_projects.filter(city=project.city)
+    
+    related_projects = related_projects[:4]
+    
+    context = {
+        'project': project,
+        'gallery_images': project.gallery_images.filter(is_active=True).order_by('order'),
+        'floor_plans': project.floor_plans.filter(is_active=True).order_by('order'),
+        'nearest_areas': project.nearest_areas.all().order_by('area_type', 'name'),
+        'construction_updates': project.construction_updates.all().order_by('order'),
+        'why_choose_us': project.why_choose_us.all().order_by('order'),
+        'specifications': project.specifications.all().order_by('category__name', 'order'),
+        'amenity_images': project.amenity_images.filter(is_active=True),
+        'project_overview': getattr(project, 'overview', None),
+        'site_config': site_config,
+        'related_projects': related_projects,
+        'title': f'{project.name} - Project Details',
+    }
+
+    return render(request, 'pages/project_detail_final.html', context)
 
 
 def project_create(request):
@@ -149,3 +192,15 @@ def get_project_types(request):
         project_types = ProjectType.objects.filter(category_id=category_id).values('id', 'name')
         return JsonResponse({'project_types': list(project_types)})
     return JsonResponse({'project_types': []})
+
+
+@csrf_exempt
+@require_POST
+def increment_project_views(request, project_id):
+    """AJAX endpoint to increment project views"""
+    try:
+        project = get_object_or_404(Project, id=project_id, is_active=True)
+        project.increment_views()
+        return JsonResponse({'success': True, 'views': project.views})
+    except:
+        return JsonResponse({'success': False})

@@ -1,5 +1,32 @@
 from django.contrib import admin
-from .models import SiteConfig
+from .models import SiteConfig, ContactForm
+
+
+@admin.register(ContactForm)
+class ContactFormAdmin(admin.ModelAdmin):
+    """Admin configuration for ContactForm model"""
+    
+    list_display = ('name', 'email', 'phone', 'subject', 'submitted_at', 'is_read')
+    list_filter = ('is_read', 'submitted_at')
+    search_fields = ('name', 'email', 'phone', 'subject')
+    readonly_fields = ('submitted_at',)
+    list_editable = ('is_read',)
+    
+    fieldsets = (
+        ('Contact Information', {
+            'fields': ('name', 'email', 'phone', 'subject'),
+        }),
+        ('Message', {
+            'fields': ('message',),
+        }),
+        ('Status', {
+            'fields': ('is_read', 'submitted_at'),
+        }),
+    )
+    
+    def has_add_permission(self, request):
+        """Disable adding new contact forms from admin"""
+        return False
 
 
 @admin.register(SiteConfig)
@@ -13,7 +40,7 @@ class SiteConfigAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Site Information', {
-            'fields': ('site_title', 'site_description', 'contact_email', 'contact_phone'),
+            'fields': ('site_title', 'site_description', 'contact_email', 'contact_phone', 'office_address'),
             'classes': ('wide',),
         }),
         ('Promotional Popup', {
