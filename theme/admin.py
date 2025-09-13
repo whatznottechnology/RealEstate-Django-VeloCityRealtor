@@ -1,5 +1,36 @@
 from django.contrib import admin
-from .models import SiteConfig, ContactForm
+from .models import SiteConfig, ContactForm, Developer
+
+
+@admin.register(Developer)
+class DeveloperAdmin(admin.ModelAdmin):
+    """Admin configuration for Developer model"""
+    
+    list_display = ('name', 'is_active', 'order', 'website_url', 'updated_at')
+    list_filter = ('is_active', 'created_at', 'updated_at')
+    search_fields = ('name', 'description')
+    list_editable = ('is_active', 'order')
+    readonly_fields = ('created_at', 'updated_at')
+    
+    fieldsets = (
+        ('Developer Information', {
+            'fields': ('name', 'logo', 'website_url', 'description'),
+            'classes': ('wide',),
+        }),
+        ('Display Settings', {
+            'fields': ('is_active', 'order'),
+            'classes': ('wide',),
+            'description': 'Control how this developer appears on the website'
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
+    
+    def get_queryset(self, request):
+        """Order by display order then name"""
+        return super().get_queryset(request).order_by('order', 'name')
 
 
 @admin.register(ContactForm)
@@ -40,7 +71,7 @@ class SiteConfigAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Site Information', {
-            'fields': ('site_title', 'site_description', 'contact_email', 'contact_phone', 'office_address'),
+            'fields': ('site_title', 'site_description', 'site_logo', 'contact_email', 'contact_phone', 'office_address'),
             'classes': ('wide',),
         }),
         ('Promotional Popup', {

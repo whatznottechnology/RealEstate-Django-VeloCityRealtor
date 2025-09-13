@@ -3,6 +3,20 @@ def terms_and_conditions(request):
 
 def privacy_policy(request):
     return render(request, 'pages/privacy_policy.html')
+
+def interior_page(request):
+    """Interior services page view"""
+    return render(request, 'pages/interior.html')
+
+def about_us(request):
+    # Get active developers for the developers section
+    active_developers = Developer.objects.filter(is_active=True).order_by('order', 'name')
+    
+    context = {
+        'active_developers': active_developers,
+    }
+    
+    return render(request, 'pages/about_us.html', context)
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
@@ -16,7 +30,7 @@ from Projects.models import Project, Category, ProjectType, City, Amenity
 from land_leads.models import LandRequirement
 from investment_leads.models import InvestmentRequirement
 from requirements.models import Requirement
-from .models import SiteConfig, ContactForm
+from .models import SiteConfig, ContactForm, Developer
 
 
 def home(request):
@@ -88,6 +102,9 @@ def home(request):
         is_active=True
     ).select_related('city', 'project_type').prefetch_related('amenities')[:10]
     
+    # Active developers for the developers section
+    active_developers = Developer.objects.filter(is_active=True).order_by('order', 'name')
+    
     context = {
         'categories': categories,
         'cities': cities,
@@ -103,6 +120,7 @@ def home(request):
         'editors_choice_projects': editors_choice_projects,
         'residential_projects': residential_projects,
         'commercial_projects': commercial_projects,
+        'active_developers': active_developers,
     }
     
     return render(request, 'pages/home.html', context)

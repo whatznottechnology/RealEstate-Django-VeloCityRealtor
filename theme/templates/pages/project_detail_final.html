@@ -181,10 +181,10 @@
                 <div class="rounded-xl overflow-hidden shadow-xl">
                     {% if project.banner_image %}
                     <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" class="w-full h-[500px] object-cover">
-                    {% elif project.gallery_images.first %}
+                    {% elif project.gallery_images.first and project.gallery_images.first.image %}
                     <img src="{{ project.gallery_images.first.image.url }}" alt="{{ project.name }}" class="w-full h-[500px] object-cover">
                     {% else %}
-                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa" alt="{{ project.name }}" class="w-full h-[500px] object-cover">
+                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=500&fit=crop" alt="{{ project.name }}" class="w-full h-[500px] object-cover">
                     {% endif %}
                 </div>
             </div>
@@ -431,7 +431,11 @@
                     <div class="gallery-grid">
                         {% for image in gallery_images|slice:":6" %}
                         <div class="gallery-item" data-index="{{ forloop.counter0 }}">
+                            {% if image.image %}
                             <img src="{{ image.image.url }}" alt="{{ image.caption }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop" alt="{{ image.caption }}" class="w-full h-full object-cover">
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div>
@@ -526,7 +530,11 @@
                             <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-lg">
                                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                                     <div>
+                                        {% if plan.image %}
                                         <img src="{{ plan.image.url }}" alt="{{ plan.name }}" class="w-full h-auto rounded-lg shadow-lg cursor-pointer" onclick="openFloorPlanModal('{{ plan.image.url }}', '{{ plan.name }}')">
+                                        {% else %}
+                                        <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=400&fit=crop" alt="{{ plan.name }}" class="w-full h-auto rounded-lg shadow-lg">
+                                        {% endif %}
                                     </div>
                                     <div class="space-y-4">
                                         <h3 class="text-2xl font-bold text-gray-800">{{ plan.name }}</h3>
@@ -542,8 +550,11 @@
                                             <span class="font-semibold text-xl text-orange-600">₹{{ plan.price|floatformat:0 }}</span>
                                         </div>
                                         {% endif %}
+                                        {% if plan.image %}
                                         <button onclick="openFloorPlanModal('{{ plan.image.url }}', '{{ plan.name }}')" class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors">
                                             <i class="fas fa-expand-alt mr-2"></i>View Full Plan
+                                        </button>
+                                        {% endif %}
                                         </button>
                                     </div>
                                 </div>
@@ -673,8 +684,12 @@
             {% for related in related_projects|slice:":4" %}
             <div class="property-card">
                 <div class="relative">
-                    {% if related.gallery_images.first %}
+                    {% if related.banner_image %}
+                    <img src="{{ related.banner_image.url }}" alt="{{ related.name }}" class="w-full h-48 object-cover">
+                    {% elif related.gallery_images.first and related.gallery_images.first.image %}
                     <img src="{{ related.gallery_images.first.image.url }}" alt="{{ related.name }}" class="w-full h-48 object-cover">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=200&fit=crop" alt="{{ related.name }}" class="w-full h-48 object-cover">
                     {% endif %}
                     {% if related.trending_tag %}
                     <span class="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
@@ -744,7 +759,7 @@
 
 <!-- Gallery Images Data -->
 <script id="gallery-data" type="application/json">
-[{% if gallery_images %}{% for image in gallery_images %}"{{ image.image.url }}"{% if not forloop.last %},{% endif %}{% endfor %}{% endif %}]
+[{% if gallery_images %}{% for image in gallery_images %}{% if image.image %}"{{ image.image.url }}"{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}{% endif %}]
 </script>
 
 <script>

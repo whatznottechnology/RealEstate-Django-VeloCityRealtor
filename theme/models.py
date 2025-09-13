@@ -1,6 +1,52 @@
 from django.db import models
 
 
+class Developer(models.Model):
+    """Model for managing developer/partner companies"""
+    name = models.CharField(
+        max_length=100, 
+        verbose_name="Developer Name",
+        help_text="Name of the developer/partner company"
+    )
+    logo = models.ImageField(
+        upload_to='developers/',
+        verbose_name="Developer Logo",
+        help_text="Logo of the developer company (recommended: transparent PNG, 200x100px)"
+    )
+    website_url = models.URLField(
+        verbose_name="Website URL",
+        blank=True,
+        null=True,
+        help_text="Official website of the developer"
+    )
+    description = models.TextField(
+        verbose_name="Description",
+        blank=True,
+        null=True,
+        help_text="Brief description about the developer"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Is Active",
+        help_text="Whether to display this developer on the website"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Display Order",
+        help_text="Order in which developers should be displayed (lower numbers first)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Developer"
+        verbose_name_plural = "Developers"
+        ordering = ['order', 'name']
+    
+    def __str__(self):
+        return self.name
+
+
 class ContactForm(models.Model):
     """Contact form submissions"""
     name = models.CharField(max_length=100, verbose_name="Full Name")
@@ -21,6 +67,15 @@ class ContactForm(models.Model):
 
 
 class SiteConfig(models.Model):
+    # Site Logo
+    site_logo = models.ImageField(
+        upload_to='site/logo/',
+        blank=True,
+        null=True,
+        verbose_name="Site Logo",
+        help_text="Main logo for the website (recommended: transparent PNG, 200x60px)"
+    )
+    
     # Promotional Popup
     promo_popup_image = models.ImageField(
         upload_to='site/promo_popup/',
