@@ -6,7 +6,7 @@ from .models import (
     Project, City, Category, ProjectType, Tag, Amenity, 
     ProjectOverview, GalleryImage, NearestArea, FloorPlan, 
     ConstructionUpdate, WhyChooseUs, SpecificationCategory, 
-    SpecificationItem, ProjectAmenityImage
+    SpecificationItem, ProjectAmenityImage, FloorPlanAccess
 )
 
 
@@ -671,6 +671,43 @@ class ProjectAmenityImageAdmin(admin.ModelAdmin):
             )
         return "No image uploaded"
     image_preview.short_description = 'Image Preview'
+
+
+@admin.register(FloorPlanAccess)
+class FloorPlanAccessAdmin(admin.ModelAdmin):
+    list_display = ('project', 'name', 'email', 'phone', 'accessed_at', 'access_count')
+    list_display_links = ('name', 'email')
+    list_filter = ('accessed_at', 'project')
+    search_fields = ('project__name', 'name', 'email', 'phone')
+    readonly_fields = ('ip_address', 'user_agent', 'accessed_at')
+    date_hierarchy = 'accessed_at'
+    ordering = ('-accessed_at',)
+    
+    fieldsets = (
+        ('📞 Contact Information', {
+            'fields': ('project', 'name', 'email', 'phone')
+        }),
+        ('💬 Message', {
+            'fields': ('message',),
+            'classes': ('collapse',)
+        }),
+        ('🔍 Technical Details', {
+            'fields': ('ip_address', 'user_agent', 'accessed_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def access_count(self, obj):
+        count = FloorPlanAccess.objects.filter(project=obj.project, email=obj.email).count()
+        return format_html(
+            '<span style="background-color: #007bff; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">{} times</span>',
+            count
+        )
+    access_count.short_description = '🔄 Access Count'
+    
+    def has_add_permission(self, request):
+        # Usually floor plan access records are created through the website
+        return False
 
 
 # Jazzmin Admin Site Configuration

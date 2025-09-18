@@ -4,9 +4,12 @@ from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from .models import Project, Category, ProjectType, GalleryImage, FloorPlan
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from .models import Project, Category, ProjectType, GalleryImage, FloorPlan, FloorPlanAccess
 from .forms import ProjectForm
 from theme.models import SiteConfig
+import json
 
 
 def index(request):
@@ -45,6 +48,10 @@ def public_project_detail_view(request, project_id):
     # Get site configuration
     site_config = SiteConfig.get_config()
     
+    # Check if user has floor plan access (using session-based tracking)
+    session_key = f'floor_plan_access_{project_id}'
+    has_floor_plan_access = request.session.get(session_key, False)
+    
     # Get related projects (same category or city)
     related_projects = Project.objects.filter(
         is_active=True
@@ -69,6 +76,7 @@ def public_project_detail_view(request, project_id):
         'project_overview': getattr(project, 'overview', None),
         'site_config': site_config,
         'related_projects': related_projects,
+        'has_floor_plan_access': has_floor_plan_access,
         'title': f'{project.name} - Project Details',
     }
 
@@ -204,3 +212,80 @@ def increment_project_views(request, project_id):
         return JsonResponse({'success': True, 'views': project.views})
     except:
         return JsonResponse({'success': False})
+
+
+@csrf_exempt
+@require_POST
+def submit_floor_plan_access(request, project_id):
+    """Submit contact details to access floor plans"""
+    try:
+        project = get_object_or_404(Project, id=project_id, is_active=True)
+        
+        # Get form data
+        data = json.loads(request.body)
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip()
+        phone = data.get('phone', '').strip()
+        message = data.get('message', '').strip()
+        
+        # Validate required fields
+        if not name or not email or not phone:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Name, email, and phone are required fields.'
+            })
+        
+        # Validate email format
+        try:
+            validate_email(email)
+        except ValidationError:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Please enter a valid email address.'
+            })
+        
+        # Validate phone (basic check)
+        if len(phone) < 10:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Please enter a valid phone number.'
+            })
+        
+        # Get IP address and user agent
+        ip_address = request.META.get('REMOTE_ADDR')
+        if request.META.get('HTTP_X_FORWARDED_FOR'):
+            ip_address = request.META.get('HTTP_X_FORWARDED_FOR').split(',')[0].strip()
+        
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        
+        # Create floor plan access record
+        FloorPlanAccess.objects.create(
+            project=project,
+            name=name,
+            email=email,
+            phone=phone,
+            message=message,
+            ip_address=ip_address,
+            user_agent=user_agent
+        )
+        
+        # Grant access in session
+        session_key = f'floor_plan_access_{project_id}'
+        request.session[session_key] = True
+        request.session.modified = True
+        
+        return JsonResponse({
+            'success': True, 
+            'message': 'Thank you! You can now view the floor plans.'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False, 
+            'error': 'Invalid request format.'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False, 
+            'error': 'An error occurred. Please try again.'
+        })

@@ -419,3 +419,33 @@ class ProjectAmenityImage(models.Model):
     
     def __str__(self):
         return f"{self.project.name} - {self.amenity_name}"
+
+
+class FloorPlanAccess(models.Model):
+    """Track user contact details for floor plan access"""
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='floor_plan_accesses')
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    message = models.TextField(blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    user_agent = models.TextField(blank=True, null=True)
+    accessed_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-accessed_at']
+        verbose_name = "Floor Plan Access"
+        verbose_name_plural = "Floor Plan Accesses"
+        # Allow multiple access records per project-email combination for tracking
+        indexes = [
+            models.Index(fields=['project', 'email']),
+            models.Index(fields=['accessed_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.project.name} - {self.email} - {self.accessed_at.strftime('%Y-%m-%d %H:%M')}"
+    
+    @classmethod
+    def has_access(cls, project, email):
+        """Check if user has already provided contact details for this project"""
+        return cls.objects.filter(project=project, email=email).exists()
