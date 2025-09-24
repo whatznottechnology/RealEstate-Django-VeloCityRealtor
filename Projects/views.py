@@ -39,7 +39,7 @@ def project_detail_view(request, project_id):
 
 
 def public_project_detail_view(request, project_id):
-    """Public detailed view of a project using the new template"""
+    """Public detailed view of a project using the new redesigned template"""
     project = get_object_or_404(Project, id=project_id, is_active=True)
     
     # Increment view count
@@ -69,9 +69,9 @@ def public_project_detail_view(request, project_id):
         'gallery_images': project.gallery_images.filter(is_active=True).order_by('order'),
         'floor_plans': project.floor_plans.filter(is_active=True).order_by('order'),
         'nearest_areas': project.nearest_areas.all().order_by('area_type', 'name'),
-        'construction_updates': project.construction_updates.all().order_by('order'),
+        'construction_updates': project.construction_updates.all().order_by('-update_date', 'order'),
         'why_choose_us': project.why_choose_us.all().order_by('order'),
-        'specifications': project.specifications.all().order_by('category__name', 'order'),
+        'specifications': project.specifications.all().order_by('category__order', 'order'),
         'amenity_images': project.amenity_images.filter(is_active=True),
         'project_overview': getattr(project, 'overview', None),
         'site_config': site_config,
@@ -80,7 +80,7 @@ def public_project_detail_view(request, project_id):
         'title': f'{project.name} - Project Details',
     }
 
-    return render(request, 'pages/project_detail_final.html', context)
+    return render(request, 'pages/project_detail_redesign.html', context)
 
 
 def project_create(request):
@@ -277,6 +277,86 @@ def submit_floor_plan_access(request, project_id):
         return JsonResponse({
             'success': True, 
             'message': 'Thank you! You can now view the floor plans.'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False, 
+            'error': 'Invalid request format.'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False, 
+            'error': 'An error occurred. Please try again.'
+        })
+
+
+@csrf_exempt
+@require_POST
+def submit_project_inquiry(request, project_id):
+    """Submit project inquiry form"""
+    try:
+        project = get_object_or_404(Project, id=project_id, is_active=True)
+        
+        # Get form data
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+        else:
+            data = request.POST
+            
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip()
+        phone = data.get('phone', '').strip()
+        interest = data.get('interest', '').strip()
+        message = data.get('message', '').strip()
+        
+        # Validate required fields
+        if not name or not email or not phone:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Name, email, and phone are required fields.'
+            })
+        
+        # Validate email format
+        try:
+            validate_email(email)
+        except ValidationError:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Please enter a valid email address.'
+            })
+        
+        # Validate phone (basic check)
+        if len(phone) < 10:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Please enter a valid phone number.'
+            })
+        
+        # Get IP address and user agent
+        ip_address = request.META.get('REMOTE_ADDR')
+        if request.META.get('HTTP_X_FORWARDED_FOR'):
+            ip_address = request.META.get('HTTP_X_FORWARDED_FOR').split(',')[0].strip()
+        
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        
+        # Create inquiry record (you may want to create a ProjectInquiry model)
+        # For now, we'll use FloorPlanAccess as a general inquiry model
+        inquiry_message = f"Interest: {interest}\n\nMessage: {message}" if interest else message
+        
+        FloorPlanAccess.objects.create(
+            project=project,
+            name=name,
+            email=email,
+            phone=phone,
+            message=inquiry_message,
+            ip_address=ip_address,
+            user_agent=user_agent
+        )
+        
+        return JsonResponse({
+            'success': True, 
+            'message': 'Thank you for your inquiry! We will contact you within 24 hours.'
         })
         
     except json.JSONDecodeError:
