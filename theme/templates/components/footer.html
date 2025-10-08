@@ -47,6 +47,13 @@
                     
                     <!-- Social Media Links -->
                     <div class="flex space-x-4">
+                        <!-- WhatsApp (Most Prominent) -->
+                        {% if site_config.whatsapp_number %}
+                        <a href="{{ site_config.get_whatsapp_url }}" class="w-14 h-14 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center text-white hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-110 group shadow-lg hover:shadow-xl" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-whatsapp text-xl group-hover:animate-pulse"></i>
+                        </a>
+                        {% endif %}
+                        
                         <a href="{{ site_config.facebook_url|default:'#' }}" class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-110 group" target="_blank" rel="noopener noreferrer">
                             <i class="fab fa-facebook-f group-hover:animate-pulse"></i>
                         </a>

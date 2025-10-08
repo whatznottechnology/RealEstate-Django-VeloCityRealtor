@@ -172,10 +172,14 @@
 <section class="py-8 lg:py-12 bg-white">
     <!-- Enhanced Headline Section -->
     <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
-            HOT DEALS
-            <span class="inline-block bg-red-600 text-white text-lg px-4 py-2 rounded-full ml-4 font-semibold">LIMITED TIME</span>
-        </h2>
+        <div class="flex items-center justify-center gap-4 mb-4">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-black">
+                HOT DEALS
+            </h2>
+            <span class="bg-red-600 text-white text-sm md:text-base px-3 py-2 md:px-4 md:py-2 rounded-full font-bold shadow-lg animate-pulse">
+                LIMITED TIME
+            </span>
+        </div>
         <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
         <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
             Exclusive Properties with Unbeatable Prices
@@ -381,16 +385,19 @@
 <!-- Recently Viewed Section -->
 {% if recently_viewed_projects %}
 <section class="py-8 lg:py-12 bg-white">
-    <div class="w-full px-4 lg:px-8 relative">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4 max-w-screen-2xl mx-auto">
-            <div class="flex-1">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-black mb-2">
-                    RECENTLY VIEWED
-                </h2>
-                <div class="w-24 h-1 bg-red-600 mb-4"></div>
-                <p class="text-lg text-gray-700">Properties you recently viewed</p>
-            </div>
-        </div>
+    <!-- Enhanced Headline Section -->
+    <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
+            RECENTLY VIEWED
+        </h2>
+        <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
+        <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+            Properties you recently viewed
+        </p>
+    </div>
+    
+    <div class="w-full">
+        <div class="w-full px-4 lg:px-8 relative">
         
         <!-- Navigation arrows - positioned absolutely for professional placement -->
         <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 hidden lg:block">
