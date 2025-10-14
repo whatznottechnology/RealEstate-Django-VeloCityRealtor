@@ -272,7 +272,11 @@ class ProjectAdmin(admin.ModelAdmin):
             'classes': ('wide',),
         }),
         ('🏗️ Project Specifications', {
-            'fields': ('build_up_area', 'bhk', 'no_of_blocks', 'no_of_units', 'status', 'possession_date', 'onwards_price'),
+            'fields': ('build_up_area', 'total_area', 'bhk', 'no_of_blocks', 'tower_count', 'no_of_units', 'rera_number', 'status', 'possession_date', 'onwards_price'),
+            'classes': ('wide',),
+        }),
+        ('📞 Contact Information', {
+            'fields': ('contact_phone', 'contact_email', 'sales_office_address'),
             'classes': ('wide',),
         }),
         ('🏷️ Categorization', {

@@ -35,7 +35,7 @@ def project_detail_view(request, project_id):
         'title': f'Project Details - {project.name}',
     }
 
-    return render(request, 'pages/project_detail.html', context)
+    return render(request, 'admin/Projects/project_detail.html', context)
 
 
 def public_project_detail_view(request, project_id):

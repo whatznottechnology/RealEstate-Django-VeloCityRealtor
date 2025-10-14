@@ -11,162 +11,6 @@
 {% include 'components/hero.html' %}
 
 <!-- Projects Section - Enhanced Responsive Horizontal Scrolling -->
-<!-- Featured Projects -->
-{% if featured_projects %}
-<section class="py-8 lg:py-12 bg-white">
-    <!-- Enhanced Headline Section -->
-    <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
-            FEATURED PROJECTS
-        </h2>
-        <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
-        <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
-            Handpicked Premium Properties for Discerning Buyers
-        </p>
-    </div>
-    
-    <div class="w-full">
-        <div class="w-full px-4 lg:px-8 relative">
-            <!-- Navigation arrows - positioned absolutely for professional placement -->
-            <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 hidden lg:block">
-                <button onclick="scrollCarousel('featured-carousel', -1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
-                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </button>
-            </div>
-            <div class="absolute top-1/2 -translate-y-1/2 right-2 z-10 hidden lg:block">
-                <button onclick="scrollCarousel('featured-carousel', 1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
-                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <div id="featured-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
-                {% for project in featured_projects %}
-                    <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
-                    </div>
-                {% endfor %}
-        </div>
-
-        <!-- Enhanced View All Button -->
-        <div class="text-center mt-8">
-            <a href="{% url 'theme:search_properties' %}?featured=true" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
-                <span class="relative z-10">View All Featured Properties</span>
-                <i class="fas fa-arrow-right ml-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300"></i>
-            </a>
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Projects by Category Section -->
-<!-- Residential Projects -->
-{% if residential_projects %}
-<section class="py-8 lg:py-12 bg-white">
-    <!-- Enhanced Headline Section -->
-    <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
-            RESIDENTIAL PROJECTS
-        </h2>
-        <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
-        <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
-            Find Your Perfect Home in Prime Residential Locations
-        </p>
-    </div>
-    
-    <div class="w-full">
-        <div class="w-full px-4 lg:px-8 relative">
-            <!-- Navigation arrows - positioned absolutely for professional placement -->
-            <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 hidden lg:block">
-                <button onclick="scrollCarousel('residential-carousel', -1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
-                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </button>
-            </div>
-            <div class="absolute top-1/2 -translate-y-1/2 right-2 z-10 hidden lg:block">
-                <button onclick="scrollCarousel('residential-carousel', 1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
-                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <div id="residential-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
-                {% for project in residential_projects %}
-                    <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
-                    </div>
-                {% endfor %}
-            </div>
-
-            <!-- Enhanced View All Button -->
-            <div class="text-center mt-8">
-                <a href="{% url 'theme:search_properties' %}?category=residential" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
-                    <span class="relative z-10">View All Residential Properties</span>
-                    <i class="fas fa-arrow-right ml-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Commercial Projects -->
-{% if commercial_projects %}
-<section class="py-8 lg:py-12 bg-gray-50">
-    <!-- Enhanced Headline Section -->
-    <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
-            COMMERCIAL PROJECTS
-        </h2>
-        <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
-        <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
-            Premium Business Spaces for Your Growing Enterprise
-        </p>
-    </div>
-    
-    <div class="w-full">
-        <div class="w-full px-4 lg:px-8 relative">
-            <!-- Navigation arrows - positioned absolutely for professional placement -->
-            <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 hidden lg:block">
-                <button onclick="scrollCarousel('commercial-carousel', -1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
-                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </button>
-            </div>
-            <div class="absolute top-1/2 -translate-y-1/2 right-2 z-10 hidden lg:block">
-                <button onclick="scrollCarousel('commercial-carousel', 1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
-                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <div id="commercial-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
-                {% for project in commercial_projects %}
-                    <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
-                    </div>
-                {% endfor %}
-            </div>
-
-            <!-- Enhanced View All Button -->
-            <div class="text-center mt-8">
-                <a href="{% url 'theme:search_properties' %}?category=commercial" class="inline-flex items-center bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
-                    <span class="relative z-10">View All Commercial Properties</span>
-                    <i class="fas fa-arrow-right ml-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-{% endif %}
-
 <!-- Hot Deals Section -->
 {% if hot_deal_projects %}
 <section class="py-8 lg:py-12 bg-white">
@@ -224,71 +68,17 @@
 </section>
 {% endif %}
 
-<!-- Recently Added Section -->
-{% if recently_added_projects %}
+<!-- Premium Projects -->
+{% if featured_projects %}
 <section class="py-8 lg:py-12 bg-gray-50">
     <!-- Enhanced Headline Section -->
     <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
         <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
-            RECENTLY ADDED
+            PREMIUM PROJECTS
         </h2>
         <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
         <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
-            Latest properties added to our portfolio
-        </p>
-    </div>
-    
-    <div class="w-full">
-        <div class="w-full px-4 lg:px-8 relative">
-        
-        <!-- Navigation arrows - positioned absolutely for professional placement -->
-        <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 hidden lg:block">
-            <button onclick="scrollCarousel('recently-added-carousel', -1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
-                <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </button>
-        </div>
-        <div class="absolute top-1/2 -translate-y-1/2 right-2 z-10 hidden lg:block">
-            <button onclick="scrollCarousel('recently-added-carousel', 1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
-                <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </button>
-        </div>
-        
-        <div id="recently-added-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
-            {% for project in recently_added_projects %}
-                <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                    {% include 'components/search_property_card.html' %}
-                </div>
-            {% endfor %}
-        </div>
-
-        <!-- Enhanced View All Button -->
-        <div class="text-center mt-8">
-            <a href="{% url 'theme:search_properties' %}?sort=newest" class="inline-flex items-center bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                <i class="fas fa-plus mr-2"></i>
-                View All New Properties
-                <i class="fas fa-arrow-right ml-2"></i>
-            </a>
-        </div>
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Ready to Move Section -->
-{% if ready_to_move_projects %}
-<section class="py-8 lg:py-12 bg-gray-50">
-    <!-- Enhanced Headline Section -->
-    <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
-            READY TO MOVE
-        </h2>
-        <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
-        <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
-            Immediate Possession Properties - Get Your Keys Today!
+            Handpicked Premium Properties for Discerning Buyers
         </p>
     </div>
     
@@ -296,22 +86,74 @@
         <div class="w-full px-4 lg:px-8 relative">
             <!-- Navigation arrows - positioned absolutely for professional placement -->
             <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 hidden lg:block">
-                <button onclick="scrollCarousel('readytomove-carousel', -1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
+                <button onclick="scrollCarousel('featured-carousel', -1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
                     <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
                 </button>
             </div>
             <div class="absolute top-1/2 -translate-y-1/2 right-2 z-10 hidden lg:block">
-                <button onclick="scrollCarousel('readytomove-carousel', 1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
+                <button onclick="scrollCarousel('featured-carousel', 1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
                     <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </button>
             </div>
             
-            <div id="readytomove-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
-                {% for project in ready_to_move_projects %}
+            <div id="featured-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
+                {% for project in featured_projects %}
+                    <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
+                        {% include 'components/search_property_card.html' %}
+                    </div>
+                {% endfor %}
+        </div>
+
+        <!-- Enhanced View All Button -->
+        <div class="text-center mt-8">
+            <a href="{% url 'theme:search_properties' %}?featured=true" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
+                <span class="relative z-10">View All Premium Properties</span>
+                <i class="fas fa-arrow-right ml-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Projects by Category Section -->
+<!-- Residential Projects -->
+{% if residential_projects %}
+<section class="py-8 lg:py-12 bg-gray-50">
+    <!-- Enhanced Headline Section -->
+    <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
+            RESIDENTIAL PROJECTS
+        </h2>
+        <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
+        <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+            Find Your Perfect Home in Prime Residential Locations
+        </p>
+    </div>
+    
+    <div class="w-full">
+        <div class="w-full px-4 lg:px-8 relative">
+            <!-- Navigation arrows - positioned absolutely for professional placement -->
+            <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 hidden lg:block">
+                <button onclick="scrollCarousel('residential-carousel', -1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="absolute top-1/2 -translate-y-1/2 right-2 z-10 hidden lg:block">
+                <button onclick="scrollCarousel('residential-carousel', 1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="residential-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
+                {% for project in residential_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
                         {% include 'components/search_property_card.html' %}
                     </div>
@@ -320,8 +162,8 @@
 
             <!-- Enhanced View All Button -->
             <div class="text-center mt-8">
-                <a href="{% url 'theme:search_properties' %}?status=ready_to_move" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
-                    <span class="relative z-10">View Ready to Move Properties</span>
+                <a href="{% url 'theme:search_properties' %}?category=residential" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
+                    <span class="relative z-10">View All Residential Properties</span>
                     <i class="fas fa-arrow-right ml-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300"></i>
                 </a>
             </div>
@@ -330,14 +172,71 @@
 </section>
 {% endif %}
 
-<!-- Trending Properties Section -->
-{% if trending_projects %}
+<!-- Commercial Projects -->
+{% if commercial_projects %}
 <section class="py-8 lg:py-12 bg-white">
     <!-- Enhanced Headline Section -->
     <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
         <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
-            TRENDING PROPERTIES
+            COMMERCIAL PROJECTS
         </h2>
+        <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
+        <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+            Premium Business Spaces for Your Growing Enterprise
+        </p>
+    </div>
+    
+    <div class="w-full">
+        <div class="w-full px-4 lg:px-8 relative">
+            <!-- Navigation arrows - positioned absolutely for professional placement -->
+            <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 hidden lg:block">
+                <button onclick="scrollCarousel('commercial-carousel', -1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="absolute top-1/2 -translate-y-1/2 right-2 z-10 hidden lg:block">
+                <button onclick="scrollCarousel('commercial-carousel', 1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="commercial-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
+                {% for project in commercial_projects %}
+                    <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
+                        {% include 'components/search_property_card.html' %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Enhanced View All Button -->
+            <div class="text-center mt-8">
+                <a href="{% url 'theme:search_properties' %}?category=commercial" class="inline-flex items-center bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
+                    <span class="relative z-10">View All Commercial Properties</span>
+                    <i class="fas fa-arrow-right ml-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Trending Projects -->
+{% if trending_projects %}
+<section class="py-8 lg:py-12 bg-gray-50">
+    <!-- Enhanced Headline Section -->
+    <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
+        <div class="flex items-center justify-center gap-4 mb-4">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-black">
+                TRENDING PROJECTS
+            </h2>
+            <span class="bg-green-600 text-white text-sm md:text-base px-3 py-2 md:px-4 md:py-2 rounded-full font-bold shadow-lg">
+                Villa & Bungalow
+            </span>
+        </div>
         <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
         <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
             Most Viewed and Sought-After Properties This Month
@@ -382,9 +281,61 @@
 </section>
 {% endif %}
 
+<!-- Most Viewed Section -->
+{% if trending_projects %}
+<section class="py-8 lg:py-12 bg-white">
+    <!-- Enhanced Headline Section -->
+    <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
+            MOST VIEWED
+        </h2>
+        <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
+        <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+            Properties That Attract the Most Attention
+        </p>
+    </div>
+    
+    <div class="w-full">
+        <div class="w-full px-4 lg:px-8 relative">
+            <!-- Navigation arrows - positioned absolutely for professional placement -->
+            <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 hidden lg:block">
+                <button onclick="scrollCarousel('mostviewed-carousel', -1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="absolute top-1/2 -translate-y-1/2 right-2 z-10 hidden lg:block">
+                <button onclick="scrollCarousel('mostviewed-carousel', 1)" class="carousel-scroll-btn bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-3 hover:bg-white hover:border-red-600 hover:text-red-600 transition-all duration-300 shadow-lg hover:shadow-xl group">
+                    <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="mostviewed-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
+                {% for project in trending_projects %}
+                    <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
+                        {% include 'components/search_property_card.html' %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Enhanced View All Button -->
+            <div class="text-center mt-8">
+                <a href="{% url 'theme:search_properties' %}?sort=views" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
+                    <span class="relative z-10">View Most Popular Properties</span>
+                    <i class="fas fa-arrow-right ml-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
 <!-- Recently Viewed Section -->
 {% if recently_viewed_projects %}
-<section class="py-8 lg:py-12 bg-white">
+<section class="py-8 lg:py-12 bg-gray-50">
     <!-- Enhanced Headline Section -->
     <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
         <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
@@ -1496,7 +1447,7 @@
     function showDownloadNotification(message, type) {
         // Create notification element
         const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 ${
+        notification.className = `fixed top-4 right-4 z-[45] p-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 ${
             type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
         }`;
         notification.innerHTML = `
