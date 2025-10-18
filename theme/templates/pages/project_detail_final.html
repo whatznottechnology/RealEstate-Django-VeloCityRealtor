@@ -1,0 +1,1069 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load theme_filters %}
+
+{% block title %}{{ project.name }} - Project Details{% endblock %}
+
+{% block meta_description %}{{ project.meta_description|default:project.description|truncatewords:25 }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-red: #dc2626;
+        --primary-black: #1f2937;
+        --primary-white: #ffffff;
+        --light-gray: #f9fafb;
+        --border-color: #e5e7eb;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--light-gray);
+    }
+
+    .section-container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    @media (min-width: 768px) {
+        .section-container {
+            padding: 0 2rem;
+        }
+    }
+
+    .compact-section {
+        padding: 1.5rem 0;
+    }
+
+    @media (min-width: 768px) {
+        .compact-section {
+            padding: 2rem 0;
+        }
+    }
+
+    .hero-gradient {
+        background: linear-gradient(135deg, var(--primary-black) 0%, var(--primary-red) 100%);
+    }
+
+    .red-accent {
+        background: var(--primary-red);
+        color: var(--primary-white);
+    }
+
+    .black-accent {
+        background: var(--primary-black);
+        color: var(--primary-white);
+    }
+
+    .white-section {
+        background: var(--primary-white);
+        border: 1px solid var(--border-color);
+    }
+
+    .gallery-item {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-item:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 25px rgba(220, 38, 38, 0.2);
+    }
+
+    .amenity-card {
+        background: var(--primary-white);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .amenity-card:hover {
+        border-color: var(--primary-red);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.1);
+    }
+
+    .amenity-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        background: #fef2f2;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.5rem;
+        color: var(--primary-red);
+        font-size: 1rem;
+    }
+
+    .location-marker {
+        background: var(--primary-red);
+        color: var(--primary-white);
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-primary {
+        background: var(--primary-red);
+        color: var(--primary-white);
+        border: 2px solid var(--primary-red);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: transparent;
+        color: var(--primary-red);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--primary-black);
+        border: 2px solid var(--primary-black);
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: var(--primary-black);
+        color: var(--primary-white);
+    }
+
+    .form-input {
+        border: 1px solid var(--border-color);
+        background: #f9fafb;
+        color: #374151;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-input:focus {
+        border-color: var(--primary-red);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+        background: #ffffff;
+    }
+    
+    /* Mobile typography scaling */
+    @media (max-width: 640px) {
+        .text-base { font-size: 0.875rem; }
+        .text-lg { font-size: 1rem; }
+        .text-xl { font-size: 1.125rem; }
+        .text-2xl { font-size: 1.25rem; }
+        .text-3xl { font-size: 1.5rem; }
+    }
+    
+    /* Compact hover effects */
+    .bg-white:hover {
+        transform: translateY(-1px);
+        transition: transform 0.2s ease;
+    }
+
+    .section-title {
+        color: var(--primary-black);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+        .section-title {
+            font-size: 1.875rem;
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    .mobile-responsive {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    @media (min-width: 768px) {
+        .mobile-responsive {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .mobile-responsive {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .mobile-responsive {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .sticky-form {
+        position: sticky;
+        top: 2rem;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, var(--primary-red), #dc2626);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(220, 38, 38, 0.2);
+    }
+
+    .spec-table {
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .construction-timeline {
+        position: relative;
+    }
+
+    .construction-timeline::before {
+        content: '';
+        position: absolute;
+        left: 1rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--primary-red);
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 3rem;
+        margin-bottom: 2rem;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: 0.75rem;
+        top: 0.5rem;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        background: var(--primary-red);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+
+<!-- 1. Hero Section -->
+<section class="bg-white py-4 md:py-6">
+    <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+            <!-- Left: Project Image -->
+            <div class="order-2 lg:order-1">
+                <div class="relative rounded-xl overflow-hidden shadow-lg">
+                    {% if project.banner_image %}
+                    <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" class="w-full h-56 md:h-64 lg:h-80 object-cover">
+                    {% elif project.gallery_images.first and project.gallery_images.first.image %}
+                    <img src="{{ project.gallery_images.first.image.url }}" alt="{{ project.name }}" class="w-full h-56 md:h-64 lg:h-80 object-cover">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=500&fit=crop" alt="{{ project.name }}" class="w-full h-56 md:h-64 lg:h-80 object-cover">
+                    {% endif %}
+                    
+                    <!-- Logo Overlay -->
+                    {% if project.logo %}
+                    <div class="absolute top-3 right-3">
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-white rounded-lg p-1.5 shadow-md">
+                            <img src="{{ project.logo.url }}" alt="{{ project.project_by }}" class="w-full h-full object-contain">
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Status Badge on Image -->
+                    {% if project.is_premium_listing %}
+                    <div class="absolute top-3 left-3">
+                        <span class="bg-yellow-500 text-white px-2 py-1 rounded-md text-xs font-bold">PREMIUM</span>
+                    </div>
+                    {% elif project.is_featured %}
+                    <div class="absolute top-3 left-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded-md text-xs font-bold">FEATURED</span>
+                    </div>
+                    {% elif project.is_hot_deal %}
+                    <div class="absolute top-3 left-3">
+                        <span class="bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold">HOT DEAL</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Right: Project Details -->
+            <div class="order-1 lg:order-2 space-y-4">
+                <!-- Developer Badge -->
+                {% if project.project_by %}
+                <div class="flex items-center">
+                    <span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-semibold uppercase">
+                        BY {{ project.project_by|upper }}
+                    </span>
+                </div>
+                {% endif %}
+                
+                <!-- Project Name -->
+                <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 leading-tight">
+                    {{ project.name }}
+                </h1>
+                
+                <!-- Price -->
+                {% if project.onwards_price %}
+                <div class="text-xl md:text-2xl font-bold text-red-600">
+                    Starting from ₹{{ project.onwards_price|format_price }}
+                </div>
+                {% endif %}
+                
+                <!-- Reviews Summary -->
+                {% if project.approved_reviews_count %}
+                <div class="flex items-center gap-3 mt-2 text-sm">
+                    <div class="flex items-center text-yellow-500">
+                        <i class="fas fa-star mr-2"></i>
+                        <span class="font-semibold">{{ project.average_rating|floatformat:1 }}/5</span>
+                    </div>
+                    <div class="text-gray-400">•</div>
+                    <div class="text-gray-600">{{ project.approved_reviews_count }} Reviews</div>
+                </div>
+                {% endif %}
+                
+                <!-- Key Details Grid -->
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    {% if project.location %}
+                    <div class="flex items-center text-gray-700">
+                        <i class="fas fa-map-marker-alt text-red-500 w-4 mr-2"></i>
+                        <span class="font-medium">{{ project.location }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if project.bhk %}
+                    <div class="flex items-center text-gray-700">
+                        <i class="fas fa-home text-red-500 w-4 mr-2"></i>
+                        <span class="font-medium">{{ project.bhk }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if project.build_up_area %}
+                    <div class="flex items-center text-gray-700">
+                        <i class="fas fa-ruler-combined text-red-500 w-4 mr-2"></i>
+                        <span class="font-medium">{{ project.build_up_area }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if project.status %}
+                    <div class="flex items-center text-gray-700">
+                        <i class="fas fa-info-circle text-red-500 w-4 mr-2"></i>
+                        <span class="font-medium">{{ project.get_status_display }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if project.possession_date %}
+                    <div class="flex items-center text-gray-700 col-span-2">
+                        <i class="fas fa-calendar text-red-500 w-4 mr-2"></i>
+                        <span class="font-medium">Possession: {{ project.possession_date|date:"M Y" }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button class="btn-primary px-6 py-2.5 rounded-lg font-semibold text-sm">
+                        <i class="fas fa-phone mr-2"></i>Call Now
+                    </button>
+                    <button class="btn-secondary px-6 py-2.5 rounded-lg font-semibold text-sm">
+                        <i class="fas fa-calendar mr-2"></i>Site Visit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. Visual Showcase Section -->
+{% if gallery_images %}
+<section class="bg-gray-50 compact-section">
+    <div class="section-container">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="section-title">Visual Showcase</h2>
+            <div class="flex space-x-1">
+                <button id="gallery-prev" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center text-xs">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="gallery-next" class="btn-primary w-8 h-8 rounded-full flex items-center justify-center text-xs">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="relative overflow-hidden">
+            <div id="gallery-container" class="flex space-x-3 overflow-x-auto scrollbar-hide pb-2">
+                {% for image in gallery_images %}
+                <div class="gallery-item flex-shrink-0 w-60 h-40 md:w-72 md:h-48 rounded-lg overflow-hidden cursor-pointer shadow-sm" data-index="{{ forloop.counter0 }}">
+                    {% if image.image %}
+                    <img src="{{ image.image.url }}" alt="{{ image.caption }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop" alt="{{ image.caption }}" class="w-full h-full object-cover">
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 3. About Section -->
+{% if project.description %}
+<section class="compact-section">
+    <div class="section-container">
+        <div class="white-section rounded-xl p-4 md:p-6">
+            <h2 class="section-title">About {{ project.name }}</h2>
+            <div class="text-gray-700 leading-relaxed text-sm">
+                {{ project.description|linebreaks }}
+            </div>
+            
+            {% if project.brochure %}
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <a href="{{ project.brochure.url }}" target="_blank" class="btn-primary px-4 py-2 rounded-lg font-semibold inline-flex items-center text-sm">
+                    <i class="fas fa-download mr-2"></i>Download Brochure
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 6. Amenities Section -->
+{% if project.amenities.all %}
+<section class="bg-gray-50 compact-section">
+    <div class="section-container">
+        <h2 class="section-title text-center">Amenities & Facilities</h2>
+        <div class="mobile-responsive">
+            {% for amenity in project.amenities.all %}
+            <div class="amenity-card">
+                <div class="amenity-icon">
+                    {% if amenity.icon %}
+                    <img src="{{ amenity.icon.url }}" alt="{{ amenity.name }}" class="w-4 h-4">
+                    {% else %}
+                    <i class="fas fa-star"></i>
+                    {% endif %}
+                </div>
+                <h4 class="font-semibold text-gray-800 text-xs">{{ amenity.name }}</h4>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 7. Location Section -->
+<section class="bg-white compact-section">
+    <div class="section-container">
+        <h2 class="section-title text-center">Prime Location</h2>
+        
+        <!-- Map -->
+        {% if project.latitude and project.longitude %}
+        <div class="mb-6">
+            <div id="map" class="w-full h-48 md:h-64 rounded-xl shadow-sm border border-gray-200" 
+                 data-lat="{{ project.latitude }}" 
+                 data-lng="{{ project.longitude }}" 
+                 data-title="{{ project.name }}"></div>
+        </div>
+        {% endif %}
+        
+        <!-- Nearby Locations -->
+        {% if project.nearest_areas.all %}
+        <div>
+            <h3 class="text-lg font-bold text-gray-800 mb-4 text-center">Nearby Landmarks</h3>
+            <div class="mobile-responsive">
+                {% for area in project.nearest_areas.all %}
+                <div class="text-center p-3 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors border border-gray-100">
+                    <div class="location-marker">
+                        {% if area.icon %}
+                        <img src="{{ area.icon.url }}" alt="{{ area.get_area_type_display }}" class="w-3.5 h-3.5">
+                        {% else %}
+                        <i class="fas fa-map-marker-alt"></i>
+                        {% endif %}
+                    </div>
+                    <h4 class="font-semibold text-gray-800 text-xs mb-1">{{ area.name }}</h4>
+                    {% if area.distance %}
+                    <p class="text-gray-600 text-xs">{{ area.distance }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- 8. Floor Plans Section -->
+{% if project.floor_plans.all %}
+<section class="compact-section">
+    <div class="section-container">
+        <div class="white-section rounded-2xl p-6 md:p-8">
+            <h2 class="text-2xl md:text-3xl section-title text-center">Floor Plans</h2>
+            
+            <!-- Floor Plan Tabs -->
+            <div class="flex flex-wrap gap-3 mb-8 justify-center">
+                {% for plan in project.floor_plans.all %}
+                <button class="floor-plan-tab {% if forloop.first %}bg-red-600 text-white{% else %}btn-secondary{% endif %} px-6 py-3 rounded-xl font-semibold text-sm" data-plan="{{ forloop.counter }}">
+                    {{ plan.name }}
+                </button>
+                {% endfor %}
+            </div>
+            
+            <!-- Floor Plan Content -->
+            <div class="floor-plan-content">
+                {% for plan in project.floor_plans.all %}
+                <div id="floor-plan-{{ forloop.counter }}" class="floor-plan-item {% if not forloop.first %}hidden{% endif %}">
+                    <div class="bg-gradient-to-br from-red-50 to-red-100 p-6 md:p-8 rounded-2xl">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                            <div>
+                                {% if plan.image %}
+                                    {% if has_floor_plan_access %}
+                                        <img src="{{ plan.image.url }}" alt="{{ plan.name }}" class="w-full h-auto rounded-xl shadow-lg cursor-pointer" onclick="openFloorPlanModal('{{ plan.image.url }}', '{{ plan.name }}')">
+                                    {% else %}
+                                        <div class="relative">
+                                            <img src="{{ plan.image.url }}" alt="{{ plan.name }}" class="w-full h-auto rounded-xl shadow-lg blur-md">
+                                            <div class="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center">
+                                                <div class="text-center text-white">
+                                                    <i class="fas fa-lock text-4xl mb-4"></i>
+                                                    <p class="text-lg font-bold">Floor Plan Access Required</p>
+                                                    <p class="text-sm">Submit contact details to unlock</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=400&fit=crop" alt="{{ plan.name }}" class="w-full h-auto rounded-xl shadow-lg">
+                                {% endif %}
+                            </div>
+                            <div class="space-y-6">
+                                <h3 class="text-2xl md:text-3xl font-bold text-gray-800">{{ plan.name }}</h3>
+                                {% if plan.area %}
+                                <div class="flex items-center text-gray-700">
+                                    <i class="fas fa-ruler-combined mr-4 text-red-600 text-xl"></i>
+                                    <span class="font-semibold text-lg">{{ plan.area }}</span>
+                                </div>
+                                {% endif %}
+                                {% if plan.price %}
+                                <div class="flex items-center text-gray-700">
+                                    <i class="fas fa-tag mr-4 text-red-600 text-xl"></i>
+                                    <span class="font-bold text-2xl text-red-600">₹{{ plan.price|floatformat:0 }}</span>
+                                </div>
+                                {% endif %}
+                                {% if plan.image %}
+                                    {% if has_floor_plan_access %}
+                                        <button onclick="openFloorPlanModal('{{ plan.image.url }}', '{{ plan.name }}')" class="btn-primary px-8 py-4 rounded-xl font-bold">
+                                            <i class="fas fa-expand-alt mr-3"></i>View Full Plan
+                                        </button>
+                                    {% else %}
+                                        <button onclick="openContactModal()" class="btn-secondary px-8 py-4 rounded-xl font-bold">
+                                            <i class="fas fa-unlock mr-3"></i>Unlock Floor Plan
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 9. Specifications Section -->
+{% if project.specifications.all %}
+<section class="bg-gray-100 compact-section">
+    <div class="section-container">
+        <div class="white-section rounded-2xl p-6 md:p-8">
+            <h2 class="text-2xl md:text-3xl section-title text-center">Technical Specifications</h2>
+            <div class="spec-table">
+                <table class="w-full">
+                    {% regroup project.specifications.all by category as spec_categories %}
+                    {% for category in spec_categories %}
+                    <thead>
+                        <tr class="bg-gradient-to-r from-red-600 to-red-700 text-white">
+                            <th colspan="2" class="text-left p-4 font-bold text-lg">
+                                <i class="fas fa-cog mr-2"></i>{{ category.grouper.name }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for spec in category.list %}
+                        <tr class="border-b border-gray-200 hover:bg-red-50 transition-colors">
+                            <td class="font-semibold text-gray-800 p-4 w-1/3">
+                                <i class="fas fa-check-circle text-red-500 mr-2 text-sm"></i>{{ spec.name }}
+                            </td>
+                            <td class="text-gray-600 p-4">{{ spec.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Main Content Grid: 4. Why Choose Us & 5. Construction Progress -->
+<section class="compact-section">
+    <div class="section-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- 4. Why Choose Us -->
+            {% if project.why_choose_us.all %}
+            <div class="white-section rounded-2xl p-6 md:p-8">
+                <h2 class="text-2xl md:text-3xl section-title">Why Choose {{ project.name }}?</h2>
+                <div class="space-y-4">
+                    {% for point in project.why_choose_us.all %}
+                    <div class="flex items-start p-4 bg-gray-50 rounded-xl hover:bg-red-50 transition-colors">
+                        {% if point.icon %}
+                        <div class="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                            <i class="{{ point.icon }} text-red-600 text-lg"></i>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-2">{{ point.title }}</h3>
+                            {% if point.description %}
+                            <p class="text-gray-600 text-sm">{{ point.description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- 5. Construction Progress -->
+            {% if project.construction_updates.all %}
+            <div class="white-section rounded-2xl p-6 md:p-8">
+                <h2 class="text-2xl md:text-3xl section-title">Construction Progress</h2>
+                <div class="construction-timeline">
+                    {% for update in project.construction_updates.all %}
+                    <div class="timeline-item">
+                        <div class="border border-gray-200 rounded-xl p-4 hover:shadow-lg hover-lift transition-all bg-white">
+                            <div class="flex flex-col gap-4">
+                                {% if update.image %}
+                                <div>
+                                    <img src="{{ update.image.url }}" alt="{{ update.title }}" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <div class="flex justify-between items-start mb-2">
+                                        {% if update.title %}
+                                        <h3 class="text-lg font-bold text-gray-800">{{ update.title }}</h3>
+                                        {% endif %}
+                                        <span class="text-xs text-red-600 bg-red-50 px-3 py-1 rounded-full font-semibold">{{ update.update_date|date:"M d, Y" }}</span>
+                                    </div>
+                                    {% if update.description %}
+                                    <p class="text-gray-600 text-sm leading-relaxed">{{ update.description }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+        </div>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+{% if project.approved_reviews_count > 0 %}
+<section class="py-16 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold mb-4 gradient-text">
+                <i class="fas fa-comments mr-3"></i>Customer Reviews
+            </h2>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg mb-6">
+                Discover why {{ project.approved_reviews_count }} customer{{ project.approved_reviews_count|pluralize }} chose {{ project.name }} as their dream home
+            </p>
+            <div class="flex items-center justify-center">
+                <div class="flex items-center">
+                    {% for i in "12345"|make_list %}
+                        <i class="fas fa-star text-yellow-400 text-2xl"></i>
+                    {% endfor %}
+                </div>
+                <span class="ml-4 text-xl text-gray-700 font-bold">{{ project.average_rating|floatformat:1 }}/5.0</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for review in project.approved_reviews %}
+            <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover-lift border border-gray-100">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-full flex items-center justify-center font-bold text-2xl shadow-lg">
+                        {{ review.reviewer_name|first|upper }}
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h4 class="font-bold text-gray-900 text-xl">{{ review.reviewer_name }}</h4>
+                        <p class="text-sm text-gray-500 mb-3">Verified Property Owner</p>
+                        <div class="flex items-center">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="fas fa-star text-yellow-400 text-xl"></i>
+                                {% else %}
+                                    <i class="far fa-star text-gray-300 text-xl"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="text-base text-gray-600 ml-3 font-semibold">({{ review.rating }}/5)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <blockquote class="text-gray-700 text-lg leading-relaxed mb-6 relative min-h-[80px]">
+                    <i class="fas fa-quote-left text-red-200 text-3xl absolute -top-3 -left-2"></i>
+                    <span class="pl-8 block">{{ review.comment }}</span>
+                    <i class="fas fa-quote-right text-red-200 text-3xl absolute -bottom-1 right-0"></i>
+                </blockquote>
+                
+                <div class="flex items-center justify-between pt-6 border-t border-gray-100">
+                    <span class="flex items-center text-sm text-gray-500">
+                        <i class="far fa-calendar-alt mr-2 text-red-500"></i>
+                        {{ review.created_at|date:"M j, Y" }}
+                    </span>
+                    <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold">
+                        <i class="fas fa-shield-check mr-1"></i>Verified
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if project.approved_reviews_count > 6 %}
+        <div class="text-center mt-12">
+            <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-2xl p-8 max-w-lg mx-auto">
+                <h4 class="text-xl font-bold text-red-800 mb-2">
+                    <i class="fas fa-users mr-2"></i>More Happy Customers
+                </h4>
+                <p class="text-red-700 font-medium">
+                    Showing 6 of {{ project.approved_reviews_count }} total reviews
+                </p>
+                <p class="text-red-600 text-sm mt-2">
+                    Join our growing community of satisfied homeowners
+                </p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
+<!-- 10. Inquiry Form Section -->
+<section class="bg-gray-900 compact-section">
+    <div class="section-container">
+        <div class="max-w-xl mx-auto">
+            <div class="bg-white rounded-xl p-4 md:p-6">
+                <h2 class="section-title text-center">Get More Information</h2>
+                <form class="space-y-3">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input type="text" name="name" placeholder="Your Name *" class="form-input w-full p-3 rounded-lg text-sm" required>
+                        <input type="email" name="email" placeholder="Email Address *" class="form-input w-full p-3 rounded-lg text-sm" required>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input type="tel" name="phone" placeholder="Phone Number *" class="form-input w-full p-3 rounded-lg text-sm" required>
+                        <select name="interest" class="form-input w-full p-3 rounded-lg text-sm">
+                            <option value="">I'm interested in</option>
+                            <option value="buying">Buying</option>
+                            <option value="investment">Investment</option>
+                            <option value="information">More Information</option>
+                        </select>
+                    </div>
+                    <textarea name="message" rows="3" placeholder="Your Message" class="form-input w-full p-3 rounded-lg text-sm"></textarea>
+                    <button type="submit" class="btn-primary w-full py-3 px-6 rounded-lg font-semibold text-sm">
+                        <i class="fas fa-paper-plane mr-2"></i>Send Inquiry
+                    </button>
+                </form>
+                
+                <!-- Contact Information -->
+                <div class="mt-6 pt-4 border-t border-gray-200 text-center">
+                    <h4 class="font-semibold mb-3 text-gray-800 text-sm">Direct Contact</h4>
+                    <div class="flex flex-wrap justify-center gap-4 text-xs">
+                        {% if project.contact_phone %}
+                        <a href="tel:{{ project.contact_phone }}" class="flex items-center text-red-600 hover:text-red-800 font-medium">
+                            <i class="fas fa-phone mr-1"></i>{{ project.contact_phone }}
+                        </a>
+                        {% endif %}
+                        {% if project.contact_email %}
+                        <a href="mailto:{{ project.contact_email }}" class="flex items-center text-red-600 hover:text-red-800 font-medium">
+                            <i class="fas fa-envelope mr-1"></i>{{ project.contact_email }}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 11. Join Us Journey Section -->
+<section class="hero-gradient compact-section relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 left-10 w-20 h-20 border border-white rounded-full"></div>
+        <div class="absolute bottom-10 right-10 w-32 h-32 border border-white rounded-full"></div>
+        <div class="absolute top-1/2 left-1/4 w-16 h-16 border border-white rounded-full"></div>
+    </div>
+    
+    <div class="section-container relative z-10">
+        <div class="text-center text-white py-8 md:py-12">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-6 leading-tight">
+                    Join Us on a Journey to Your <span class="text-yellow-300">Dream Home</span>
+                </h2>
+                <p class="text-lg md:text-xl mb-8 opacity-90 leading-relaxed">
+                    Experience luxury living at its finest with world-class amenities, prime location, and exceptional craftsmanship that defines modern lifestyle
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button class="bg-white text-red-600 px-8 py-4 rounded-xl font-bold hover:bg-gray-100 hover:scale-105 transition-all shadow-lg">
+                        <i class="fas fa-calendar mr-3"></i>Schedule Site Visit
+                    </button>
+                    <button class="border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white hover:text-red-600 hover:scale-105 transition-all">
+                        <i class="fas fa-download mr-3"></i>Download Brochure
+                    </button>
+                </div>
+                
+                <!-- Statistics -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-white border-opacity-20">
+                    <div class="text-center">
+                        <div class="text-2xl md:text-3xl font-bold text-yellow-300">500+</div>
+                        <div class="text-sm opacity-75">Happy Families</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl md:text-3xl font-bold text-yellow-300">25+</div>
+                        <div class="text-sm opacity-75">Premium Amenities</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl md:text-3xl font-bold text-yellow-300">99%</div>
+                        <div class="text-sm opacity-75">Customer Satisfaction</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl md:text-3xl font-bold text-yellow-300">24/7</div>
+                        <div class="text-sm opacity-75">Support Available</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 12. Related Properties Section -->
+{% if related_projects %}
+<section class="bg-gray-50 compact-section">
+    <div class="section-container">
+        <h2 class="section-title text-center">Related Properties</h2>
+        <div class="mobile-responsive gap-4">
+            {% for related in related_projects|slice:":4" %}
+            <div class="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+                <div class="relative">
+                    {% if related.banner_image %}
+                    <img src="{{ related.banner_image.url }}" alt="{{ related.name }}" class="w-full h-36 object-cover">
+                    {% elif related.gallery_images.first and related.gallery_images.first.image %}
+                    <img src="{{ related.gallery_images.first.image.url }}" alt="{{ related.name }}" class="w-full h-36 object-cover">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=200&fit=crop" alt="{{ related.name }}" class="w-full h-36 object-cover">
+                    {% endif %}
+                    {% if related.trending_tag %}
+                    <span class="absolute top-3 left-3 bg-red-600 text-white px-2 py-1 rounded-full text-xs font-medium">
+                        {{ related.get_trending_tag_display }}
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg text-gray-800 mb-2">{{ related.name }}</h3>
+                    <p class="text-gray-600 text-sm mb-3">{{ related.location }}</p>
+                    {% if related.onwards_price %}
+                    <p class="font-bold text-red-600 text-lg mb-3">₹{{ related.onwards_price|floatformat:0 }}</p>
+                    {% endif %}
+                    <a href="{% url 'Projects:public_project_detail' project_id=related.id %}" class="btn-primary block text-center py-2 px-4 rounded-lg font-medium text-sm">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+
+</div>
+
+<!-- JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gallery Navigation
+    const galleryContainer = document.getElementById('gallery-container');
+    const prevBtn = document.getElementById('gallery-prev');
+    const nextBtn = document.getElementById('gallery-next');
+    
+    if (galleryContainer && prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => {
+            galleryContainer.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            galleryContainer.scrollBy({ left: 300, behavior: 'smooth' });
+        });
+    }
+    
+    // Floor Plan Tabs
+    const planTabs = document.querySelectorAll('.floor-plan-tab');
+    const planItems = document.querySelectorAll('.floor-plan-item');
+    
+    planTabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+            // Remove active classes
+            planTabs.forEach(t => {
+                t.classList.remove('bg-red-600', 'text-white');
+                t.classList.add('btn-secondary');
+            });
+            planItems.forEach(item => item.classList.add('hidden'));
+            
+            // Add active classes
+            tab.classList.add('bg-red-600', 'text-white');
+            tab.classList.remove('btn-secondary');
+            
+            // Show corresponding plan
+            const planNumber = tab.getAttribute('data-plan');
+            const targetPlan = document.getElementById(`floor-plan-${planNumber}`);
+            if (targetPlan) {
+                targetPlan.classList.remove('hidden');
+            }
+        });
+    });
+    
+    // Form Submission with validation
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic validation
+            const name = form.querySelector('input[name="name"]').value;
+            const email = form.querySelector('input[name="email"]').value;
+            const phone = form.querySelector('input[name="phone"]').value;
+            
+            if (!name || !email || !phone) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Sending...';
+            submitBtn.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(() => {
+                alert('Thank you for your inquiry! We will contact you within 24 hours.');
+                form.reset();
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+    }
+    
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements for animation
+    document.querySelectorAll('.white-section, .amenity-card, .timeline-item').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+});
+
+// Floor Plan Modal Functions
+function openFloorPlanModal(imageUrl, planName) {
+    // Create modal HTML
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-[70] flex items-center justify-center bg-black bg-opacity-75 p-4';
+    modal.innerHTML = `
+        <div class="relative max-w-4xl w-full bg-white rounded-2xl overflow-hidden">
+            <div class="absolute top-4 right-4 z-10">
+                <button onclick="this.closest('.fixed').remove()" class="bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">${planName}</h3>
+                <img src="${imageUrl}" alt="${planName}" class="w-full h-auto rounded-lg">
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function openContactModal() {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-[70] flex items-center justify-center bg-black bg-opacity-75 p-4';
+    modal.innerHTML = `
+        <div class="relative max-w-md w-full bg-white rounded-2xl p-6">
+            <div class="text-center">
+                <i class="fas fa-lock text-4xl text-red-600 mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Unlock Floor Plans</h3>
+                <p class="text-gray-600 mb-6">Please fill out the contact form to access detailed floor plans and pricing information.</p>
+                <button onclick="this.closest('.fixed').remove(); document.querySelector('form').scrollIntoView({behavior: 'smooth'})" class="bg-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors">
+                    Go to Contact Form
+                </button>
+                <button onclick="this.closest('.fixed').remove()" class="block w-full mt-3 text-gray-500 hover:text-gray-700">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,191 @@
+{% load theme_filters %}
+<!-- Image Container with Gradient Overlay -->
+<div class="relative overflow-hidden group">
+    {% if project.banner_image %}
+        <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105">
+    {% else %}
+        <div class="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <div class="text-center">
+                <i class="fas fa-image text-2xl text-gray-400 mb-2"></i>
+                <p class="text-gray-500 text-xs">No Image Available</p>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Subtle overlay on hover -->
+    <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    
+    <!-- Project Status Badge - Top Left -->
+    {% if project.status %}
+        <div class="absolute top-3 left-3 z-10">
+            <span class="px-2 py-1 rounded-md text-xs font-bold shadow-lg border border-white/20
+                {% if project.status == 'ready_to_move' %}bg-green-600 text-white
+                {% elif project.status == 'under_construction' %}bg-red-600 text-white
+                {% elif project.status == 'upcoming' %}bg-black text-white
+                {% else %}bg-gray-600 text-white{% endif %}">
+                {% if project.status == 'ready_to_move' %}
+                    <i class="fas fa-key mr-1"></i>Ready to Move
+                {% elif project.status == 'under_construction' %}
+                    <i class="fas fa-hammer mr-1"></i>Under Construction
+                {% elif project.status == 'upcoming' %}
+                    <i class="fas fa-clock mr-1"></i>Coming Soon
+                {% else %}
+                    {{ project.get_status_display }}
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+    <!-- Feature Tags - Top Right (Fixed stacking) -->
+    {% if project.is_featured or project.is_hot_deal or project.trending_tag or project.is_premium_listing or project.is_editors_choice %}
+        <div class="absolute top-3 right-3 z-10">
+            <!-- Show only the most important tag to avoid clutter -->
+            {% if project.is_featured %}
+                <span class="px-2 py-1 bg-red-600 text-white rounded-md text-xs font-bold shadow-lg border border-white/20">
+                    <i class="fas fa-star mr-1"></i>Featured
+                </span>
+            {% elif project.is_hot_deal %}
+                <span class="px-2 py-1 bg-orange-500 text-white rounded-md text-xs font-bold shadow-lg border border-white/20">
+                    <i class="fas fa-fire mr-1"></i>Hot Deal
+                </span>
+            {% elif project.is_premium_listing %}
+                <span class="px-2 py-1 bg-purple-600 text-white rounded-md text-xs font-bold shadow-lg border border-white/20">
+                    <i class="fas fa-crown mr-1"></i>Premium
+                </span>
+            {% elif project.is_editors_choice %}
+                <span class="px-2 py-1 bg-indigo-600 text-white rounded-md text-xs font-bold shadow-lg border border-white/20">
+                    <i class="fas fa-award mr-1"></i>Editor's Choice
+                </span>
+            {% elif project.trending_tag %}
+                <span class="px-2 py-1 bg-pink-600 text-white rounded-md text-xs font-bold shadow-lg border border-white/20">
+                    <i class="fas fa-trending-up mr-1"></i>{{ project.get_trending_tag_display }}
+                </span>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <!-- Price Badge - Bottom Right -->
+    {% if project.onwards_price %}
+        <div class="absolute bottom-3 right-3 z-10">
+            <div class="bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg border border-white/20">
+                <div class="text-center">
+                    <p class="text-xs text-gray-600 font-medium">Starting from</p>
+                    <p class="text-lg font-bold text-red-600">{{ project.onwards_price|format_price }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Card Content -->
+<div class="p-5 bg-white">
+    <!-- Project Header -->
+    <div class="mb-4">
+        <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-red-600 transition-colors duration-300">
+            {{ project.name }}
+        </h3>
+        
+        <!-- Location & Developer Row -->
+        <div class="flex items-center justify-between mb-3">
+            {% if project.location or project.city %}
+                <div class="flex items-center text-gray-600">
+                    <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+                    <span class="text-sm font-medium truncate">
+                        {% if project.location %}{{ project.location }}{% endif %}{% if project.city %}{% if project.location %}, {% endif %}{{ project.city.name }}{% endif %}
+                    </span>
+                </div>
+            {% endif %}
+            {% if project.project_by %}
+                <div class="flex items-center text-gray-600 ml-3">
+                    <i class="fas fa-building text-blue-500 mr-2"></i>
+                    <span class="text-xs font-medium truncate">{{ project.project_by }}</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Property Details Cards -->
+    <div class="grid grid-cols-2 gap-3 mb-4">
+        {% if project.build_up_area %}
+            <div class="text-center p-3 bg-gradient-to-br from-red-50 to-red-100 rounded-lg border hover:shadow-md transition-all duration-300 hover:scale-105">
+                <i class="fas fa-expand-arrows-alt text-red-500 text-lg mb-2"></i>
+                <p class="text-xs text-gray-500 mb-1">Area</p>
+                <p class="text-xs font-bold text-gray-800">{{ project.build_up_area }}</p>
+            </div>
+        {% endif %}
+        {% if project.bhk %}
+            <div class="text-center p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border hover:shadow-md transition-all duration-300 hover:scale-105">
+                <i class="fas fa-bed text-blue-500 text-lg mb-2"></i>
+                <p class="text-xs text-gray-500 mb-1">Configuration</p>
+                <p class="text-xs font-bold text-gray-800">{{ project.bhk }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Amenities Section -->
+    {% if project.amenities.all %}
+        <div class="mb-4">
+            <h4 class="text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                <i class="fas fa-star text-yellow-500 mr-2"></i>Amenities
+            </h4>
+            <div class="flex flex-wrap gap-2">
+                {% for amenity in project.amenities.all|slice:":2" %}
+                    <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-xs font-medium hover:bg-blue-700 transition-colors duration-200 transform hover:scale-105">
+                        {{ amenity.name }}
+                    </span>
+                {% endfor %}
+                {% if project.amenities.count > 2 %}
+                    <span class="px-3 py-1 bg-gray-600 text-white rounded-full text-xs font-medium hover:bg-gray-700 transition-colors duration-200 transform hover:scale-105">
+                        +{{ project.amenities.count|add:"-2" }} more
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Price Section (if not shown in overlay) -->
+    {% if not project.onwards_price and project.onwards_price %}
+        <div class="mb-4 p-3 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border">
+            <div class="text-center">
+                <p class="text-xs text-gray-600 font-medium mb-1">Starting from</p>
+                <p class="text-xl font-bold text-red-600">{{ project.onwards_price|format_price }}</p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Divider Line -->
+    <div class="border-t border-gray-200 mb-4"></div>
+
+    <!-- Footer Section -->
+    <div class="flex items-center justify-between">
+        <!-- Left side - Stats -->
+        <div class="flex items-center space-x-4 text-xs text-gray-500">
+            {% if project.views %}
+                <div class="flex items-center hover:text-blue-600 transition-colors duration-200">
+                    <i class="fas fa-eye text-blue-500 mr-1"></i>
+                    <span class="font-medium">{{ project.views }}</span>
+                </div>
+            {% endif %}
+            {% if project.possession_date %}
+                <div class="flex items-center hover:text-green-600 transition-colors duration-200">
+                    <i class="fas fa-calendar text-green-500 mr-1"></i>
+                    <span class="font-medium">{{ project.possession_date|date:"M Y" }}</span>
+                </div>
+            {% endif %}
+            {% if project.approved_reviews_count %}
+                <div class="flex items-center hover:text-yellow-600 transition-colors duration-200">
+                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                    <span class="font-medium">{{ project.approved_reviews_count }} Reviews</span>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Right side - CTA -->
+        <div class="flex items-center">
+            <span class="text-red-600 font-bold text-sm hover:text-red-700 transition-all duration-200 flex items-center group/cta">
+                View Details
+                <i class="fas fa-arrow-right ml-2 transform group-hover/cta:translate-x-1 transition-transform duration-200"></i>
+            </span>
+        </div>
+    </div>
+</div>

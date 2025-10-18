@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Blog{% endblock %}
+{% block content %}
+<section class="max-w-5xl mx-auto py-12 px-4">
+    <h1 class="text-3xl font-extrabold mb-10 text-center tracking-tight">Blog</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for blog in blogs %}
+        <div class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-200 overflow-hidden flex flex-col">
+            {% if blog.feature_image %}
+            <a href="{% url 'blog_detail' blog.slug %}" class="block w-full">
+                <img src="{{ blog.feature_image.url }}" alt="{{ blog.title }}" class="rounded-t-2xl w-full h-56 object-cover shadow-md">
+            </a>
+            {% endif %}
+            <div class="flex-1 flex flex-col justify-between p-6">
+                <div>
+                    <a href="{% url 'blog_detail' blog.slug %}" class="text-xl font-bold text-red-700 hover:underline leading-tight mb-2 block line-clamp-2">{{ blog.title }}</a>
+                    <div class="text-xs text-gray-400 mb-3">{{ blog.created_at|date:"F j, Y" }}</div>
+                    <div class="mb-4 text-gray-700 text-base line-clamp-3">{{ blog.content|safe|truncatewords:40 }}</div>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    {% for tag in blog.tags.all %}
+                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded text-xs font-semibold">#{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-gray-500 col-span-full">No blog posts found.</div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

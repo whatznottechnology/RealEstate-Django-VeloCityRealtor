@@ -1,0 +1,580 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Project Details - {{ project.name }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Home</a> &rsaquo;
+    <a href="{% url 'admin:Projects_project_changelist' %}">Projects</a> &rsaquo;
+    {{ project.name }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-building"></i> {{ project.name }}
+                        <small class="text-muted">by {{ project.project_by }}</small>
+                    </h3>
+                    <div class="card-tools d-flex flex-row gap-2">
+                        <a href="{% url 'admin:Projects_project_change' project.pk %}" class="btn btn-primary btn-sm mr-2">
+                            <i class="fas fa-edit"></i> Edit Project
+                        </a>
+                        <a href="{% url 'admin:Projects_project_changelist' %}" class="btn btn-secondary btn-sm mr-2">
+                            <i class="fas fa-list"></i> Back to List
+                        </a>
+                        <!-- PDF download button removed -->
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Project Banner, Floating Logo, Status Ribbon, Brochure -->
+                    <div class="row mb-4 position-relative">
+                        {% if project.banner_image %}
+                        <div class="col-md-12 mb-2 position-relative" style="padding:0;">
+                            <div style="position:relative;">
+                                <img src="{{ project.banner_image.url }}" alt="{{ project.name }}" 
+                                     class="img-fluid rounded w-100" style="max-height: 400px; object-fit: cover;">
+                                <!-- Status Ribbon -->
+                                <div style="position:absolute;top:20px;left:0;z-index:2;">
+                                    <span class="badge badge-{% if project.status == 'ready_to_move' %}success{% elif project.status == 'under_construction' %}warning{% elif project.status == 'upcoming' %}info{% else %}danger{% endif %} status-ribbon">
+                                        {{ project.get_status_display }}
+                                    </span>
+                                </div>
+                                <!-- Floating Logo -->
+                                {% if project.logo %}
+                                <div style="position:absolute;bottom:-40px;left:40px;z-index:3;">
+                                    <img src="{{ project.logo.url }}" alt="Logo" style="width:100px;height:100px;border-radius:16px;box-shadow:0 4px 16px #888;background:#fff;padding:8px;">
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="col-md-12 d-flex flex-row flex-wrap align-items-center justify-content-end mt-3">
+                            {% if project.brochure %}
+                            <a href="{{ project.brochure.url }}" class="btn btn-outline-info btn-lg mr-2" download><i class="fas fa-file-pdf"></i> Download Brochure</a>
+                            {% endif %}
+                            <!-- PDF download button removed -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats Row -->
+                    <div class="row mb-3 text-center">
+                        <div class="col-md-2 col-6 mb-2">
+                            <div class="stat-card">
+                                <i class="fas fa-eye stat-icon text-primary"></i>
+                                <div class="stat-label">Views</div>
+                                <div class="stat-value">{{ project.views }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-2">
+                            <div class="stat-card">
+                                <i class="fas fa-star stat-icon text-warning"></i>
+                                <div class="stat-label">Featured</div>
+                                <div class="stat-value">{% if project.is_featured %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-2">
+                            <div class="stat-card">
+                                <i class="fas fa-fire stat-icon text-danger"></i>
+                                <div class="stat-label">Hot Deal</div>
+                                <div class="stat-value">{% if project.is_hot_deal %}<span class="badge badge-danger">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-2">
+                            <div class="stat-card">
+                                <i class="fas fa-crown stat-icon text-info"></i>
+                                <div class="stat-label">Premium</div>
+                                <div class="stat-value">{% if project.is_premium_listing %}<span class="badge badge-info">Yes</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-2">
+                            <div class="stat-card">
+                                <i class="fas fa-bolt stat-icon text-success"></i>
+                                <div class="stat-label">Trending</div>
+                                <div class="stat-value">{% if project.trending_tag %}<span class="badge badge-warning">{{ project.get_trending_tag_display }}</span>{% else %}<span class="badge badge-secondary">No</span>{% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-2">
+                            <div class="stat-card">
+                                <i class="fas fa-check stat-icon text-success"></i>
+                                <div class="stat-label">Active</div>
+                                <div class="stat-value">{% if project.is_active %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Basic Information -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-primary"><i class="fas fa-building"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Project Name</span>
+                                    <span class="info-box-number">{{ project.name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-success"><i class="fas fa-user-tie"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Developer</span>
+                                    <span class="info-box-number">{{ project.developers }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-secondary"><i class="fas fa-layer-group"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Category / Type</span>
+                                    <span class="info-box-number">{{ project.category }} / {{ project.project_type }}</span>
+                                    <div>
+                                        {% for tag in project.tags.all %}
+                                            <span class="badge badge-warning">{{ tag.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-info"><i class="fas fa-map-marker-alt"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Location</span>
+                                    <span class="info-box-number">{{ project.location }}</span>
+                                    {% if project.city %}<small>{{ project.city }}</small>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-warning"><i class="fas fa-rupee-sign"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Starting Price</span>
+                                    <span class="info-box-number">₹{{ project.onwards_price|floatformat:0 }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-dark"><i class="fas fa-map"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Coordinates</span>
+                                    <span class="info-box-number">{{ project.latitude }}, {{ project.longitude }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Nearest Areas -->
+                    {% if nearest_areas %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-map-pin"></i> Nearby Areas</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for area in nearest_areas %}
+                                        <div class="col-md-3 mb-2">
+                                            <span class="badge badge-secondary">{{ area.name }} ({{ area.get_area_type_display }}) - {{ area.distance }}</span>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- Floor Plans -->
+                    {% if floor_plans %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-drafting-compass"></i> Floor Plans</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for fp in floor_plans %}
+                                        <div class="col-md-4 mb-3">
+                                            <img src="{{ fp.image.url }}" alt="{{ fp.name }}" class="img-thumbnail" style="height:120px;object-fit:cover;width:100%;">
+                                            <div><strong>{{ fp.name }}</strong> - {{ fp.area }} - ₹{{ fp.price|floatformat:0 }}</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- Construction Updates -->
+                    {% if construction_updates %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-hammer"></i> Construction Updates</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for cu in construction_updates %}
+                                        <div class="col-md-4 mb-3">
+                                            <img src="{{ cu.image.url }}" alt="Update" class="img-thumbnail" style="height:100px;object-fit:cover;width:100%;">
+                                            <div><strong>{{ cu.title }}</strong> - {{ cu.update_date }}</div>
+                                            <div>{{ cu.description }}</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- Why Choose Us -->
+                    {% if why_choose_us %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-thumbs-up"></i> Why Choose Us</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for wcu in why_choose_us %}
+                                        <div class="col-md-3 mb-2">
+                                            <span class="badge badge-success"><i class="{{ wcu.icon }}"></i> {{ wcu.title }}</span>
+                                            <div>{{ wcu.description }}</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- Specifications -->
+                    {% if specifications %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-list"></i> Specifications</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-bordered table-sm">
+                                        <thead><tr><th>Category</th><th>Name</th><th>Description</th></tr></thead>
+                                        <tbody>
+                                        {% for spec in specifications %}
+                                        <tr>
+                                            <td>{{ spec.category }}</td>
+                                            <td>{{ spec.name }}</td>
+                                            <td>{{ spec.description }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- Amenity Images -->
+                    {% if amenity_images %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-camera-retro"></i> Amenity Images</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for ai in amenity_images %}
+                                        <div class="col-md-3 mb-3">
+                                            <img src="{{ ai.image.url }}" alt="{{ ai.amenity_name }}" class="img-thumbnail" style="height:100px;object-fit:cover;width:100%;">
+                                            <div><strong>{{ ai.amenity_name }}</strong></div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <!-- SEO & Metadata -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-search"></i> SEO & Metadata</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div><strong>Meta Title:</strong> {{ project.meta_title }}</div>
+                                    <div><strong>Meta Description:</strong> {{ project.meta_description }}</div>
+                                    <div><strong>Keywords:</strong> {{ project.keywords }}</div>
+                                    <div><strong>Description:</strong> {{ project.description }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Project Details -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-info-circle"></i> Project Specifications</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <strong>BHK Configuration:</strong><br>
+                                            <span class="badge badge-primary">{{ project.bhk }}</span>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Build-up Area:</strong><br>
+                                            {{ project.build_up_area }}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Number of Blocks:</strong><br>
+                                            {{ project.no_of_blocks }}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Total Units:</strong><br>
+                                            {{ project.no_of_units }}
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Status:</strong><br>
+                                            <span class="badge badge-{% if project.status == 'ready_to_move' %}success{% elif project.status == 'under_construction' %}warning{% elif project.status == 'upcoming' %}info{% else %}danger{% endif %}">
+                                                {{ project.get_status_display }}
+                                            </span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Possession Date:</strong><br>
+                                            {% if project.possession_date %}{{ project.possession_date }}{% else %}TBA{% endif %}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Views:</strong><br>
+                                            {{ project.views }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Amenities -->
+                    {% if project.amenities.all %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-swimming-pool"></i> Amenities</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for amenity in project.amenities.all %}
+                                        <div class="col-md-3 mb-2">
+                                            <span class="badge badge-info">{{ amenity.name }}</span>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Marketing Flags -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-star"></i> Marketing Features</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% if project.is_featured %}
+                                        <div class="col-md-2"><span class="badge badge-danger">Featured</span></div>
+                                        {% endif %}
+                                        {% if project.is_most_viewed %}
+                                        <div class="col-md-2"><span class="badge badge-primary">Most Viewed</span></div>
+                                        {% endif %}
+                                        {% if project.is_hot_deal %}
+                                        <div class="col-md-2"><span class="badge badge-warning">Hot Deal</span></div>
+                                        {% endif %}
+                                        {% if project.is_premium_listing %}
+                                        <div class="col-md-2"><span class="badge badge-success">Premium</span></div>
+                                        {% endif %}
+                                        {% if project.is_editors_choice %}
+                                        <div class="col-md-2"><span class="badge badge-info">Editor's Choice</span></div>
+                                        {% endif %}
+                                        {% if project.trending_tag %}
+                                        <div class="col-md-2"><span class="badge badge-secondary">{{ project.get_trending_tag_display }}</span></div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gallery Images -->
+                    {% if gallery_images %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-images"></i> Gallery ({{ gallery_images.count }} images)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        {% for image in gallery_images %}
+                                        <div class="col-md-3 mb-3">
+                                            <img src="{{ image.image.url }}" alt="{{ image.caption }}" 
+                                                 class="img-thumbnail" style="height: 150px; object-fit: cover; width: 100%;">
+                                            {% if image.caption %}
+                                            <small class="text-muted">{{ image.caption }}</small>
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Project Overview -->
+                    {% if project_overview %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="fas fa-file-alt"></i> {{ project_overview.title|default:"Project Overview" }}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>{{ project_overview.short_description|linebreaks }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Footer Info -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                <strong>Created:</strong> {{ project.created_at }}<br>
+                                <strong>Last Updated:</strong> {{ project.updated_at }}
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <small class="text-muted">
+                                <strong>Status:</strong> {% if project.is_active %}Active{% else %}Inactive{% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.info-box {
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px #f0f0f0;
+    padding: 10px 0;
+}
+.card {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px #e0e0e0;
+}
+.badge {
+    font-size: 13px;
+    margin: 2px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e3e3e3 0%, #f7f7f7 100%);
+    color: #333;
+    box-shadow: 0 1px 2px #eee;
+}
+.card-header {
+    background: linear-gradient(90deg, #f8fafc 0%, #e9ecef 100%);
+    border-radius: 10px 10px 0 0;
+    border-bottom: 1px solid #e3e3e3;
+}
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+.img-thumbnail, .img-fluid, img {
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px #e0e0e0;
+}
+.info-box-content span.info-box-number {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+.btn {
+    margin-right: 6px;
+}
+.gap-2 > * { margin-right: 8px; }
+/* Status Ribbon */
+.status-ribbon {
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 10px 30px 10px 16px;
+    border-radius: 0 20px 20px 0;
+    box-shadow: 0 2px 8px #bbb;
+    letter-spacing: 1px;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+/* Stat Cards */
+.stat-card {
+    background: linear-gradient(90deg, #f8fafc 0%, #e9ecef 100%);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #e0e0e0;
+    padding: 18px 8px 10px 8px;
+    min-height: 90px;
+}
+.stat-icon {
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+}
+.stat-label {
+    font-size: 0.95rem;
+    color: #888;
+}
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+</style>
+{% endblock %}

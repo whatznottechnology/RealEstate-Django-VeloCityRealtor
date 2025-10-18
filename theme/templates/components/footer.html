@@ -1,0 +1,215 @@
+{% load static %}
+<!-- Enhanced Professional Footer Component -->
+<footer class="bg-gradient-to-b from-gray-900 to-black text-white relative overflow-hidden w-full">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute top-10 right-10 w-64 h-64 bg-red-500 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 left-10 w-48 h-48 bg-blue-500 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="relative z-10 w-full">
+        <!-- Main Footer Content -->
+        <div class="w-full px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+            <div class="max-w-none mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
+                <!-- Company Info -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-3 mb-6">
+                        {% if site_config.site_logo %}
+                            <img src="{{ site_config.site_logo.url }}" alt="{{ site_config.site_title }}" class="h-12 w-auto">
+                        {% else %}
+                            <img src="{% static 'images/logo.png' %}" alt="{{ site_config.site_title }}" class="h-12 w-auto brightness-0 invert">
+                        {% endif %}
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">{{ site_config.site_title|default:"Real Estate Pro" }}</h3>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-300 mb-6 leading-relaxed text-lg">
+                        {{ site_config.site_description|default:"Your trusted partner in finding the perfect property. We specialize in residential, commercial, land, and investment properties across West Bengal with over a decade of experience." }}
+                    </p>
+                    
+                    <!-- Trust Indicators -->
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-400">500+</div>
+                            <div class="text-xs text-gray-400">Properties Sold</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-400">50+</div>
+                            <div class="text-xs text-gray-400">Active Projects</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-400">1000+</div>
+                            <div class="text-xs text-gray-400">Happy Clients</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Media Links -->
+                    <div class="flex space-x-4">
+                        <!-- WhatsApp (Most Prominent) -->
+                        {% if site_config.whatsapp_number %}
+                        <a href="{{ site_config.get_whatsapp_url }}" class="w-14 h-14 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center text-white hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-110 group shadow-lg hover:shadow-xl" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-whatsapp text-xl group-hover:animate-pulse"></i>
+                        </a>
+                        {% endif %}
+                        
+                        <a href="{{ site_config.facebook_url|default:'#' }}" class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-110 group" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-facebook-f group-hover:animate-pulse"></i>
+                        </a>
+                        <a href="{{ site_config.instagram_url|default:'#' }}" class="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-110 group" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-instagram group-hover:animate-pulse"></i>
+                        </a>
+                        <a href="{{ site_config.twitter_url|default:'#' }}" class="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center text-white hover:from-blue-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-110 group" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-twitter group-hover:animate-pulse"></i>
+                        </a>
+                        <a href="{{ site_config.linkedin_url|default:'#' }}" class="w-12 h-12 bg-gradient-to-r from-blue-700 to-blue-800 rounded-full flex items-center justify-center text-white hover:from-blue-800 hover:to-blue-900 transition-all duration-300 transform hover:scale-110 group" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-linkedin-in group-hover:animate-pulse"></i>
+                        </a>
+                        <a href="{{ site_config.youtube_url|default:'#' }}" class="w-12 h-12 bg-gradient-to-r from-red-600 to-red-700 rounded-full flex items-center justify-center text-white hover:from-red-700 hover:to-red-800 transition-all duration-300 transform hover:scale-110 group" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-youtube group-hover:animate-pulse"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-white flex items-center">
+                        <i class="fas fa-link text-red-400 mr-2"></i>
+                        Quick Links
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'theme:home' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-home text-xs mr-2 group-hover:text-red-400"></i>Home</a></li>
+                        <li><a href="{% url 'theme:search_properties' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-building text-xs mr-2 group-hover:text-red-400"></i>Properties</a></li>
+                        <li><a href="/projects/" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-city text-xs mr-2 group-hover:text-red-400"></i>Projects</a></li>
+                        <li><a href="{% url 'theme:land_page' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-mountain text-xs mr-2 group-hover:text-red-400"></i>Land</a></li>
+                        <li><a href="{% url 'theme:investment_page' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-chart-line text-xs mr-2 group-hover:text-red-400"></i>Investment</a></li>
+                        <li><a href="{% url 'theme:about_us' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-info-circle text-xs mr-2 group-hover:text-red-400"></i>About Us</a></li>
+                        <li><a href="{% url 'theme:contact_us' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-envelope text-xs mr-2 group-hover:text-red-400"></i>Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services & Solutions -->
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-white flex items-center">
+                        <i class="fas fa-cogs text-red-400 mr-2"></i>
+                        Services
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'theme:land_requirement' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-clipboard-list text-xs mr-2 group-hover:text-red-400"></i>Land Requirements</a></li>
+                        <li><a href="{% url 'theme:investment_requirement' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-calculator text-xs mr-2 group-hover:text-red-400"></i>Investment Advisory</a></li>
+                        <li><a href="{% url 'interior:interior_page' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-paint-brush text-xs mr-2 group-hover:text-red-400"></i>Interior Design</a></li>
+                        <li><a href="/blog/" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-blog text-xs mr-2 group-hover:text-red-400"></i>Property Blog</a></li>
+                        <li><a href="/careers/" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-briefcase text-xs mr-2 group-hover:text-red-400"></i>Careers</a></li>
+                        <li><a href="{% url 'theme:contact_us' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-handshake text-xs mr-2 group-hover:text-red-400"></i>Partnership</a></li>
+                        <li><a href="{% url 'theme:contact_us' %}" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-headset text-xs mr-2 group-hover:text-red-400"></i>Customer Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- Property Types -->
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-white flex items-center">
+                        <i class="fas fa-home text-red-400 mr-2"></i>
+                        Property Types
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'theme:search_properties' %}?type=residential" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-house text-xs mr-2 group-hover:text-red-400"></i>Residential</a></li>
+                        <li><a href="{% url 'theme:search_properties' %}?type=commercial" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-building text-xs mr-2 group-hover:text-red-400"></i>Commercial</a></li>
+                        <li><a href="{% url 'theme:search_properties' %}?type=apartment" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-city text-xs mr-2 group-hover:text-red-400"></i>Apartments</a></li>
+                        <li><a href="{% url 'theme:search_properties' %}?type=villa" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-home text-xs mr-2 group-hover:text-red-400"></i>Villas</a></li>
+                        <li><a href="{% url 'theme:search_properties' %}?type=plot" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-square text-xs mr-2 group-hover:text-red-400"></i>Plots</a></li>
+                        <li><a href="{% url 'theme:search_properties' %}?status=ready_to_move" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-key text-xs mr-2 group-hover:text-red-400"></i>Ready to Move</a></li>
+                        <li><a href="{% url 'theme:search_properties' %}?hot_deals=true" class="text-gray-300 hover:text-red-400 transition-colors duration-300 flex items-center group"><i class="fas fa-fire text-xs mr-2 group-hover:text-red-400"></i>Hot Deals</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-xl font-bold mb-6 text-white flex items-center">
+                        <i class="fas fa-map-marker-alt text-red-400 mr-2"></i>
+                        Contact Info
+                    </h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 text-red-400 mt-1 flex-shrink-0">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium mb-1">Office Address</p>
+                                <span class="text-gray-300 leading-relaxed">{{ site_config.office_address|default:"123 Property Street, Kolkata, West Bengal 700001"|linebreaksbr }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <div class="w-6 h-6 text-red-400 flex-shrink-0">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium mb-1">Phone</p>
+                                <a href="tel:{{ site_config.contact_phone|default:'+919876543210' }}" class="text-gray-300 hover:text-red-400 transition-colors duration-300">{{ site_config.contact_phone|default:"+91 98765 43210" }}</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <div class="w-6 h-6 text-red-400 flex-shrink-0">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium mb-1">Email</p>
+                                <a href="mailto:{{ site_config.contact_email|default:'info@realestate.com' }}" class="text-gray-300 hover:text-red-400 transition-colors duration-300">{{ site_config.contact_email|default:"info@realestate.com" }}</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <div class="w-6 h-6 text-red-400 flex-shrink-0">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium mb-1">Working Hours</p>
+                                <p class="text-gray-300">Mon-Sat: 9:00 AM - 7:00 PM</p>
+                                <p class="text-gray-300">Sunday: 10:00 AM - 5:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Footer -->
+        <div class="border-t border-gray-800 w-full">
+            <div class="w-full px-4 sm:px-6 lg:px-8 py-8">
+                <div class="flex flex-col lg:flex-row justify-between items-center space-y-6 lg:space-y-0">
+                    <div class="text-gray-400 text-sm text-center lg:text-left">
+                        <p class="mb-2">© {% now "Y" %} {{ site_config.site_title|default:"Real Estate Pro" }}. All rights reserved.</p>
+                        <p class="text-xs">
+                            Design and Develop by 
+                            <a href="https://whatznot.com" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:text-red-300 transition-colors duration-300 font-medium">
+                                Whatznot Technologies
+                            </a>
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-8">
+                        <div class="flex space-x-6 text-sm">
+                            <a href="{% url 'theme:privacy_policy' %}" class="text-gray-400 hover:text-red-400 transition-colors duration-300">Privacy Policy</a>
+                            <a href="{% url 'theme:terms_and_conditions' %}" class="text-gray-400 hover:text-red-400 transition-colors duration-300">Terms & Conditions</a>
+                            <a href="#" class="text-gray-400 hover:text-red-400 transition-colors duration-300">Sitemap</a>
+                        </div>
+                        
+                        <!-- Professional Certifications -->
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2 bg-gray-800 px-3 py-1 rounded-full">
+                                <i class="fas fa-shield-alt text-green-400 text-sm"></i>
+                                <span class="text-xs text-gray-300">RERA Approved</span>
+                            </div>
+                            <div class="flex items-center space-x-2 bg-gray-800 px-3 py-1 rounded-full">
+                                <i class="fas fa-certificate text-blue-400 text-sm"></i>
+                                <span class="text-xs text-gray-300">ISO Certified</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

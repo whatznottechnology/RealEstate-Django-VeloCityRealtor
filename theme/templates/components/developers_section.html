@@ -1,0 +1,200 @@
+{% load static %}
+
+<!-- Our Onboarded Developers Section -->
+<section class="py-8 lg:py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-8">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 tracking-tight text-black">
+                OUR ONBOARDED DEVELOPERS
+            </h2>
+            <div class="w-24 h-1 bg-red-600 mx-auto mb-4"></div>
+            <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+                Partnering with Leading Real Estate Developers for Premium Properties
+            </p>
+        </div>
+
+        {% if developers %}
+            <!-- Desktop Grid View (lg and above) -->
+            <div class="hidden lg:grid lg:grid-cols-4 xl:grid-cols-6 gap-8 items-center justify-items-center">
+                {% for developer in developers %}
+                    <div class="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 w-full max-w-xs transform hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                        
+                        <div class="relative z-10 text-center">
+                            {% if developer.website %}
+                                <a href="{{ developer.website }}" target="_blank" rel="noopener noreferrer" class="block">
+                            {% endif %}
+                            
+                            <div class="mb-4 overflow-hidden rounded-lg bg-gray-50 p-4">
+                                <img src="{{ developer.logo.url }}" 
+                                     alt="{{ developer.name }} logo" 
+                                     class="w-full h-20 object-contain transition-transform duration-300 group-hover:scale-110"
+                                     loading="lazy">
+                            </div>
+                            
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                                {{ developer.name }}
+                            </h3>
+                            
+                            {% if developer.position %}
+                                <p class="text-sm text-gray-500 mb-3">{{ developer.position }}</p>
+                            {% endif %}
+                            
+                            {% if developer.website %}
+                                <div class="flex items-center justify-center text-blue-600 group-hover:text-purple-600 transition-colors">
+                                    <i class="fas fa-external-link-alt text-xs mr-1"></i>
+                                    <span class="text-xs font-medium">Visit Website</span>
+                                </div>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Mobile Carousel View (md and below) -->
+            <div class="lg:hidden relative">
+                <div class="developers-carousel overflow-x-auto pb-6 scrollbar-hide">
+                    <div class="flex space-x-6 w-max">
+                        {% for developer in developers %}
+                            <div class="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 w-72 flex-shrink-0 transform hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                                
+                                <div class="relative z-10 text-center">
+                                    {% if developer.website %}
+                                        <a href="{{ developer.website }}" target="_blank" rel="noopener noreferrer" class="block">
+                                    {% endif %}
+                                    
+                                    <div class="mb-4 overflow-hidden rounded-lg bg-gray-50 p-4">
+                                        <img src="{{ developer.logo.url }}" 
+                                             alt="{{ developer.name }} logo" 
+                                             class="w-full h-20 object-contain transition-transform duration-300 group-hover:scale-110"
+                                             loading="lazy">
+                                    </div>
+                                    
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                                        {{ developer.name }}
+                                    </h3>
+                                    
+                                    {% if developer.position %}
+                                        <p class="text-sm text-gray-500 mb-3">{{ developer.position }}</p>
+                                    {% endif %}
+                                    
+                                    {% if developer.website %}
+                                        <div class="flex items-center justify-center text-blue-600 group-hover:text-purple-600 transition-colors">
+                                            <i class="fas fa-external-link-alt text-xs mr-1"></i>
+                                            <span class="text-xs font-medium">Visit Website</span>
+                                        </div>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Mobile Scroll Indicators -->
+                <div class="flex justify-center space-x-2 mt-6">
+                    {% for developer in developers %}
+                        <div class="w-2 h-2 bg-gray-300 rounded-full transition-colors duration-300" data-slide="{{ forloop.counter0 }}"></div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div class="mb-6">
+                    <i class="fas fa-building text-6xl text-gray-300"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-400 mb-4">No Developers Available</h3>
+                <p class="text-gray-500 max-w-md mx-auto">
+                    We're currently onboarding new developers. Check back soon for our trusted partners!
+                </p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Custom Styles for Mobile Carousel -->
+    <style>
+        .developers-carousel {
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Fade effect on sides for mobile carousel */
+        .developers-carousel::before,
+        .developers-carousel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .developers-carousel::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(249, 250, 251, 1), rgba(249, 250, 251, 0));
+        }
+        
+        .developers-carousel::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(249, 250, 251, 1), rgba(249, 250, 251, 0));
+        }
+    </style>
+
+    <!-- JavaScript for Mobile Carousel Interaction -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.querySelector('.developers-carousel');
+            const indicators = document.querySelectorAll('[data-slide]');
+            
+            if (!carousel || !indicators.length) return;
+            
+            // Update indicators based on scroll position
+            function updateIndicators() {
+                const scrollLeft = carousel.scrollLeft;
+                const cardWidth = 288; // w-72 = 18rem = 288px + gap
+                const currentIndex = Math.round(scrollLeft / cardWidth);
+                
+                indicators.forEach((indicator, index) => {
+                    if (index === currentIndex) {
+                        indicator.classList.remove('bg-gray-300');
+                        indicator.classList.add('bg-blue-600');
+                    } else {
+                        indicator.classList.remove('bg-blue-600');
+                        indicator.classList.add('bg-gray-300');
+                    }
+                });
+            }
+            
+            // Handle indicator clicks
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    const cardWidth = 288;
+                    carousel.scrollTo({
+                        left: index * cardWidth,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Listen for scroll events
+            carousel.addEventListener('scroll', updateIndicators);
+            
+            // Initialize indicators
+            updateIndicators();
+        });
+    </script>
+</section>

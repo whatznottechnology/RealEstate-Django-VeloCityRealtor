@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us – Velocity Realtor{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-red-600 via-red-500 to-orange-400 text-white py-20 lg:py-24 overflow-hidden">
+    <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <div class="absolute top-0 left-0 w-full h-full">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-white opacity-10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-yellow-300 opacity-10 rounded-full blur-3xl"></div>
+        </div>
+    </div>
+    <div class="relative w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="mb-6">
+                <span class="inline-block px-4 py-2 bg-white bg-opacity-20 rounded-full text-sm font-semibold tracking-wide uppercase">
+                    Trusted Since 2020
+                </span>
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                About <span class="text-yellow-300">Velocity Realtor</span>
+            </h1>
+            <p class="text-xl lg:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Your Trusted Real Estate Partners in West Bengal
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 text-sm lg:text-base">
+                <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full">✨ 500+ Properties Sold</span>
+                <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full">🏆 Award Winning Team</span>
+                <span class="bg-white bg-opacity-20 px-4 py-2 rounded-full">📍 10+ Prime Locations</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-16 bg-gray-50">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="group">
+                    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                        <div class="text-3xl lg:text-4xl font-bold text-red-600 mb-2">500+</div>
+                        <p class="text-gray-700 font-medium">Properties Sold</p>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                        <div class="text-3xl lg:text-4xl font-bold text-red-600 mb-2">1000+</div>
+                        <p class="text-gray-700 font-medium">Happy Clients</p>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                        <div class="text-3xl lg:text-4xl font-bold text-red-600 mb-2">10+</div>
+                        <p class="text-gray-700 font-medium">Prime Locations</p>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                        <div class="text-3xl lg:text-4xl font-bold text-red-600 mb-2">5+</div>
+                        <p class="text-gray-700 font-medium">Years Experience</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="py-16 lg:py-20 bg-white">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+                <div class="order-2 lg:order-1">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80" alt="Modern Office Building" class="rounded-2xl shadow-2xl w-full object-cover h-96">
+                        <div class="absolute -bottom-6 -right-6 bg-red-600 text-white p-6 rounded-xl shadow-lg">
+                            <div class="text-2xl font-bold">Excellence</div>
+                            <div class="text-sm">in Real Estate</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <div class="mb-6">
+                        <span class="inline-block px-4 py-2 bg-red-100 text-red-600 rounded-full text-sm font-semibold tracking-wide uppercase mb-4">
+                            Who We Are
+                        </span>
+                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6 leading-tight">
+                            Leading Real Estate Agency in <span class="text-red-600">West Bengal</span>
+                        </h2>
+                    </div>
+                    <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+                        Velocity Realtor is a premier real estate marketing agency in West Bengal, offering expert solutions in property sales, land acquisition, project marketing, and real estate investments. We specialize in connecting verified property buyers with genuine sellers across <strong>Kolkata, Newtown, Rajarhat, Siliguri</strong>, and other prime locations.
+                    </p>
+                    <p class="text-lg text-gray-700 mb-8 leading-relaxed">
+                        With a strong network of property developers and landowners, our experienced team ensures fast, secure, and transparent transactions. Whether you're a first-time homebuyer, seasoned investor, or builder, we help you make informed decisions and close deals confidently.
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-lg font-semibold text-gray-800">Trusted by 1000+ Satisfied Clients</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Section -->
+            <div class="mb-16">
+                <div class="text-center mb-12">
+                    <span class="inline-block px-4 py-2 bg-red-100 text-red-600 rounded-full text-sm font-semibold tracking-wide uppercase mb-4">
+                        Our Core Services
+                    </span>
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">What We Offer</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="group bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl hover:border-red-200 transition-all duration-300">
+                        <div class="bg-red-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-200 transition-colors">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Residential & Commercial Properties</h3>
+                        <p class="text-gray-600">Premium residential flats and commercial spaces in prime locations across West Bengal.</p>
+                    </div>
+                    <div class="group bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl hover:border-red-200 transition-all duration-300">
+                        <div class="bg-red-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-200 transition-colors">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Verified Land Listings</h3>
+                        <p class="text-gray-600">Large land parcels and verified plots for residential and commercial development.</p>
+                    </div>
+                    <div class="group bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl hover:border-red-200 transition-all duration-300">
+                        <div class="bg-red-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-200 transition-colors">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Project Marketing</h3>
+                        <p class="text-gray-600">Comprehensive marketing and sales support for real estate projects and developments.</p>
+                    </div>
+                    <div class="group bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl hover:border-red-200 transition-all duration-300">
+                        <div class="bg-red-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-200 transition-colors">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Legal & Documentation</h3>
+                        <p class="text-gray-600">Complete legal assistance and documentation support for hassle-free transactions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why Choose Us -->
+            <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-3xl p-8 lg:p-12">
+                <div class="text-center mb-12">
+                    <span class="inline-block px-4 py-2 bg-red-100 text-red-600 rounded-full text-sm font-semibold tracking-wide uppercase mb-4">
+                        Why Choose Us
+                    </span>
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">We Bring Speed, Trust, and Clarity to Real Estate</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Lightning Fast</h3>
+                        <p class="text-gray-600">Quick property matches and rapid transaction processing for immediate results.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">100% Trusted</h3>
+                        <p class="text-gray-600">Verified properties, genuine sellers, and transparent dealings you can count on.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Crystal Clear</h3>
+                        <p class="text-gray-600">No hidden costs, complete transparency, and clear communication throughout.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Onboarded Developers Section -->
+{% include 'components/developers_section.html' %}
+
+<!-- CTA Section -->
+<section class="py-16 bg-gray-900 text-white">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl lg:text-4xl font-bold mb-6">Ready to Start Your Real Estate Journey?</h2>
+            <p class="text-xl text-gray-300 mb-8">
+                🔍 Looking to buy, sell, or market a property in West Bengal?<br>
+                We're just one call away. Let's grow your real estate journey—together.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'theme:contact_us' %}" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                    </svg>
+                    Contact Us Today
+                </a>
+                <a href="{% url 'theme:search_properties' %}" class="bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    Browse Properties
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

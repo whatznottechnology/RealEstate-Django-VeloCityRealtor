@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Application Submitted{% endblock %}
+{% block content %}
+<section class="max-w-xl mx-auto py-20 px-4 text-center">
+    <div class="bg-green-50 rounded-3xl shadow-2xl p-12 border border-green-100">
+        <svg class="w-16 h-16 mx-auto mb-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <h1 class="text-3xl font-extrabold mb-4 text-green-700">Thank you for applying!</h1>
+        <p class="mb-8 text-gray-700 text-lg">Your application for <span class="font-semibold">{{ career.title }}</span> has been submitted successfully.<br>We will review your application and contact you if shortlisted.</p>
+        <a href="{% url 'career_list' %}" class="inline-block bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-4 px-10 rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl text-base">Back to Careers</a>
+    </div>
+</section>
+{% endblock %}
