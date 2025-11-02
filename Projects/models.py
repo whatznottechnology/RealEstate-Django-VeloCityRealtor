@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.utils.text import slugify
 from decimal import Decimal
 
 
@@ -159,6 +160,7 @@ class Project(models.Model):
     
     # Primary Fields
     name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=250, unique=True, db_index=True, help_text="Auto-generated from name")
     project_by = models.CharField(max_length=200, help_text="Company or Brand", blank=True, null=True)
     logo = models.ImageField(upload_to='project/logo/', blank=True, null=True)
     banner_image = models.ImageField(upload_to='project/banner/', blank=True, null=True)
@@ -244,6 +246,27 @@ class Project(models.Model):
     
     def __str__(self):
         return f"{self.name} by {self.project_by}"
+    
+    def save(self, *args, **kwargs):
+        """Auto-generate unique slug from name"""
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            
+            # Handle duplicate slugs
+            while Project.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            
+            self.slug = slug
+        
+        super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        """Return public URL for this project"""
+        from django.urls import reverse
+        return reverse('Projects:public_project_detail', kwargs={'slug': self.slug})
     
     def increment_views(self):
         """Increment view count"""

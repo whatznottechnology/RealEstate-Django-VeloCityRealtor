@@ -67,13 +67,38 @@ class ContactForm(models.Model):
 
 
 class SiteConfig(models.Model):
-    # Site Logo
+    # Site Logo & Favicon
     site_logo = models.ImageField(
         upload_to='site/logo/',
         blank=True,
         null=True,
         verbose_name="Site Logo",
         help_text="Main logo for the website (recommended: transparent PNG, 200x60px)"
+    )
+    
+    favicon = models.ImageField(
+        upload_to='site/favicon/',
+        blank=True,
+        null=True,
+        verbose_name="Favicon",
+        help_text="Website favicon (recommended: square PNG, 32x32px or 512x512px for best quality)"
+    )
+    
+    # Hero Section Background Images
+    hero_bg_image_desktop = models.ImageField(
+        upload_to='site/hero/',
+        blank=True,
+        null=True,
+        verbose_name="Hero Background (Desktop)",
+        help_text="Desktop hero section background image (recommended: 1920x1080px, landscape)"
+    )
+    
+    hero_bg_image_mobile = models.ImageField(
+        upload_to='site/hero/',
+        blank=True,
+        null=True,
+        verbose_name="Hero Background (Mobile)",
+        help_text="Mobile hero section background image (recommended: 750x1334px, portrait or square)"
     )
     
     # Company Brochure

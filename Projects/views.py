@@ -38,11 +38,11 @@ def project_detail_view(request, project_id):
     return render(request, 'admin/Projects/project_detail.html', context)
 
 
-def public_project_detail_view(request, project_id):
+def public_project_detail_view(request, slug):
     """Public detailed view of a project using the new redesigned template"""
     from datetime import date
     
-    project = get_object_or_404(Project, id=project_id, is_active=True)
+    project = get_object_or_404(Project, slug=slug, is_active=True)
     
     # Increment view count
     project.increment_views()
@@ -51,7 +51,7 @@ def public_project_detail_view(request, project_id):
     site_config = SiteConfig.get_config()
     
     # Check if user has floor plan access (using session-based tracking)
-    session_key = f'floor_plan_access_{project_id}'
+    session_key = f'floor_plan_access_{project.id}'
     has_floor_plan_access = request.session.get(session_key, False)
     
     # Get related projects (same category or city)
@@ -207,10 +207,10 @@ def get_project_types(request):
 
 @csrf_exempt
 @require_POST
-def increment_project_views(request, project_id):
+def increment_project_views(request, slug):
     """AJAX endpoint to increment project views"""
     try:
-        project = get_object_or_404(Project, id=project_id, is_active=True)
+        project = get_object_or_404(Project, slug=slug, is_active=True)
         project.increment_views()
         return JsonResponse({'success': True, 'views': project.views})
     except:
@@ -219,10 +219,10 @@ def increment_project_views(request, project_id):
 
 @csrf_exempt
 @require_POST
-def submit_floor_plan_access(request, project_id):
+def submit_floor_plan_access(request, slug):
     """Submit contact details to access floor plans"""
     try:
-        project = get_object_or_404(Project, id=project_id, is_active=True)
+        project = get_object_or_404(Project, slug=slug, is_active=True)
         
         # Get form data
         data = json.loads(request.body)
@@ -273,7 +273,7 @@ def submit_floor_plan_access(request, project_id):
         )
         
         # Grant access in session
-        session_key = f'floor_plan_access_{project_id}'
+        session_key = f'floor_plan_access_{project.id}'
         request.session[session_key] = True
         request.session.modified = True
         
@@ -304,10 +304,10 @@ def submit_floor_plan_access(request, project_id):
 
 @csrf_exempt
 @require_POST
-def submit_project_inquiry(request, project_id):
+def submit_project_inquiry(request, slug):
     """Submit project inquiry form"""
     try:
-        project = get_object_or_404(Project, id=project_id, is_active=True)
+        project = get_object_or_404(Project, slug=slug, is_active=True)
         
         # Get form data
         if request.content_type == 'application/json':

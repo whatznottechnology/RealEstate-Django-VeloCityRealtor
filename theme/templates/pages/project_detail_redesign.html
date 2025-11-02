@@ -1797,7 +1797,7 @@
                         <h3 class="text-lg font-bold mb-2 text-center">Quick Inquiry</h3>
                         <form id="project-inquiry-form" class="space-y-2">
                             {% csrf_token %}
-                            <input type="hidden" name="project_id" value="{{ project.id }}">
+                            <input type="hidden" name="project_slug" value="{{ project.slug }}">
                             
                             <div class="form-group">
                                 <input type="text" name="name" placeholder="Your Name *" 
@@ -2170,7 +2170,7 @@
                     {% if related.onwards_price %}
                     <p class="font-bold text-red-600 text-sm mb-2">₹{{ related.onwards_price|floatformat:0 }}</p>
                     {% endif %}
-                    <a href="{% url 'Projects:public_project_detail' project_id=related.id %}" 
+                    <a href="{% url 'Projects:public_project_detail' slug=related.slug %}" 
                        class="btn btn-primary w-full text-xs py-2">
                         View Details
                     </a>
@@ -2257,7 +2257,7 @@
         </div>
         <form id="floor-plan-access-form" class="p-6 space-y-4">
             {% csrf_token %}
-            <input type="hidden" name="project_id" value="{{ project.id }}">
+            <input type="hidden" name="project_slug" value="{{ project.slug }}">
             
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                 <div class="flex items-start">
@@ -2568,7 +2568,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 // Get CSRF token
                 const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
-                const projectId = formData.get('project_id');
+                const projectSlug = formData.get('project_slug');
                 
                 // Prepare form data
                 const submitData = {
@@ -2582,7 +2582,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 // Submit form
-                const response = await fetch(`/project/project-inquiry/${projectId}/`, {
+                const response = await fetch(`/project/project-inquiry/${projectSlug}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2660,9 +2660,9 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 // Get CSRF token
                 const csrfToken = floorPlanForm.querySelector('[name=csrfmiddlewaretoken]').value;
-                const projectId = formData.get('project_id');
+                const projectSlug = formData.get('project_slug');
                 
-                console.log('Submitting floor plan access request:', {projectId, name, email, phone});
+                console.log('Submitting floor plan access request:', {projectSlug, name, email, phone});
                 
                 // Prepare form data
                 const submitData = {
@@ -2673,7 +2673,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 // Submit form
-                const response = await fetch(`/project/floor-plan-access/${projectId}/`, {
+                const response = await fetch(`/project/floor-plan-access/${projectSlug}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,11 +1,12 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin, StackedInline, TabularInline
 from django.utils.html import format_html
 from django.urls import reverse
 from .models import LandRequirement
 
 
 @admin.register(LandRequirement)
-class LandRequirementAdmin(admin.ModelAdmin):
+class LandRequirementAdmin(ModelAdmin):
     list_display = ['name', 'contact_number', 'budget', 'requirement_type', 'enquiry_from', 'status_badge', 'created_at', 'action_buttons']
     list_filter = ['requirement_type', 'enquiry_from', 'area_unit', 'status', 'agreed_to_terms', 'created_at']
     search_fields = ['name', 'contact_number', 'location']
@@ -30,15 +31,12 @@ class LandRequirementAdmin(admin.ModelAdmin):
     
     def action_buttons(self, obj):
         return format_html(
-            '<div class="action-buttons">'
-            '<a href="{}" class="button" style="background: #007cba; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: none; font-size: 11px;">✏️ Edit</a>'
-            '<a href="{}" class="button" style="background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: none; font-size: 11px;">👁️ View Details</a>'
+            '<div style="display: flex; gap: 5px; flex-wrap: nowrap;">'
+            '<a href="{}" style="background: #3b82f6; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; white-space: nowrap; display: inline-block;">✏️ Edit</a>'
             '</div>',
-            reverse('admin:land_leads_landrequirement_change', args=[obj.pk]),
-            f'/land-leads/requirement/{obj.pk}/detail/'
+            reverse('admin:land_leads_landrequirement_change', args=[obj.pk])
         )
     action_buttons.short_description = '⚙️ Actions'
-    action_buttons.allow_tags = True
     
     fieldsets = (
         ('Personal Information', {
@@ -51,3 +49,4 @@ class LandRequirementAdmin(admin.ModelAdmin):
             'fields': ('status', 'agreed_to_terms', 'created_at')
         }),
     )
+

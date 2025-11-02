@@ -365,19 +365,19 @@ def search_properties(request):
     return render(request, 'pages/search_properties.html', context)
 
 
-def project_detail(request, project_id):
+def project_detail(request, slug):
     """Redirect to the new Projects app project detail view"""
     from django.shortcuts import redirect
     
     # Redirect to the Projects app public project detail view
-    return redirect('Projects:public_project_detail', project_id=project_id)
+    return redirect('Projects:public_project_detail', slug=slug)
 
 
 @require_POST
-def increment_project_views(request, project_id):
+def increment_project_views(request, slug):
     """Increment project view count"""
     try:
-        project = Project.objects.get(id=project_id, is_active=True)
+        project = Project.objects.get(slug=slug, is_active=True)
         project.increment_views()
         return JsonResponse({'success': True, 'views': project.views})
     except Project.DoesNotExist:
@@ -616,3 +616,27 @@ def ajax_project_types(request):
             project_types = ProjectType.objects.filter(category_id=category_id).values('id', 'name')
             return JsonResponse({'project_types': list(project_types)})
     return JsonResponse({'project_types': []})
+
+
+# ============================================================================
+# PWA VIEWS
+# ============================================================================
+
+from django.http import HttpResponse, FileResponse
+from django.conf import settings
+import os
+
+def serve_manifest(request):
+    """Serve the PWA manifest.json file"""
+    manifest_path = os.path.join(settings.BASE_DIR, 'static', 'manifest.json')
+    return FileResponse(open(manifest_path, 'rb'), content_type='application/manifest+json')
+
+def serve_sw(request):
+    """Serve the service worker file"""
+    sw_path = os.path.join(settings.BASE_DIR, 'static', 'sw.js')
+    return FileResponse(open(sw_path, 'rb'), content_type='application/javascript')
+
+def offline_page(request):
+    """Offline page for PWA"""
+    return render(request, 'offline.html')
+

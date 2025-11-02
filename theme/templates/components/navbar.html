@@ -15,40 +15,48 @@
         </a>
       </div>
 
-      <!-- Desktop Right Section: Menu + Phone -->
-      <div class="flex items-center space-x-6">
+      <!-- Desktop Right Section: Menu + Install + Phone -->
+      <div class="flex items-center space-x-4">
         <!-- Desktop Menu -->
-        <div class="flex items-center space-x-6">
-          <a href="{% url 'theme:search_properties' %}" class="{% if request.resolver_match.url_name == 'search_properties' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-3 py-2 text-sm font-medium transition-all duration-300 relative group">
+        <div class="flex items-center space-x-4">
+          <a href="{% url 'theme:search_properties' %}" class="{% if request.resolver_match.url_name == 'search_properties' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-2 py-2 text-sm font-medium transition-all duration-300 relative group">
             Properties
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-red-400 group-hover:w-full transition-all duration-300"></span>
           </a>
-          <a href="{% url 'theme:land_page' %}" class="{% if request.resolver_match.url_name == 'land_page' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-3 py-2 text-sm font-medium transition-all duration-300 relative group">
+          <a href="{% url 'theme:land_page' %}" class="{% if request.resolver_match.url_name == 'land_page' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-2 py-2 text-sm font-medium transition-all duration-300 relative group">
             Land
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-red-400 group-hover:w-full transition-all duration-300"></span>
           </a>
-          <a href="{% url 'theme:requirements_page' %}" class="{% if request.resolver_match.url_name == 'requirements_page' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-3 py-2 text-sm font-medium transition-all duration-300 relative group">
+          <a href="{% url 'theme:requirements_page' %}" class="{% if request.resolver_match.url_name == 'requirements_page' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-2 py-2 text-sm font-medium transition-all duration-300 relative group">
             Send Your Requirements
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-red-400 group-hover:w-full transition-all duration-300"></span>
           </a>
-          <a href="{% url 'theme:investment_page' %}" class="{% if request.resolver_match.url_name == 'investment_page' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-3 py-2 text-sm font-medium transition-all duration-300 relative group">
+          <a href="{% url 'theme:investment_page' %}" class="{% if request.resolver_match.url_name == 'investment_page' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-2 py-2 text-sm font-medium transition-all duration-300 relative group">
             Investment
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-red-400 group-hover:w-full transition-all duration-300"></span>
           </a>
-          <a href="{% url 'interior:interior_page' %}" class="{% if request.resolver_match.url_name == 'interior_page' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-3 py-2 text-sm font-medium transition-all duration-300 relative group">
+          <a href="{% url 'interior:interior_page' %}" class="{% if request.resolver_match.url_name == 'interior_page' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-2 py-2 text-sm font-medium transition-all duration-300 relative group">
             Interior
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-red-400 group-hover:w-full transition-all duration-300"></span>
           </a>
-          <div class="h-6 w-px bg-gray-600 mx-2"></div>
-          <a href="{% url 'theme:about_us' %}" class="{% if request.resolver_match.url_name == 'about_us' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-3 py-2 text-sm font-medium transition-all duration-300 relative group">
+          <div class="h-6 w-px bg-gray-600 mx-1"></div>
+          <a href="{% url 'theme:about_us' %}" class="{% if request.resolver_match.url_name == 'about_us' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-2 py-2 text-sm font-medium transition-all duration-300 relative group">
             About Us
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-red-400 group-hover:w-full transition-all duration-300"></span>
           </a>
-          <a href="{% url 'theme:contact_us' %}" class="{% if request.resolver_match.url_name == 'contact_us' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-3 py-2 text-sm font-medium transition-all duration-300 relative group">
+          <a href="{% url 'theme:contact_us' %}" class="{% if request.resolver_match.url_name == 'contact_us' %}text-red-400 border-b-2 border-red-400{% else %}text-gray-300 hover:text-red-400{% endif %} px-2 py-2 text-sm font-medium transition-all duration-300 relative group">
             Contact
             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-red-400 group-hover:w-full transition-all duration-300"></span>
           </a>
         </div>
+
+        <!-- PWA Install Button (Desktop) -->
+        <button id="pwa-install-desktop" onclick="installPWA()" class="hidden items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105" title="Install App">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+          </svg>
+          <span>Install App</span>
+        </button>
 
         <!-- Phone Button -->
         <a href="{% if site_config.contact_phone %}tel:{{ site_config.contact_phone }}{% else %}tel:+919876543210{% endif %}" class="flex items-center bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
@@ -72,8 +80,16 @@
         </a>
       </div>
 
-      <!-- Mobile Right Section: Phone + Hamburger Menu -->
-      <div class="flex items-center space-x-3">
+      <!-- Mobile Right Section: Install + Phone + Hamburger Menu -->
+      <div class="flex items-center space-x-2">
+        <!-- PWA Install Button (Mobile) -->
+        <button id="pwa-install-mobile" onclick="installPWA()" class="hidden items-center bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-full text-xs font-medium transition-all duration-300 shadow-lg hover:shadow-xl" title="Install App">
+          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+          </svg>
+          <span class="hidden xs:inline">Install</span>
+        </button>
+        
         <!-- Mobile Phone Number -->
         <a href="{% if site_config.contact_phone %}tel:{{ site_config.contact_phone }}{% else %}tel:+919876543210{% endif %}" class="flex items-center bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-3 py-2 rounded-full text-xs font-medium transition-all duration-300 shadow-lg hover:shadow-xl">
           <svg class="w-3 h-3 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

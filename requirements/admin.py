@@ -1,10 +1,13 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin, StackedInline, TabularInline
+from django.utils.html import format_html
+from django.urls import reverse
 from .models import Requirement
 
 
 @admin.register(Requirement)
-class RequirementAdmin(admin.ModelAdmin):
-    list_display = ['name', 'contact_number', 'requirement_type', 'property_type', 'enquiry_from', 'location', 'budget_display', 'created_at']
+class RequirementAdmin(ModelAdmin):
+    list_display = ['name', 'contact_number', 'requirement_type', 'property_type', 'enquiry_from', 'location', 'budget_display', 'created_at', 'action_buttons']
     list_filter = ['requirement_type', 'property_type', 'enquiry_from', 'budget_range', 'agreed_to_terms', 'created_at']
     search_fields = ['name', 'contact_number', 'email', 'location', 'specific_requirements']
     readonly_fields = ['created_at']
@@ -20,6 +23,15 @@ class RequirementAdmin(admin.ModelAdmin):
         return '-'
     budget_display.short_description = 'Budget'
     budget_display.admin_order_field = 'budget'
+    
+    def action_buttons(self, obj):
+        return format_html(
+            '<div style="display: flex; gap: 5px; flex-wrap: nowrap;">'
+            '<a href="{}" style="background: #3b82f6; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; white-space: nowrap; display: inline-block;">✏️ Edit</a>'
+            '</div>',
+            reverse('admin:requirements_requirement_change', args=[obj.pk])
+        )
+    action_buttons.short_description = '⚙️ Actions'
     
     fieldsets = (
         ('Contact Information', {
@@ -47,3 +59,4 @@ class RequirementAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
     )
+

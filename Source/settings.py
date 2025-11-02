@@ -269,11 +269,33 @@ if not DEBUG:
 # Modern, clean admin interface with dark mode support
 # Documentation: https://unfoldadmin.com/
 
+# Import the environment function directly
+from theme.admin_config import get_admin_environment
+
 UNFOLD = {
+    # === BRANDING (Hardcoded for reliability) ===
     "SITE_TITLE": "VeloCity Realtor",
     "SITE_HEADER": "VeloCity Realtor Admin",
     "SITE_URL": "/",
-    "SITE_SYMBOL": "🏢",  # Emoji or Unicode symbol shown in dark mode
+    
+    # Logo for header (dict with light/dark themes)
+    "SITE_LOGO": {
+        "light": "/static/admin/img/lofa.png",
+        "dark": "/static/admin/img/lofa.png",
+    },
+    
+    # Favicon for browser tab
+    "SITE_FAVICONS": [
+        {
+            "rel": "icon",
+            "sizes": "32x32",
+            "type": "image/png",
+            "href": "/static/admin/img/lofa.png",
+        },
+    ],
+    
+    # Dynamic admin configuration from database (for other settings)
+    # "ENVIRONMENT": get_admin_environment,
     
     "SHOW_HISTORY": True,  # Show history/change logs
     "SHOW_VIEW_ON_SITE": True,  # Show "View on site" link for models with get_absolute_url
@@ -296,7 +318,192 @@ UNFOLD = {
     
     "SIDEBAR": {
         "show_search": True,  # Show search in sidebar
-        "show_all_applications": True,  # Auto-discover and show all apps
+        "show_all_applications": False,  # Use custom navigation instead of auto-discovery
+        "navigation": [
+            {
+                "title": "MAIN",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Dashboard",
+                        "icon": "dashboard",
+                        "link": "/admin/",
+                    },
+                ],
+            },
+            {
+                "title": "PROJECTS MANAGEMENT",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": "Projects",
+                        "icon": "apartment",
+                        "link": "/admin/Projects/project/",
+                    },
+                    {
+                        "title": "Project Reviews",
+                        "icon": "rate_review",
+                        "link": "/admin/Projects/projectreview/",
+                    },
+                    {
+                        "title": "Cities",
+                        "icon": "location_city",
+                        "link": "/admin/Projects/city/",
+                    },
+                    {
+                        "title": "Categories",
+                        "icon": "category",
+                        "link": "/admin/Projects/category/",
+                    },
+                    {
+                        "title": "Project Types",
+                        "icon": "home",
+                        "link": "/admin/Projects/projecttype/",
+                    },
+                    {
+                        "title": "Amenities",
+                        "icon": "pool",
+                        "link": "/admin/Projects/amenity/",
+                    },
+                    {
+                        "title": "Tags",
+                        "icon": "label",
+                        "link": "/admin/Projects/tag/",
+                    },
+                    {
+                        "title": "Area Types",
+                        "icon": "map",
+                        "link": "/admin/Projects/areatype/",
+                    },
+                ],
+            },
+            {
+                "title": "LEADS & INQUIRIES",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": "Project Inquiries",
+                        "icon": "contact_mail",
+                        "link": "/admin/Projects/projectinquiry/",
+                    },
+                    {
+                        "title": "Land Requirements",
+                        "icon": "landscape",
+                        "link": "/admin/land_leads/landrequirement/",
+                    },
+                    {
+                        "title": "Investment Leads",
+                        "icon": "trending_up",
+                        "link": "/admin/investment_leads/investmentrequirement/",
+                    },
+                    {
+                        "title": "Property Requirements",
+                        "icon": "domain",
+                        "link": "/admin/requirements/requirement/",
+                    },
+                    {
+                        "title": "Interior Inquiries",
+                        "icon": "format_paint",
+                        "link": "/admin/interior/interiorinquiry/",
+                    },
+                    {
+                        "title": "Contact Forms",
+                        "icon": "mail",
+                        "link": "/admin/theme/contactform/",
+                    },
+                ],
+            },
+            {
+                "title": "SITE SETTINGS",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": "Site Configuration",
+                        "icon": "settings",
+                        "link": "/admin/theme/siteconfig/",
+                    },
+                    {
+                        "title": "Testimonials",
+                        "icon": "star",
+                        "link": "/admin/theme/testimonial/",
+                    },
+                    {
+                        "title": "Developers",
+                        "icon": "business",
+                        "link": "/admin/theme/developer/",
+                    },
+                ],
+            },
+            {
+                "title": "INTERIOR SERVICES",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": "Interior Services",
+                        "icon": "design_services",
+                        "link": "/admin/interior/interiorservice/",
+                    },
+                    {
+                        "title": "Portfolio Works",
+                        "icon": "collections",
+                        "link": "/admin/interior/portfoliowork/",
+                    },
+                ],
+            },
+            {
+                "title": "CONTENT & CAREERS",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": "Blogs",
+                        "icon": "article",
+                        "link": "/admin/blogs/blog/",
+                    },
+                    {
+                        "title": "Blog Tags",
+                        "icon": "tag",
+                        "link": "/admin/blogs/tag/",
+                    },
+                    {
+                        "title": "Careers / Jobs",
+                        "icon": "work",
+                        "link": "/admin/career/career/",
+                    },
+                    {
+                        "title": "Job Applications",
+                        "icon": "assignment",
+                        "link": "/admin/career/careerapplication/",
+                    },
+                ],
+            },
+            {
+                "title": "USERS & PERMISSIONS",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": "Users",
+                        "icon": "person",
+                        "link": "/admin/auth/user/",
+                    },
+                    {
+                        "title": "Groups",
+                        "icon": "group",
+                        "link": "/admin/auth/group/",
+                    },
+                    {
+                        "title": "Permissions",
+                        "icon": "lock",
+                        "link": "/admin/auth/permission/",
+                    },
+                ],
+            },
+        ],
     },
 }
 

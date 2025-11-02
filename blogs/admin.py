@@ -1,7 +1,8 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin, StackedInline, TabularInline
 from .models import Blog, Tag
 
-class BlogAdmin(admin.ModelAdmin):
+class BlogAdmin(ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     list_display = ("title", "created_at", "is_published")
     search_fields = ("title", "tags__name")
@@ -24,3 +25,4 @@ class BlogAdmin(admin.ModelAdmin):
 
 admin.site.register(Blog, BlogAdmin)
 admin.site.register(Tag)
+

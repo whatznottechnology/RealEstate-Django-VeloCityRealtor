@@ -122,8 +122,8 @@
         
         <!-- Action Buttons -->
         <div class="flex gap-2">
-            <a href="{% url 'theme:project_detail' project.id %}" 
-               onclick="incrementViews({{ project.id }})"
+            <a href="{% url 'theme:project_detail' project.slug %}" 
+               onclick="incrementViews('{{ project.slug }}')"
                class="flex-1 bg-red-600 hover:bg-red-700 text-white text-center py-2 px-4 rounded-lg text-sm font-medium transition-colors">
                 View Details
             </a>

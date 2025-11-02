@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}VeloCity Realtor - Your Real Estate Partner{% endblock %}</title>
+    <title>{% block title %}{% if site_config.site_title %}{{ site_config.site_title }}{% else %}VeloCity Realtor{% endif %} - Your Real Estate Partner{% endblock %}</title>
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="{% block meta_description %}Find your dream property with VeloCity Realtor. Residential, Commercial, Land and Investment properties in prime locations.{% endblock %}">
@@ -17,8 +17,31 @@
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:image" content="{% block og_image %}{% load static %}{% static 'images/og-image.jpg' %}{% endblock %}">
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{% load static %}{% static 'images/favicon.png' %}">
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#16a34a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="VeloCity">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{% url 'theme:manifest' %}">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/icons/icon-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{% static 'images/icons/icon-512x512.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/icons/icon-192x192.png' %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'images/icons/icon-152x152.png' %}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{% static 'images/icons/icon-192x192.png' %}">
+    
+    <!-- Favicon - Dynamic from Site Config or Default -->
+    {% if site_config.favicon %}
+    <link rel="icon" type="image/png" href="{{ site_config.favicon.url }}">
+    <link rel="shortcut icon" type="image/png" href="{{ site_config.favicon.url }}">
+    {% else %}
+    <link rel="icon" type="image/png" href="{% static 'images/icons/icon-192x192.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/icons/icon-192x192.png' %}">
+    {% endif %}
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -319,8 +342,8 @@
         }
         
         // Increment project views
-        function incrementViews(projectId) {
-            fetch(`/projects/${projectId}/increment-views/`, {
+        function incrementViews(projectSlug) {
+            fetch(`/projects/${projectSlug}/increment-views/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
@@ -349,8 +372,8 @@
         }
         
         // Function to increment project views
-        function incrementViews(projectId) {
-            fetch(`/increment-views/${projectId}/`, {
+        function incrementViews(projectSlug) {
+            fetch(`/increment-views/${projectSlug}/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value || '',
@@ -436,5 +459,116 @@
         });
     </script>
     {% endif %}
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('✅ Service Worker registered successfully:', registration.scope);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('🔄 New content available, please refresh.');
+                                }
+                            });
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('❌ Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // PWA Install Prompt Handler
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('📱 PWA install prompt available');
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Save the event for later use
+            deferredPrompt = e;
+            
+            // Show install buttons
+            const desktopInstallBtn = document.getElementById('pwa-install-desktop');
+            const mobileInstallBtn = document.getElementById('pwa-install-mobile');
+            
+            if (desktopInstallBtn) {
+                desktopInstallBtn.style.display = 'flex';
+                desktopInstallBtn.classList.remove('hidden');
+            }
+            if (mobileInstallBtn) {
+                mobileInstallBtn.style.display = 'flex';
+                mobileInstallBtn.classList.remove('hidden');
+            }
+        });
+
+        // Install button click handler
+        async function installPWA() {
+            if (!deferredPrompt) {
+                console.log('❌ Install prompt not available');
+                return;
+            }
+
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user's response
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`👤 User response to install prompt: ${outcome}`);
+            
+            if (outcome === 'accepted') {
+                console.log('✅ PWA installed successfully');
+                // Hide install buttons
+                hideInstallButtons();
+            } else {
+                console.log('❌ User dismissed install prompt');
+            }
+            
+            // Clear the deferredPrompt
+            deferredPrompt = null;
+        }
+
+        // Hide install buttons after installation
+        function hideInstallButtons() {
+            const desktopInstallBtn = document.getElementById('pwa-install-desktop');
+            const mobileInstallBtn = document.getElementById('pwa-install-mobile');
+            
+            if (desktopInstallBtn) {
+                desktopInstallBtn.style.display = 'none';
+                desktopInstallBtn.classList.add('hidden');
+            }
+            if (mobileInstallBtn) {
+                mobileInstallBtn.style.display = 'none';
+                mobileInstallBtn.classList.add('hidden');
+            }
+            
+            // Store installation state
+            localStorage.setItem('pwa_installed', 'true');
+        }
+
+        // Check if already installed on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check if running as installed PWA
+            if (window.matchMedia('(display-mode: standalone)').matches || 
+                window.navigator.standalone === true ||
+                localStorage.getItem('pwa_installed') === 'true') {
+                console.log('✅ Running as installed PWA');
+                hideInstallButtons();
+            }
+        });
+
+        // Listen for app installed event
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('✅ PWA was installed');
+            hideInstallButtons();
+        });
+    </script>
 </body>
 </html>

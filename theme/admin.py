@@ -1,10 +1,12 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin, StackedInline, TabularInline
 from django.utils.html import format_html
+from django.urls import reverse
 from .models import SiteConfig, ContactForm, Developer, Testimonial
 
 
 @admin.register(Developer)
-class DeveloperAdmin(admin.ModelAdmin):
+class DeveloperAdmin(ModelAdmin):
     """Admin configuration for Developer model"""
     
     list_display = ('name', 'is_active', 'order', 'website_url', 'updated_at')
@@ -35,10 +37,10 @@ class DeveloperAdmin(admin.ModelAdmin):
 
 
 @admin.register(ContactForm)
-class ContactFormAdmin(admin.ModelAdmin):
+class ContactFormAdmin(ModelAdmin):
     """Admin configuration for ContactForm model"""
     
-    list_display = ('name', 'email', 'phone', 'subject', 'submitted_at', 'is_read')
+    list_display = ('name', 'email', 'phone', 'subject', 'submitted_at', 'is_read', 'action_buttons')
     list_filter = ('is_read', 'submitted_at')
     search_fields = ('name', 'email', 'phone', 'subject')
     readonly_fields = ('submitted_at',)
@@ -59,10 +61,21 @@ class ContactFormAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         """Disable adding new contact forms from admin"""
         return False
+    
+    def action_buttons(self, obj):
+        return format_html(
+            '<div style="display: flex; gap: 5px; flex-wrap: nowrap;">'
+            '<a href="tel:{}" style="background: #10b981; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; white-space: nowrap; display: inline-block;">📞 Call</a>'
+            '<a href="mailto:{}" style="background: #3b82f6; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; white-space: nowrap; display: inline-block;">✉️ Email</a>'
+            '</div>',
+            obj.phone,
+            obj.email
+        )
+    action_buttons.short_description = '⚙️ Actions'
 
 
 @admin.register(SiteConfig)
-class SiteConfigAdmin(admin.ModelAdmin):
+class SiteConfigAdmin(ModelAdmin):
     """Admin configuration for SiteConfig model"""
     
     list_display = ('site_title', 'show_social_media', 'updated_at')
@@ -71,22 +84,37 @@ class SiteConfigAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
     
     fieldsets = (
-        ('Site Information', {
-            'fields': ('site_title', 'site_description', 'site_logo', 'contact_email', 'contact_phone', 'sales_phone', 'office_address'),
+        ('🎨 Branding', {
+            'fields': ('site_logo', 'favicon'),
             'classes': ('wide',),
-            'description': 'Contact Phone: Primary contact number | Sales Phone: Number for "Call Us Now" buttons'
+            'description': 'Upload site logo and favicon. Logo appears in navbar and admin panel. Favicon appears in browser tabs.'
         }),
-        ('Company Brochure', {
+        ('🖼️ Hero Section', {
+            'fields': ('hero_bg_image_desktop', 'hero_bg_image_mobile'),
+            'classes': ('wide',),
+            'description': 'Upload hero section background images for desktop and mobile views.'
+        }),
+        ('📄 Site Information', {
+            'fields': ('site_title', 'site_description'),
+            'classes': ('wide',),
+            'description': 'Site title and meta description for SEO'
+        }),
+        ('📞 Contact Information', {
+            'fields': ('contact_email', 'contact_phone', 'sales_phone', 'office_address'),
+            'classes': ('wide',),
+            'description': 'Contact Phone: Primary contact | Sales Phone: For "Call Us Now" buttons'
+        }),
+        ('📋 Company Brochure', {
             'fields': ('company_brochure',),
             'classes': ('wide',),
             'description': 'Upload the company brochure PDF file that will be available for download on the homepage.'
         }),
-        ('Promotional Popup', {
+        ('🎉 Promotional Popup', {
             'fields': ('promo_popup_image', 'promo_popup_name'),
             'classes': ('wide',),
             'description': 'Upload a square image and set a name/title for the promotional popup.'
         }),
-        ('Social Media Links', {
+        ('🔗 Social Media Links', {
             'fields': (
                 'show_social_media',
                 'facebook_url',
@@ -99,7 +127,7 @@ class SiteConfigAdmin(admin.ModelAdmin):
             'classes': ('wide',),
             'description': 'Enter social media URLs. Use # for links you want to disable.'
         }),
-        ('Timestamps', {
+        ('⏰ Timestamps', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',),
         }),
@@ -115,7 +143,7 @@ class SiteConfigAdmin(admin.ModelAdmin):
 
 
 @admin.register(Testimonial)
-class TestimonialAdmin(admin.ModelAdmin):
+class TestimonialAdmin(ModelAdmin):
     """Admin configuration for Testimonial model"""
     
     list_display = ('name', 'location', 'rating_display', 'project_type', 'is_featured', 'is_active', 'display_order', 'created_at')
@@ -173,3 +201,4 @@ class TestimonialAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         """Order by featured status, display order, then creation date"""
         return super().get_queryset(request).order_by('-is_featured', 'display_order', '-created_at')
+

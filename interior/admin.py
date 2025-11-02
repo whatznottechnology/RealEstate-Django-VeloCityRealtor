@@ -1,4 +1,5 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin, StackedInline, TabularInline
 from django.utils.html import format_html
 from .models import InteriorInquiry, InquiryStatus, InteriorService, PortfolioWork
 
@@ -7,7 +8,7 @@ from .models import InteriorInquiry, InquiryStatus, InteriorService, PortfolioWo
 
 
 @admin.register(InteriorService)
-class InteriorServiceAdmin(admin.ModelAdmin):
+class InteriorServiceAdmin(ModelAdmin):
     list_display = ('title', 'category', 'badge_text', 'is_active', 'order', 'image_preview')
     list_filter = ('category', 'is_active', 'badge_text')
     search_fields = ('title', 'description', 'features')
@@ -41,7 +42,7 @@ class InteriorServiceAdmin(admin.ModelAdmin):
 
 
 @admin.register(PortfolioWork)
-class PortfolioWorkAdmin(admin.ModelAdmin):
+class PortfolioWorkAdmin(ModelAdmin):
     list_display = ('title', 'work_type', 'location', 'completion_date', 'is_featured', 'is_active', 'order', 'image_preview')
     list_filter = ('work_type', 'is_featured', 'is_active', 'completion_date')
     search_fields = ('title', 'description', 'location')
@@ -75,7 +76,7 @@ class PortfolioWorkAdmin(admin.ModelAdmin):
 
 
 @admin.register(InteriorInquiry)
-class InteriorInquiryAdmin(admin.ModelAdmin):
+class InteriorInquiryAdmin(ModelAdmin):
     list_display = ('name', 'phone', 'email', 'service_type_display', 'status_badge', 'created_at', 'actions_column')
     list_filter = ('status', 'service_type', 'created_at')
     search_fields = ('name', 'email', 'phone', 'project_details', 'location')
@@ -136,8 +137,10 @@ class InteriorInquiryAdmin(admin.ModelAdmin):
     def actions_column(self, obj):
         """Quick action buttons"""
         return format_html(
-            '<a class="button" href="tel:{}" style="margin-right: 5px;">📞 Call</a>'
-            '<a class="button" href="mailto:{}">✉️ Email</a>',
+            '<div style="display: flex; gap: 5px; flex-wrap: nowrap;">'
+            '<a href="tel:{}" style="background: #10b981; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; white-space: nowrap; display: inline-block;">📞 Call</a>'
+            '<a href="mailto:{}" style="background: #3b82f6; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; white-space: nowrap; display: inline-block;">✉️ Email</a>'
+            '</div>',
             obj.phone,
             obj.email
         )
@@ -160,4 +163,5 @@ class InteriorInquiryAdmin(admin.ModelAdmin):
         updated = queryset.update(status=InquiryStatus.QUOTED)
         self.message_user(request, f'{updated} inquiries marked as quoted.')
     mark_as_quoted.short_description = "Mark as Quoted"
+
 

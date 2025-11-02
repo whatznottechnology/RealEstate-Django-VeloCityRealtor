@@ -175,8 +175,8 @@
             {% endif %}
         </div>
         
-        <!-- Action Button with dynamic URL using project ID -->
-        <a href="{% url 'theme:project_detail' project.id %}" 
+        <!-- Action Button with dynamic URL using project slug -->
+        <a href="{% url 'theme:project_detail' project.slug %}" 
            class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 rounded-lg font-bold text-center shadow-md flex items-center justify-center text-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>

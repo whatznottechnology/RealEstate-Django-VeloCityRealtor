@@ -1,4 +1,5 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin, StackedInline, TabularInline
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -15,7 +16,7 @@ from .models import ProjectReview
 
 
 # Inline Admin Classes
-class ProjectOverviewInline(admin.StackedInline):
+class ProjectOverviewInline(StackedInline):
     model = ProjectOverview
     extra = 0
     max_num = 1
@@ -29,7 +30,7 @@ class ProjectOverviewInline(admin.StackedInline):
     )
 
 
-class GalleryImageInline(admin.TabularInline):
+class GalleryImageInline(TabularInline):
     model = GalleryImage
     extra = 1
     verbose_name = "🖼️ Gallery Image"
@@ -47,14 +48,14 @@ class GalleryImageInline(admin.TabularInline):
     image_preview.short_description = 'Preview'
 
 
-class NearestAreaInline(admin.TabularInline):
+class NearestAreaInline(TabularInline):
     model = NearestArea
     extra = 1
     verbose_name = "📍 Nearby Location"
     verbose_name_plural = "📍 Nearby Locations"
 
 
-class FloorPlanInline(admin.TabularInline):
+class FloorPlanInline(TabularInline):
     model = FloorPlan
     extra = 1
     verbose_name = "📐 Floor Plan"
@@ -72,7 +73,7 @@ class FloorPlanInline(admin.TabularInline):
     image_preview.short_description = 'Preview'
 
 
-class ConstructionUpdateInline(admin.TabularInline):
+class ConstructionUpdateInline(TabularInline):
     model = ConstructionUpdate
     extra = 1
     verbose_name = "🏗️ Construction Update"
@@ -90,7 +91,7 @@ class ConstructionUpdateInline(admin.TabularInline):
     image_preview.short_description = 'Preview'
 
 
-class WhyChooseUsInline(admin.TabularInline):
+class WhyChooseUsInline(TabularInline):
     model = WhyChooseUs
     extra = 1
     verbose_name = "⭐ Why Choose Us"
@@ -98,7 +99,7 @@ class WhyChooseUsInline(admin.TabularInline):
     fields = ('title', 'description', 'icon', 'order')
 
 
-class SpecificationItemInline(admin.TabularInline):
+class SpecificationItemInline(TabularInline):
     model = SpecificationItem
     extra = 1
     verbose_name = "📋 Specification"
@@ -106,7 +107,7 @@ class SpecificationItemInline(admin.TabularInline):
     fields = ('category', 'name', 'description', 'order')
 
 
-class ProjectAmenityImageInline(admin.TabularInline):
+class ProjectAmenityImageInline(TabularInline):
     model = ProjectAmenityImage
     extra = 1
     verbose_name = "🏊 Amenity Image"
@@ -124,7 +125,7 @@ class ProjectAmenityImageInline(admin.TabularInline):
     image_preview.short_description = 'Preview'
 
 
-class ProjectReviewInline(admin.TabularInline):
+class ProjectReviewInline(TabularInline):
     model = ProjectReview
     extra = 1
     max_num = 10
@@ -135,13 +136,13 @@ class ProjectReviewInline(admin.TabularInline):
 
 # Main Admin Classes
 @admin.register(Project)
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(ModelAdmin):
     list_display = (
-        'display_order', 'project_thumbnail', 'name', 'project_by', 'city', 'status_badge', 
-        'bhk', 'formatted_price', 'reviews_count', 'views', 'feature_badges', 'edit_button', 'is_active', 'created_at'
+        'project_thumbnail', 'name', 'project_by', 'status_badge', 
+        'formatted_price', 'feature_badges', 'edit_button', 'is_active'
     )
     list_display_links = ('project_thumbnail', 'name')
-    list_editable = ('display_order',)  # Allow inline editing of display order
+    list_editable = ()  # Removed display_order from inline editing
     list_filter = (
         'status', 'category', 'project_type', 'city', 'is_featured', 
         'is_active', 'is_most_viewed', 'is_nearby_property', 'is_recently_viewed',
@@ -161,15 +162,6 @@ class ProjectAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     actions_selection_counter = True
     
-    # Add custom CSS classes for columns
-    def get_list_display(self, request):
-        return super().get_list_display(request)
-    
-    class Media:
-        css = {
-            'all': ('css/admin_custom.css',)
-        }
-
     formfield_overrides = {
         dj_models.DecimalField: {'widget': forms.NumberInput(attrs={'step': '0.01'})},
     }
@@ -240,41 +232,39 @@ class ProjectAdmin(admin.ModelAdmin):
     def feature_badges(self, obj):
         badges = []
         
-        # Primary feature badges
+        # Show only primary/most important features (max 4)
         if obj.is_featured:
-            badges.append('<span class="badge badge-featured">★ Featured</span>')
-        if obj.is_most_viewed:
-            badges.append('<span class="badge badge-most-viewed">👁️ Most Viewed</span>')
-        if obj.is_hot_deal:
-            badges.append('<span class="badge badge-hot-deal">🔥 Hot Deal</span>')
+            badges.append('<span style="background: #3b82f6; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">★ Featured</span>')
         if obj.is_premium_listing:
-            badges.append('<span class="badge badge-premium">👑 Premium</span>')
+            badges.append('<span style="background: #f59e0b; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">👑 Premium</span>')
+        if obj.is_hot_deal:
+            badges.append('<span style="background: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">� Hot Deal</span>')
         if obj.is_editors_choice:
-            badges.append('<span class="badge badge-editors-choice">✨ Editor\'s Choice</span>')
+            badges.append('<span style="background: #8b5cf6; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">✨ Editor\'s Choice</span>')
         
-        # Secondary feature badges
+        # Count remaining features
+        other_features = 0
+        if obj.is_most_viewed:
+            other_features += 1
         if obj.is_nearby_property:
-            badges.append('<span class="badge badge-nearby">📍 Nearby</span>')
+            other_features += 1
         if obj.is_recently_viewed:
-            badges.append('<span class="badge badge-recent">⏰ Recent</span>')
-        
-        # Trending tag badge
+            other_features += 1
         if obj.trending_tag:
-            trend_class = f'badge-trend-{obj.trending_tag.replace("_", "-")}'
-            badges.append(f'<span class="badge {trend_class}">🎯 {obj.get_trending_tag_display()}</span>')
+            other_features += 1
         
-        # Tags from ManyToMany field
-        for tag in obj.tags.all()[:3]:  # Limit to first 3 tags to avoid overcrowding
-            badges.append(f'<span class="badge badge-tag" style="background-color: {tag.color};">🏷️ {tag.name}</span>')
+        tags_count = obj.tags.count()
+        if tags_count > 0:
+            other_features += tags_count
         
-        if obj.tags.count() > 3:
-            badges.append(f'<span class="badge badge-more">+{obj.tags.count() - 3} more</span>')
+        # Show "more" indicator if there are additional features
+        if other_features > 0:
+            badges.append(f'<span style="background: #6b7280; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">+{other_features} more</span>')
         
         if badges:
-            html_content = f'<div class="feature-badges-container">{"".join(badges)}</div>'
-            return mark_safe(html_content)
-        return mark_safe('<span class="no-features">No features</span>')
-    feature_badges.short_description = '🏷️ Features & Tags'
+            return mark_safe(f'<div style="max-width: 250px;">{"".join(badges)}</div>')
+        return mark_safe('<span style="color: #9ca3af; font-size: 11px;">None</span>')
+    feature_badges.short_description = '🏷️ Features'
     feature_badges.allow_tags = True
     
     def project_preview(self, obj):
@@ -308,13 +298,16 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def edit_button(self, obj):
         from django.urls import reverse
+        # Get public URL using slug
+        public_url = obj.get_absolute_url() if obj.slug else '#'
+        
         return format_html(
-            '<div class="action-buttons">'
-            '<a href="{}" class="button" style="background: #007cba; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: none; font-size: 11px;">✏️ Edit</a>'
-            '<a href="{}" class="button" style="background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: none; font-size: 11px;">👁️ View Details</a>'
+            '<div style="display: flex; gap: 5px; flex-wrap: nowrap;">'
+            '<a href="{}" style="background: #3b82f6; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; white-space: nowrap; display: inline-block;">✏️ Edit</a>'
+            '<a href="{}" target="_blank" style="background: #10b981; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 11px; white-space: nowrap; display: inline-block;">👁️ View on Site</a>'
             '</div>',
             reverse('admin:Projects_project_change', args=[obj.pk]),
-            f'/projects/project/{obj.pk}/detail/'
+            public_url
         )
     edit_button.short_description = '⚙️ Actions'
     edit_button.allow_tags = True
@@ -322,43 +315,64 @@ class ProjectAdmin(admin.ModelAdmin):
     # Form organization
     fieldsets = (
         ('📝 Basic Information', {
-            'fields': ('name', 'project_by', 'logo', 'banner_image', 'project_preview', 'brochure'),
+            'fields': ('name', 'slug', 'project_by', 'logo', 'banner_image', 'project_preview', 'brochure'),
             'classes': ('wide',),
+            'description': 'Core project details and media files'
         }),
-        ('📍 Location Details', {
+        ('📍 Location & Map', {
             'fields': ('location', 'city', 'developers', 'latitude', 'longitude'),
             'classes': ('wide',),
+            'description': 'Location details and map coordinates for project location'
         }),
         ('🏗️ Project Specifications', {
-            'fields': ('build_up_area', 'total_area', 'bhk', 'no_of_blocks', 'tower_count', 'no_of_units', 'rera_number', 'status', 'possession_date', 'onwards_price'),
+            'fields': (
+                ('build_up_area', 'total_area'),
+                ('bhk', 'no_of_blocks', 'tower_count'),
+                ('no_of_units', 'rera_number'),
+                ('status', 'possession_date'),
+                'onwards_price'
+            ),
             'classes': ('wide',),
+            'description': 'Technical specifications and project details'
         }),
         ('📞 Contact Information', {
             'fields': ('contact_phone', 'contact_email', 'sales_office_address'),
             'classes': ('wide',),
+            'description': 'Contact details for project inquiries'
         }),
-        ('🏷️ Categorization', {
-            'fields': ('category', 'project_type', 'tags', 'amenities'),
+        ('🏷️ Categorization & Features', {
+            'fields': (
+                ('category', 'project_type'),
+                'tags',
+                'amenities'
+            ),
             'classes': ('wide',),
+            'description': 'Project category, type, tags and amenities'
         }),
-        ('🎯 Marketing & Promotion', {
+        ('🎯 Marketing & Promotional Tags', {
             'fields': (
                 ('is_sell', 'is_rent', 'is_lease'),
-                ('is_featured', 'is_most_viewed', 'is_hot_deal'),
-                ('is_premium_listing', 'is_editors_choice', 'trending_tag'),
+                ('is_featured', 'is_hot_deal', 'is_premium_listing'),
+                ('is_editors_choice', 'is_most_viewed'),
+                ('trending_tag',),
                 ('is_nearby_property', 'is_recently_viewed')
             ),
             'classes': ('wide',),
+            'description': 'Enable promotional badges and marketing features that appear on project cards in the frontend'
         }),
         ('📊 SEO & Metadata', {
             'fields': ('description', 'meta_title', 'meta_description', 'keywords'),
             'classes': ('wide', 'collapse'),
-            'description': 'Search Engine Optimization fields for better discoverability'
+            'description': 'Search Engine Optimization fields for better discoverability in search results'
         }),
-        ('📈 Tracking & Display Order', {
-            'fields': ('display_order', 'views', 'is_active', 'created_at', 'updated_at'),
+        ('📈 Display Settings & Tracking', {
+            'fields': (
+                ('display_order', 'is_active'),
+                ('views',),
+                ('created_at', 'updated_at')
+            ),
             'classes': ('wide', 'collapse'),
-            'description': 'Set display_order to control project position. Lower numbers appear first. Use 0 for default ordering.'
+            'description': 'Display order controls project position (lower numbers appear first). Use 0 for default ordering by date.'
         }),
     )
     
@@ -377,7 +391,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 @admin.register(ProjectReview)
-class ProjectReviewAdmin(admin.ModelAdmin):
+class ProjectReviewAdmin(ModelAdmin):
     list_display = ('project', 'reviewer_name', 'rating_stars', 'approved', 'created_at')
     list_filter = ('approved', 'rating', 'created_at', 'project')
     search_fields = ('reviewer_name', 'comment', 'project__name')
@@ -391,7 +405,7 @@ class ProjectReviewAdmin(admin.ModelAdmin):
 
 # Continue with other admin classes...
 @admin.register(City)
-class CityAdmin(admin.ModelAdmin):
+class CityAdmin(ModelAdmin):
     list_display = ('city_icon', 'name', 'state', 'country', 'project_count', 'status_badge', 'created_at')
     list_display_links = ('city_icon', 'name')
     list_filter = ('country', 'state', 'is_active', 'created_at')
@@ -445,7 +459,7 @@ class CityAdmin(admin.ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(ModelAdmin):
     list_display = ('name', 'project_count', 'project_type_count', 'created_at')
     search_fields = ('name', 'description', 'keywords')
     readonly_fields = ('created_at',)
@@ -476,7 +490,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(ProjectType)
-class ProjectTypeAdmin(admin.ModelAdmin):
+class ProjectTypeAdmin(ModelAdmin):
     list_display = ('name', 'category', 'project_count', 'created_at')
     list_filter = ('category', 'created_at')
     search_fields = ('name', 'category__name', 'description', 'keywords')
@@ -504,7 +518,7 @@ class ProjectTypeAdmin(admin.ModelAdmin):
 
 
 @admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(ModelAdmin):
     list_display = ('tag_preview', 'name', 'project_count', 'status_badge', 'created_at')
     list_display_links = ('tag_preview', 'name')
     list_filter = ('is_active', 'created_at')
@@ -530,7 +544,7 @@ class TagAdmin(admin.ModelAdmin):
 
 
 @admin.register(Amenity)
-class AmenityAdmin(admin.ModelAdmin):
+class AmenityAdmin(ModelAdmin):
     list_display = ('amenity_icon', 'name', 'project_count', 'status_badge', 'created_at')
     list_display_links = ('amenity_icon', 'name')
     list_filter = ('is_active', 'created_at')
@@ -585,13 +599,13 @@ class AmenityAdmin(admin.ModelAdmin):
 
 # Register all other models with basic admin
 @admin.register(ProjectOverview)
-class ProjectOverviewAdmin(admin.ModelAdmin):
+class ProjectOverviewAdmin(ModelAdmin):
     list_display = ('project', 'title')
     search_fields = ('project__name', 'title')
 
 
 @admin.register(GalleryImage)
-class GalleryImageAdmin(admin.ModelAdmin):
+class GalleryImageAdmin(ModelAdmin):
     list_display = ('image_thumbnail', 'project', 'caption', 'order', 'status_badge', 'uploaded_at')
     list_display_links = ('image_thumbnail', 'caption')
     list_filter = ('is_active', 'uploaded_at', 'project')
@@ -624,7 +638,7 @@ class GalleryImageAdmin(admin.ModelAdmin):
 
 
 @admin.register(FloorPlan)
-class FloorPlanAdmin(admin.ModelAdmin):
+class FloorPlanAdmin(ModelAdmin):
     list_display = ('plan_thumbnail', 'project', 'name', 'area', 'formatted_price', 'order', 'status_badge')
     list_display_links = ('plan_thumbnail', 'name')
     list_filter = ('is_active', 'project')
@@ -672,14 +686,14 @@ class FloorPlanAdmin(admin.ModelAdmin):
 
 
 @admin.register(NearestArea)
-class NearestAreaAdmin(admin.ModelAdmin):
+class NearestAreaAdmin(ModelAdmin):
     list_display = ('project', 'name', 'area_type', 'distance')
     list_filter = ('area_type', 'project')
     search_fields = ('project__name', 'name')
 
 
 @admin.register(ConstructionUpdate)
-class ConstructionUpdateAdmin(admin.ModelAdmin):
+class ConstructionUpdateAdmin(ModelAdmin):
     list_display = ('project', 'title', 'update_date', 'order')
     list_filter = ('update_date', 'project')
     search_fields = ('project__name', 'title')
@@ -687,14 +701,14 @@ class ConstructionUpdateAdmin(admin.ModelAdmin):
 
 
 @admin.register(WhyChooseUs)
-class WhyChooseUsAdmin(admin.ModelAdmin):
+class WhyChooseUsAdmin(ModelAdmin):
     list_display = ('project', 'title', 'icon', 'order')
     list_filter = ('project',)
     search_fields = ('project__name', 'title')
 
 
 @admin.register(SpecificationCategory)
-class SpecificationCategoryAdmin(admin.ModelAdmin):
+class SpecificationCategoryAdmin(ModelAdmin):
     list_display = ('name', 'order', 'item_count', 'status_badge')
     list_filter = ('is_active',)
     search_fields = ('name',)
@@ -712,14 +726,14 @@ class SpecificationCategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(SpecificationItem)
-class SpecificationItemAdmin(admin.ModelAdmin):
+class SpecificationItemAdmin(ModelAdmin):
     list_display = ('project', 'category', 'name', 'order')
     list_filter = ('category', 'project')
     search_fields = ('project__name', 'name', 'description')
 
 
 @admin.register(ProjectAmenityImage)
-class ProjectAmenityImageAdmin(admin.ModelAdmin):
+class ProjectAmenityImageAdmin(ModelAdmin):
     list_display = ('image_thumbnail', 'project', 'amenity_name', 'status_badge', 'uploaded_at')
     list_display_links = ('image_thumbnail', 'amenity_name')
     list_filter = ('is_active', 'uploaded_at', 'project')
@@ -752,15 +766,15 @@ class ProjectAmenityImageAdmin(admin.ModelAdmin):
 
 
 @admin.register(ProjectInquiry)
-class ProjectInquiryAdmin(admin.ModelAdmin):
-    list_display = ('project', 'name', 'email', 'phone', 'interest_badge', 'appointment_info', 'is_contacted', 'status_badge', 'created_at')
-    list_display_links = ('name', 'email')
+class ProjectInquiryAdmin(ModelAdmin):
+    list_display = ('project_name', 'name', 'phone', 'interest_badge', 'appointment_info', 'status_badge', 'created_at')
+    list_display_links = ('project_name', 'name')
     list_filter = ('interest', 'is_contacted', 'created_at', 'project', 'appointment_date')
     search_fields = ('project__name', 'name', 'email', 'phone', 'message')
     readonly_fields = ('ip_address', 'user_agent', 'created_at')
     date_hierarchy = 'created_at'
     ordering = ('-created_at',)
-    list_editable = ('is_contacted',)
+    list_editable = ()
     
     fieldsets = (
         ('📋 Project & Contact Information', {
@@ -782,6 +796,18 @@ class ProjectInquiryAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+    
+    def project_name(self, obj):
+        """Display project name in a cleaner format"""
+        if obj.project:
+            return format_html(
+                '<div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{}">{}</div>',
+                obj.project.name,
+                obj.project.name
+            )
+        return '-'
+    project_name.short_description = 'Project'
+    project_name.admin_order_field = 'project__name'
     
     def interest_badge(self, obj):
         colors = {
@@ -841,7 +867,7 @@ class ProjectInquiryAdmin(admin.ModelAdmin):
 
 
 @admin.register(FloorPlanAccess)
-class FloorPlanAccessAdmin(admin.ModelAdmin):
+class FloorPlanAccessAdmin(ModelAdmin):
     list_display = ('project', 'name', 'email', 'phone', 'accessed_at', 'access_count')
     list_display_links = ('name', 'email')
     list_filter = ('accessed_at', 'project')
@@ -878,7 +904,7 @@ class FloorPlanAccessAdmin(admin.ModelAdmin):
 
 
 @admin.register(AreaType)
-class AreaTypeAdmin(admin.ModelAdmin):
+class AreaTypeAdmin(ModelAdmin):
     list_display = ('area_icon', 'name', 'nearest_area_count', 'status_badge', 'order', 'created_at')
     list_display_links = ('area_icon', 'name')
     list_filter = ('is_active', 'created_at')
