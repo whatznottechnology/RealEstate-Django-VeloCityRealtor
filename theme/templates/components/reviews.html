@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 
 <!-- Client Reviews & Testimonials Section -->
 <section class="py-8 lg:py-12 bg-white">
@@ -30,6 +30,7 @@
                 </div>
                 <div class="flex-1"></div>
                 
+                {% if testimonials %}
                 <!-- Overall Rating Display -->
                 <div class="hidden lg:flex items-center bg-white bg-opacity-80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
                     <div class="flex mr-3">
@@ -51,303 +52,75 @@
                     </div>
                     <div class="text-gray-700">
                         <span class="font-bold text-lg">4.9/5</span>
-                        <span class="text-sm ml-1">(500+ reviews)</span>
+                        <span class="text-sm ml-1">({{ testimonials.count }}+ reviews)</span>
                     </div>
                 </div>
+                {% endif %}
             </div>
             
             <!-- Testimonials Carousel -->
             <div id="testimonials-carousel" class="flex gap-6 lg:gap-8 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
-                
-                <!-- Testimonial 1 -->
-                <div class="flex-none w-80 lg:w-96 bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 scroll-snap-start">
-                    <!-- Quote Icon -->
-                    <div class="flex justify-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
-                            <i class="fas fa-quote-left text-white text-xl"></i>
+                {% if testimonials %}
+                    {% for testimonial in testimonials %}
+                    <!-- {{ testimonial.name }} -->
+                    <div class="flex-none w-80 lg:w-96 bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 scroll-snap-start">
+                        <!-- Quote Icon -->
+                        <div class="flex justify-center mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
+                                <i class="fas fa-quote-left text-white text-xl"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Stars -->
+                        <div class="flex justify-center mb-6">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= testimonial.rating %}
+                                <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                {% else %}
+                                <svg class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Quote -->
+                        <blockquote class="text-gray-700 text-lg leading-relaxed mb-8 text-center italic">
+                            "{{ testimonial.review_text }}"
+                        </blockquote>
+                        
+                        <!-- Client Info -->
+                        <div class="flex items-center justify-center">
+                            {% if testimonial.client_image %}
+                            <img src="{{ testimonial.client_image.url }}" 
+                                 alt="{{ testimonial.name }}" 
+                                 class="w-16 h-16 rounded-full object-cover mr-4 border-4 border-yellow-200">
+                            {% else %}
+                            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mr-4 text-white font-bold text-xl border-4 border-yellow-200">
+                                {{ testimonial.name|first|upper }}
+                            </div>
+                            {% endif %}
+                            <div class="text-center">
+                                <div class="font-bold text-gray-900 text-lg">{{ testimonial.name }}</div>
+                                <div class="text-sm text-gray-500">
+                                    {{ testimonial.location }}{% if testimonial.project_type %} | {{ testimonial.project_type }}{% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- Stars -->
-                    <div class="flex justify-center mb-6">
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
+                    {% endfor %}
+                {% else %}
+                    <!-- No testimonials message -->
+                    <div class="w-full text-center py-12">
+                        <i class="fas fa-comments text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">No testimonials available yet.</p>
                     </div>
-                    
-                    <!-- Quote -->
-                    <blockquote class="text-gray-700 text-lg leading-relaxed mb-8 text-center italic">
-                        "Exceptional service from start to finish! The team helped us find our dream home in Mumbai. 
-                        Their market knowledge and professional approach made the entire process smooth and stress-free."
-                    </blockquote>
-                    
-                    <!-- Client Info -->
-                    <div class="flex items-center justify-center">
-                        <img src="{% static 'images/clients/client-1.jpg' %}" 
-                             alt="Priya Sharma" 
-                             class="w-16 h-16 rounded-full object-cover mr-4 border-4 border-yellow-200"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-4 text-white font-bold text-xl border-4 border-yellow-200" style="display: none;">PS</div>
-                        <div class="text-center">
-                            <div class="font-bold text-gray-900 text-lg">Priya Sharma</div>
-                            <div class="text-sm text-gray-500">Mumbai | 3BHK Apartment</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 2 -->
-                <div class="flex-none w-80 lg:w-96 bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 scroll-snap-start">
-                    <!-- Quote Icon -->
-                    <div class="flex justify-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center">
-                            <i class="fas fa-quote-left text-white text-xl"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Stars -->
-                    <div class="flex justify-center mb-6">
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                    </div>
-                    
-                    <!-- Quote -->
-                    <blockquote class="text-gray-700 text-lg leading-relaxed mb-8 text-center italic">
-                        "Outstanding investment guidance! They helped us choose the perfect commercial property in Noida. 
-                        The ROI projections were accurate and the documentation process was handled efficiently."
-                    </blockquote>
-                    
-                    <!-- Client Info -->
-                    <div class="flex items-center justify-center">
-                        <img src="{% static 'images/clients/client-2.jpg' %}" 
-                             alt="Rajesh Gupta" 
-                             class="w-16 h-16 rounded-full object-cover mr-4 border-4 border-green-200"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mr-4 text-white font-bold text-xl border-4 border-green-200" style="display: none;">RG</div>
-                        <div class="text-center">
-                            <div class="font-bold text-gray-900 text-lg">Rajesh Gupta</div>
-                            <div class="text-sm text-gray-500">Noida | Commercial Space</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 3 -->
-                <div class="flex-none w-80 lg:w-96 bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 scroll-snap-start">
-                    <!-- Quote Icon -->
-                    <div class="flex justify-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                            <i class="fas fa-quote-left text-white text-xl"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Stars -->
-                    <div class="flex justify-center mb-6">
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                    </div>
-                    
-                    <!-- Quote -->
-                    <blockquote class="text-gray-700 text-lg leading-relaxed mb-8 text-center italic">
-                        "Professional and reliable team! They understood our requirements perfectly and found us a beautiful 
-                        villa in Bangalore. The after-sales support has been excellent too."
-                    </blockquote>
-                    
-                    <!-- Client Info -->
-                    <div class="flex items-center justify-center">
-                        <img src="{% static 'images/clients/client-3.jpg' %}" 
-                             alt="Anita Mehta" 
-                             class="w-16 h-16 rounded-full object-cover mr-4 border-4 border-purple-200"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mr-4 text-white font-bold text-xl border-4 border-purple-200" style="display: none;">AM</div>
-                        <div class="text-center">
-                            <div class="font-bold text-gray-900 text-lg">Anita Mehta</div>
-                            <div class="text-sm text-gray-500">Bangalore | Villa</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 4 -->
-                <div class="flex-none w-80 lg:w-96 bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 scroll-snap-start">
-                    <!-- Quote Icon -->
-                    <div class="flex justify-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-r from-indigo-400 to-blue-400 rounded-full flex items-center justify-center">
-                            <i class="fas fa-quote-left text-white text-xl"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Stars -->
-                    <div class="flex justify-center mb-6">
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                    </div>
-                    
-                    <!-- Quote -->
-                    <blockquote class="text-gray-700 text-lg leading-relaxed mb-8 text-center italic">
-                        "Great experience working with this team. They provided honest advice and helped us navigate 
-                        the complex property market in Delhi. Highly recommended for first-time buyers!"
-                    </blockquote>
-                    
-                    <!-- Client Info -->
-                    <div class="flex items-center justify-center">
-                        <img src="{% static 'images/clients/client-4.jpg' %}" 
-                             alt="Vikram Singh" 
-                             class="w-16 h-16 rounded-full object-cover mr-4 border-4 border-indigo-200"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full flex items-center justify-center mr-4 text-white font-bold text-xl border-4 border-indigo-200" style="display: none;">VS</div>
-                        <div class="text-center">
-                            <div class="font-bold text-gray-900 text-lg">Vikram Singh</div>
-                            <div class="text-sm text-gray-500">Delhi | 2BHK Flat</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 5 -->
-                <div class="flex-none w-80 lg:w-96 bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 scroll-snap-start">
-                    <!-- Quote Icon -->
-                    <div class="flex justify-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full flex items-center justify-center">
-                            <i class="fas fa-quote-left text-white text-xl"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Stars -->
-                    <div class="flex justify-center mb-6">
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                    </div>
-                    
-                    <!-- Quote -->
-                    <blockquote class="text-gray-700 text-lg leading-relaxed mb-8 text-center italic">
-                        "Excellent property consultants! They helped us sell our old property and buy a new one seamlessly. 
-                        Their market insights and negotiation skills saved us both time and money."
-                    </blockquote>
-                    
-                    <!-- Client Info -->
-                    <div class="flex items-center justify-center">
-                        <img src="{% static 'images/clients/client-5.jpg' %}" 
-                             alt="Sunita Agarwal" 
-                             class="w-16 h-16 rounded-full object-cover mr-4 border-4 border-pink-200"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mr-4 text-white font-bold text-xl border-4 border-pink-200" style="display: none;">SA</div>
-                        <div class="text-center">
-                            <div class="font-bold text-gray-900 text-lg">Sunita Agarwal</div>
-                            <div class="text-sm text-gray-500">Pune | Property Exchange</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 6 -->
-                <div class="flex-none w-80 lg:w-96 bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 scroll-snap-start">
-                    <!-- Quote Icon -->
-                    <div class="flex justify-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full flex items-center justify-center">
-                            <i class="fas fa-quote-left text-white text-xl"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Stars -->
-                    <div class="flex justify-center mb-6">
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                    </div>
-                    
-                    <!-- Quote -->
-                    <blockquote class="text-gray-700 text-lg leading-relaxed mb-8 text-center italic">
-                        "Top-notch service! They guided us through every step of our property investment journey. 
-                        The team's attention to detail and customer service is truly commendable."
-                    </blockquote>
-                    
-                    <!-- Client Info -->
-                    <div class="flex items-center justify-center">
-                        <img src="{% static 'images/clients/client-6.jpg' %}" 
-                             alt="Arjun Patel" 
-                             class="w-16 h-16 rounded-full object-cover mr-4 border-4 border-teal-200"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full flex items-center justify-center mr-4 text-white font-bold text-xl border-4 border-teal-200" style="display: none;">AP</div>
-                        <div class="text-center">
-                            <div class="font-bold text-gray-900 text-lg">Arjun Patel</div>
-                            <div class="text-sm text-gray-500">Ahmedabad | Investment Property</div>
-                        </div>
-                    </div>
-                </div>
+                {% endif %}
             </div>
 
+            {% if testimonials %}
             <!-- Mobile Rating Display -->
             <div class="flex lg:hidden justify-center mt-8">
                 <div class="inline-flex items-center bg-white bg-opacity-80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
@@ -370,10 +143,11 @@
                     </div>
                     <div class="text-gray-700">
                         <span class="font-bold text-lg">4.9/5</span>
-                        <span class="text-sm ml-1">(500+ reviews)</span>
+                        <span class="text-sm ml-1">({{ testimonials.count }}+ reviews)</span>
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </section>

@@ -151,8 +151,10 @@ class Project(models.Model):
     STATUS_CHOICES = [
         ('ready_to_move', 'Ready to Move'),
         ('under_construction', 'Under Construction'),
-        ('upcoming', 'Upcoming'),
+        ('upcoming_project', 'Upcoming Project'),
+        ('possession_soon', 'Possession Soon'),
         ('sold_out', 'Sold Out'),
+        ('new_launched', 'New Launched'),
     ]
     
     # Primary Fields
@@ -224,14 +226,16 @@ class Project(models.Model):
     
     # Tracking
     views = models.PositiveIntegerField(default=0, help_text="For Most Viewed sorting")
+    display_order = models.PositiveIntegerField(default=0, help_text="Display position (lower number = higher priority). Use 0 for default ordering by created date.")
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['display_order', '-created_at']
         indexes = [
+            models.Index(fields=['display_order', '-created_at']),
             models.Index(fields=['category', 'project_type']),
             models.Index(fields=['status', 'is_active']),
             models.Index(fields=['-views']),
@@ -294,59 +298,84 @@ class GalleryImage(models.Model):
         return f"{self.project.name} - Gallery Image {self.id}"
 
 
-class NearestArea(models.Model):
-    """Nearby areas like Schools, Hospitals, Metro"""
-    
-    AREA_TYPES = [
-        ('school', 'School'),
-        ('hospital', 'Hospital'),
-        ('metro', 'Metro Station'),
-        ('mall', 'Shopping Mall'),
-        ('restaurant', 'Restaurant'),
-        ('park', 'Park'),
-        ('airport', 'Airport'),
-        ('bus_stop', 'Bus Stop'),
-        ('bank', 'Bank'),
-        ('atm', 'ATM'),
-        ('gym', 'Gym'),
-        ('temple', 'Temple'),
-        ('church', 'Church'),
-        ('mosque', 'Mosque'),
-        ('other', 'Other'),
-    ]
-    
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='nearest_areas')
-    name = models.CharField(max_length=200)
-    area_type = models.CharField(max_length=20, choices=AREA_TYPES)
-    distance = models.CharField(max_length=50, blank=True, help_text="e.g. 2 km, 5 min walk")
-    icon = models.ImageField(upload_to='locations/icons/', blank=True, null=True, help_text="Location type icon")
+class AreaType(models.Model):
+    """Dynamic Area Types for Nearest Areas"""
+    name = models.CharField(max_length=100, unique=True, help_text="e.g. School, Hospital, Metro Station")
+    icon = models.ImageField(upload_to='area_types/icons/', blank=True, null=True, help_text="Area type icon")
+    font_awesome_icon = models.CharField(max_length=50, blank=True, null=True, help_text="Font Awesome icon class (e.g., fas fa-school)")
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0, help_text="Display order")
+    created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        ordering = ['area_type', 'name']
+        ordering = ['order', 'name']
+        verbose_name = "Area Type"
+        verbose_name_plural = "Area Types"
     
     def __str__(self):
-        return f"{self.name} ({self.get_area_type_display()})"
+        return self.name
     
     def get_default_icon_class(self):
-        """Return default Font Awesome icon class based on area type"""
+        """Return default Font Awesome icon class based on area type name"""
+        name_lower = self.name.lower()
         icon_mapping = {
             'school': 'fas fa-graduation-cap',
             'hospital': 'fas fa-hospital',
+            'clinic': 'fas fa-clinic-medical',
             'metro': 'fas fa-subway',
+            'metro station': 'fas fa-subway',
             'mall': 'fas fa-shopping-bag',
+            'shopping mall': 'fas fa-shopping-bag',
             'restaurant': 'fas fa-utensils',
             'park': 'fas fa-tree',
             'airport': 'fas fa-plane',
-            'bus_stop': 'fas fa-bus',
+            'bus stop': 'fas fa-bus',
             'bank': 'fas fa-university',
             'atm': 'fas fa-credit-card',
             'gym': 'fas fa-dumbbell',
             'temple': 'fas fa-pray',
             'church': 'fas fa-cross',
             'mosque': 'fas fa-moon',
-            'other': 'fas fa-map-marker-alt',
+            'college': 'fas fa-university',
+            'university': 'fas fa-university',
+            'pharmacy': 'fas fa-pills',
+            'supermarket': 'fas fa-shopping-cart',
+            'police station': 'fas fa-shield-alt',
+            'fire station': 'fas fa-fire-extinguisher',
+            'cinema': 'fas fa-film',
+            'theater': 'fas fa-theater-masks',
         }
-        return icon_mapping.get(self.area_type, 'fas fa-map-marker-alt')
+        
+        # Try to find matching icon
+        for key, icon in icon_mapping.items():
+            if key in name_lower:
+                return icon
+        
+        return self.font_awesome_icon or 'fas fa-map-marker-alt'
+
+
+class NearestArea(models.Model):
+    """Nearby areas like Schools, Hospitals, Metro"""
+    
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='nearest_areas')
+    name = models.CharField(max_length=200)
+    area_type = models.ForeignKey('AreaType', on_delete=models.CASCADE, related_name='nearest_areas', help_text="Select area type")
+    distance = models.CharField(max_length=50, blank=True, help_text="e.g. 2 km, 5 min walk")
+    icon = models.ImageField(upload_to='locations/icons/', blank=True, null=True, help_text="Location type icon (optional, overrides area type icon)")
+    
+    class Meta:
+        ordering = ['area_type__order', 'name']
+        verbose_name = "Nearest Area"
+        verbose_name_plural = "Nearest Areas"
+    
+    def __str__(self):
+        return f"{self.name} ({self.area_type.name})"
+    
+    def get_default_icon_class(self):
+        """Return default Font Awesome icon class based on area type"""
+        if self.area_type:
+            return self.area_type.get_default_icon_class()
+        return 'fas fa-map-marker-alt'
 
 
 class FloorPlan(models.Model):
@@ -465,6 +494,53 @@ class ProjectReview(models.Model):
     def get_star_display(self):
         """Return star rating as visual stars"""
         return '⭐' * self.rating
+
+
+class ProjectInquiry(models.Model):
+    """Track project inquiries and appointment requests"""
+    INTEREST_CHOICES = [
+        ('buying', 'Buying'),
+        ('investment', 'Investment'),
+        ('site_visit', 'Schedule Site Visit'),
+        ('floor_plans', 'Floor Plans'),
+        ('pricing', 'Pricing Details'),
+    ]
+    
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='inquiries')
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    interest = models.CharField(max_length=20, choices=INTEREST_CHOICES, blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
+    
+    # Appointment fields (for site visit)
+    appointment_date = models.DateField(blank=True, null=True, help_text="Preferred appointment date")
+    appointment_time = models.CharField(max_length=20, blank=True, null=True, help_text="Preferred appointment time")
+    
+    # Tracking fields
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    user_agent = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Status tracking
+    is_contacted = models.BooleanField(default=False, help_text="Mark as contacted")
+    contacted_at = models.DateTimeField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True, help_text="Admin notes")
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Project Inquiry"
+        verbose_name_plural = "Project Inquiries"
+        indexes = [
+            models.Index(fields=['project', 'email']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['is_contacted']),
+        ]
+    
+    def __str__(self):
+        if self.appointment_date:
+            return f"{self.project.name} - {self.name} - Site Visit on {self.appointment_date}"
+        return f"{self.project.name} - {self.name} - {self.get_interest_display() if self.interest else 'Inquiry'}"
 
 
 class FloorPlanAccess(models.Model):

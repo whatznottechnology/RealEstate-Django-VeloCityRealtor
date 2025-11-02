@@ -864,17 +864,36 @@
         padding: 1.5rem;
     }
 
-    .floor-plan-image {
+    .floor-plan-image-container {
         width: 100%;
-        height: auto;
+        max-width: 600px;
+        height: 400px;
+        background: #ffffff;
         border-radius: 0.75rem;
         box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .floor-plan-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
         cursor: pointer;
         transition: transform 0.3s ease;
     }
 
     .floor-plan-image:hover {
-        transform: scale(1.02);
+        transform: scale(1.05);
+    }
+    
+    @media (max-width: 768px) {
+        .floor-plan-image-container {
+            height: 300px;
+        }
     }
 
     /* CTA Section */
@@ -1241,6 +1260,15 @@
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
+    
+    @keyframes highlight-pulse {
+        0%, 100% { 
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
+        50% { 
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0.3);
+        }
+    }
 
     /* Utility Classes */
     .text-center { text-align: center; }
@@ -1263,6 +1291,70 @@
     .gap-3 { gap: 1.5rem; }
     .w-full { width: 100%; }
     .h-full { height: 100%; }
+    
+    /* Modal Styles */
+    #floor-plan-modal {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 60;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #floor-plan-modal.show {
+        display: flex !important;
+    }
+    
+    /* Image Modal Styles */
+    #image-modal {
+        background-color: rgba(0, 0, 0, 0.95) !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 70;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    #image-modal.show {
+        display: flex !important;
+    }
+    
+    #modal-image {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+    
+    #image-container {
+        cursor: move;
+    }
+    
+    #image-container.zoomed {
+        cursor: grab;
+    }
+    
+    #image-container.zoomed:active {
+        cursor: grabbing;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -1540,7 +1632,7 @@
 
                 <!-- Floor Plans -->
                 {% if project.floor_plans.all %}
-                <section class="card fade-in">
+                <section id="floor-plans-section" class="card fade-in">
                     <h2 class="title-section">Floor Plans</h2>
                     
                     <div class="floor-plan-tabs">
@@ -1555,45 +1647,57 @@
                     {% for plan in project.floor_plans.all %}
                     <div id="floor-plan-{{ forloop.counter }}" class="floor-plan-item {% if not forloop.first %}hidden{% endif %}">
                         <div class="floor-plan-content">
-                            <div class="grid lg:grid-cols-2 gap-3 items-center">
-                                <div>
+                            <div class="grid lg:grid-cols-2 gap-6 items-center">
+                                <div class="flex justify-center">
                                     {% if plan.image %}
                                         {% if has_floor_plan_access %}
-                                            <img src="{{ plan.image.url }}" 
-                                                 alt="{{ plan.name }}" 
-                                                 class="floor-plan-image"
-                                                 onclick="openImageModal('{{ plan.image.url }}', '{{ plan.name }}')">
+                                            <div class="floor-plan-image-container">
+                                                <img src="{{ plan.image.url }}" 
+                                                     alt="{{ plan.name }}" 
+                                                     class="floor-plan-image"
+                                                     onclick="openImageModal('{{ plan.image.url }}', '{{ plan.name }}')">
+                                            </div>
                                         {% else %}
-                                            <div class="relative">
-                                                <img src="{{ plan.image.url }}" alt="{{ plan.name }}" class="floor-plan-image blur-sm">
-                                                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
-                                                    <div class="text-center text-white">
-                                                        <i class="fas fa-lock text-2xl mb-2"></i>
-                                                        <p class="font-bold">Contact for Access</p>
+                                            <div class="floor-plan-image-container relative">
+                                                <img src="{{ plan.image.url }}" 
+                                                     alt="{{ plan.name }}" 
+                                                     class="floor-plan-image blur-md">
+                                                <div class="absolute inset-0 bg-black bg-opacity-60 rounded-lg flex items-center justify-center">
+                                                    <div class="text-center text-white p-6">
+                                                        <i class="fas fa-lock text-4xl mb-3"></i>
+                                                        <p class="font-bold text-lg mb-2">Floor Plan Locked</p>
+                                                        <p class="text-sm text-gray-300">Fill the form to access</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         {% endif %}
                                     {% endif %}
                                 </div>
-                                <div class="space-y-3">
-                                    <h3 class="text-xl font-bold">{{ plan.name }}</h3>
+                                <div class="space-y-4">
+                                    <h3 class="text-2xl font-bold text-gray-900">{{ plan.name }}</h3>
                                     {% if plan.area %}
-                                    <div class="flex items-center text-gray-700">
-                                        <i class="fas fa-ruler-combined mr-3 text-red-600"></i>
-                                        <span class="font-semibold">{{ plan.area }}</span>
+                                    <div class="flex items-center text-gray-700 bg-white rounded-lg p-3 shadow-sm">
+                                        <i class="fas fa-ruler-combined mr-3 text-red-600 text-xl"></i>
+                                        <div>
+                                            <p class="text-xs text-gray-500">Area</p>
+                                            <span class="font-semibold text-lg">{{ plan.area }}</span>
+                                        </div>
                                     </div>
                                     {% endif %}
                                     {% if plan.price %}
-                                    <div class="flex items-center text-gray-700">
-                                        <i class="fas fa-tag mr-3 text-red-600"></i>
-                                        <span class="font-bold text-xl text-red-600">₹{{ plan.price|floatformat:0 }}</span>
+                                    <div class="flex items-center text-gray-700 bg-white rounded-lg p-3 shadow-sm">
+                                        <i class="fas fa-tag mr-3 text-red-600 text-xl"></i>
+                                        <div>
+                                            <p class="text-xs text-gray-500">Price</p>
+                                            <span class="font-bold text-xl text-red-600">₹{{ plan.price|format_price }}</span>
+                                        </div>
                                     </div>
                                     {% endif %}
                                     {% if not has_floor_plan_access %}
-                                    <button onclick="scrollToForm()" class="btn btn-primary">
-                                        <i class="fas fa-unlock mr-2"></i>Get Access
+                                    <button type="button" onclick="openFloorPlanModal(); return false;" class="btn btn-primary w-full">
+                                        <i class="fas fa-unlock mr-2"></i>Get Access to Floor Plans
                                     </button>
+                                    <p class="text-xs text-gray-500 text-center">Submit your details to view full floor plans</p>
                                     {% endif %}
                                 </div>
                             </div>
@@ -1690,43 +1794,73 @@
             <div class="lg:col-span-1">
                 <div class="sticky-form">
                     <div class="card" id="inquiry-form">
-                        <h3 class="text-lg font-bold mb-3 text-center">Quick Inquiry</h3>
-                        <form id="project-inquiry-form" class="space-y-3">
+                        <h3 class="text-lg font-bold mb-2 text-center">Quick Inquiry</h3>
+                        <form id="project-inquiry-form" class="space-y-2">
                             {% csrf_token %}
                             <input type="hidden" name="project_id" value="{{ project.id }}">
                             
                             <div class="form-group">
                                 <input type="text" name="name" placeholder="Your Name *" 
-                                       class="form-input" required>
+                                       class="form-input text-sm py-2" required>
                             </div>
                             
                             <div class="form-group">
                                 <input type="email" name="email" placeholder="Email Address *" 
-                                       class="form-input" required>
+                                       class="form-input text-sm py-2" required>
                             </div>
                             
                             <div class="form-group">
                                 <input type="tel" name="phone" placeholder="Phone Number *" 
-                                       class="form-input" required>
+                                       class="form-input text-sm py-2" required>
                             </div>
                             
                             <div class="form-group">
-                                <select name="interest" class="form-input">
+                                <select name="interest" id="interest-select" class="form-input text-sm py-2">
                                     <option value="">I'm interested in</option>
                                     <option value="buying">Buying</option>
                                     <option value="investment">Investment</option>
-                                    <option value="site_visit">Site Visit</option>
+                                    <option value="site_visit">Schedule Site Visit</option>
                                     <option value="floor_plans">Floor Plans</option>
                                     <option value="pricing">Pricing Details</option>
                                 </select>
                             </div>
                             
-                            <div class="form-group">
-                                <textarea name="message" rows="3" placeholder="Your Message" 
-                                          class="form-input resize-none"></textarea>
+                            <!-- Appointment Date & Time Fields (shown when site visit is selected) -->
+                            <div id="appointment-fields" style="display: none;" class="p-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded mt-2">
+                                <p class="text-xs font-semibold text-blue-900 mb-2 flex items-center">
+                                    <i class="fas fa-calendar-check mr-1"></i>Select Date & Time
+                                </p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <input type="date" name="appointment_date" 
+                                               class="form-input text-xs py-1.5 w-full" 
+                                               min="{{ today_date|date:'Y-m-d' }}"
+                                               placeholder="Date">
+                                    </div>
+                                    <div>
+                                        <select name="appointment_time" class="form-input text-xs py-1.5 w-full">
+                                            <option value="">Time</option>
+                                            <option value="09:00 AM">09:00 AM</option>
+                                            <option value="10:00 AM">10:00 AM</option>
+                                            <option value="11:00 AM">11:00 AM</option>
+                                            <option value="12:00 PM">12:00 PM</option>
+                                            <option value="01:00 PM">01:00 PM</option>
+                                            <option value="02:00 PM">02:00 PM</option>
+                                            <option value="03:00 PM">03:00 PM</option>
+                                            <option value="04:00 PM">04:00 PM</option>
+                                            <option value="05:00 PM">05:00 PM</option>
+                                            <option value="06:00 PM">06:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <button type="submit" class="btn btn-primary w-full">
+                            <div class="form-group">
+                                <textarea name="message" rows="2" placeholder="Your Message" 
+                                          class="form-input resize-none text-sm py-2"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-full text-sm py-2">
                                 <i class="fas fa-paper-plane mr-2"></i>
                                 <span>Send Inquiry</span>
                             </button>
@@ -1777,47 +1911,164 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {% for review in project.approved_reviews %}
-                <div class="review-card bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-l-4 border-red-500">
-                    <div class="flex items-center mb-6">
-                        <div class="review-avatar bg-gradient-to-br from-red-500 to-red-600 text-white rounded-full w-14 h-14 flex items-center justify-center font-bold text-xl shadow-lg">
-                            {{ review.reviewer_name|first|upper }}
-                        </div>
-                        <div class="ml-4 flex-1">
-                            <h4 class="font-bold text-gray-900 text-lg">{{ review.reviewer_name }}</h4>
-                            <p class="text-sm text-gray-500 mb-2">Verified Customer</p>
-                            <div class="flex items-center">
-                                {% for i in "12345"|make_list %}
-                                    {% if forloop.counter <= review.rating %}
-                                        <i class="fas fa-star text-yellow-400 text-lg"></i>
-                                    {% else %}
-                                        <i class="far fa-star text-gray-300 text-lg"></i>
-                                    {% endif %}
-                                {% endfor %}
-                                <span class="text-sm text-gray-600 ml-2 font-medium">({{ review.rating }}/5)</span>
+            <!-- Horizontal Scrollable Reviews -->
+            <div class="relative">
+                <div class="reviews-carousel overflow-x-auto pb-6 scrollbar-hide">
+                    <div class="flex gap-6 w-max">
+                        {% for review in project.approved_reviews %}
+                        <div class="review-card bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-l-4 border-red-500 w-96 flex-shrink-0">
+                            <div class="flex items-center mb-6">
+                                <div class="review-avatar bg-gradient-to-br from-red-500 to-red-600 text-white rounded-full w-14 h-14 flex items-center justify-center font-bold text-xl shadow-lg">
+                                    {{ review.reviewer_name|first|upper }}
+                                </div>
+                                <div class="ml-4 flex-1">
+                                    <h4 class="font-bold text-gray-900 text-lg">{{ review.reviewer_name }}</h4>
+                                    <p class="text-sm text-gray-500 mb-2">Verified Customer</p>
+                                    <div class="flex items-center">
+                                        {% for i in "12345"|make_list %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-gray-300 text-lg"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <span class="text-sm text-gray-600 ml-2 font-medium">({{ review.rating }}/5)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <blockquote class="text-gray-700 text-base leading-relaxed mb-6 relative">
+                                <i class="fas fa-quote-left text-red-200 text-2xl absolute -top-2 -left-1"></i>
+                                <span class="pl-8">{{ review.comment }}</span>
+                                <i class="fas fa-quote-right text-red-200 text-2xl absolute -bottom-2 right-0"></i>
+                            </blockquote>
+                            
+                            <div class="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
+                                <span class="flex items-center">
+                                    <i class="far fa-calendar-alt mr-2"></i>
+                                    {{ review.created_at|date:"M j, Y" }}
+                                </span>
+                                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                                    <i class="fas fa-check-circle mr-1"></i>Verified Review
+                                </span>
                             </div>
                         </div>
-                    </div>
-                    
-                    <blockquote class="text-gray-700 text-base leading-relaxed mb-6 relative">
-                        <i class="fas fa-quote-left text-red-200 text-2xl absolute -top-2 -left-1"></i>
-                        <span class="pl-8">{{ review.comment }}</span>
-                        <i class="fas fa-quote-right text-red-200 text-2xl absolute -bottom-2 right-0"></i>
-                    </blockquote>
-                    
-                    <div class="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
-                        <span class="flex items-center">
-                            <i class="far fa-calendar-alt mr-2"></i>
-                            {{ review.created_at|date:"M j, Y" }}
-                        </span>
-                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
-                            <i class="fas fa-check-circle mr-1"></i>Verified Review
-                        </span>
+                        {% endfor %}
                     </div>
                 </div>
+                
+                <!-- Navigation Arrows -->
+                {% if project.approved_reviews_count > 3 %}
+                <button id="reviews-scroll-left" class="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-red-600 hover:text-white transition-all duration-300 z-10 opacity-0 group-hover:opacity-100">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="reviews-scroll-right" class="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full w-12 h-12 flex items-center justify-center text-gray-700 hover:bg-red-600 hover:text-white transition-all duration-300 z-10">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                {% endif %}
+            </div>
+            
+            <!-- Scroll Indicators -->
+            <div class="flex justify-center space-x-2 mt-8">
+                {% for review in project.approved_reviews %}
+                    <div class="review-indicator w-2 h-2 bg-gray-300 rounded-full transition-all duration-300 cursor-pointer hover:bg-red-400" data-index="{{ forloop.counter0 }}"></div>
                 {% endfor %}
             </div>
+            
+            <style>
+                .reviews-carousel {
+                    -webkit-overflow-scrolling: touch;
+                    scroll-behavior: smooth;
+                }
+                
+                .scrollbar-hide {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+                
+                .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                }
+                
+                #reviews-scroll-left,
+                #reviews-scroll-right {
+                    transition: opacity 0.3s ease;
+                }
+                
+                .section:hover #reviews-scroll-left,
+                .section:hover #reviews-scroll-right {
+                    opacity: 1;
+                }
+            </style>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const carousel = document.querySelector('.reviews-carousel');
+                    const leftBtn = document.getElementById('reviews-scroll-left');
+                    const rightBtn = document.getElementById('reviews-scroll-right');
+                    const indicators = document.querySelectorAll('.review-indicator');
+                    
+                    if (!carousel) return;
+                    
+                    const cardWidth = 384 + 24; // w-96 (384px) + gap-6 (24px)
+                    
+                    // Scroll functions
+                    function scrollLeft() {
+                        carousel.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+                    }
+                    
+                    function scrollRight() {
+                        carousel.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                    }
+                    
+                    // Button event listeners
+                    if (leftBtn) leftBtn.addEventListener('click', scrollLeft);
+                    if (rightBtn) rightBtn.addEventListener('click', scrollRight);
+                    
+                    // Update indicators based on scroll position
+                    function updateIndicators() {
+                        const scrollLeft = carousel.scrollLeft;
+                        const currentIndex = Math.round(scrollLeft / cardWidth);
+                        
+                        indicators.forEach((indicator, index) => {
+                            if (index === currentIndex) {
+                                indicator.classList.remove('bg-gray-300');
+                                indicator.classList.add('bg-red-600', 'w-8');
+                            } else {
+                                indicator.classList.remove('bg-red-600', 'w-8');
+                                indicator.classList.add('bg-gray-300');
+                            }
+                        });
+                        
+                        // Show/hide navigation buttons
+                        if (leftBtn) {
+                            leftBtn.style.opacity = scrollLeft > 0 ? '1' : '0';
+                        }
+                    }
+                    
+                    // Indicator click handlers
+                    indicators.forEach((indicator, index) => {
+                        indicator.addEventListener('click', () => {
+                            carousel.scrollTo({
+                                left: index * cardWidth,
+                                behavior: 'smooth'
+                            });
+                        });
+                    });
+                    
+                    // Scroll event listener
+                    carousel.addEventListener('scroll', updateIndicators);
+                    
+                    // Initialize
+                    updateIndicators();
+                    
+                    // Keyboard navigation
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'ArrowLeft') scrollLeft();
+                        if (e.key === 'ArrowRight') scrollRight();
+                    });
+                });
+            </script>
 
             {% if project.approved_reviews_count > 6 %}
             <div class="text-center mt-12">
@@ -1933,19 +2184,144 @@
 </div>
 
 <!-- Image Modal -->
-<div id="image-modal" class="fixed inset-0 bg-black bg-opacity-75 z-[70] hidden items-center justify-center p-4">
-    <div class="relative max-w-4xl w-full">
-        <button onclick="closeImageModal()" 
-                class="absolute top-4 right-4 bg-white text-black w-10 h-10 rounded-full flex items-center justify-center z-10">
-            <i class="fas fa-times"></i>
+<!-- Enhanced Image Lightbox Modal -->
+<div id="image-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[70]" style="display: none; align-items: center; justify-content: center;">
+    <div class="relative w-full h-full flex items-center justify-center p-4">
+        <!-- Close Button -->
+        <button type="button" onclick="closeImageModal()" 
+                class="absolute top-4 right-4 bg-white hover:bg-gray-100 text-black w-12 h-12 rounded-full flex items-center justify-center z-20 transition-all duration-300 shadow-lg">
+            <i class="fas fa-times text-xl"></i>
         </button>
-        <img id="modal-image" src="" alt="" class="w-full h-auto rounded-lg">
+        
+        <!-- Image Title/Caption -->
+        <div id="modal-caption" class="absolute top-4 left-4 bg-black bg-opacity-70 text-white px-6 py-3 rounded-lg z-20 backdrop-blur-sm">
+            <p class="font-semibold text-lg"></p>
+        </div>
+        
+        <!-- Help Instructions (shows briefly on open) -->
+        <div id="modal-help" class="absolute top-20 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg z-20 backdrop-blur-sm transition-opacity duration-500" style="opacity: 0;">
+            <div class="text-sm text-center">
+                <p><i class="fas fa-mouse-pointer mr-2"></i>Double-click to zoom | Scroll to zoom | Drag to pan</p>
+                <p class="mt-1"><i class="fas fa-keyboard mr-2"></i>ESC to close | +/- to zoom | 0 to reset</p>
+            </div>
+        </div>
+        
+        <!-- Zoom Controls -->
+        <div class="absolute bottom-4 right-4 flex gap-2 z-20">
+            <button type="button" onclick="zoomIn()" title="Zoom In (+)"
+                    class="bg-white hover:bg-gray-100 text-black w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg">
+                <i class="fas fa-search-plus"></i>
+            </button>
+            <button type="button" onclick="zoomOut()" title="Zoom Out (-)"
+                    class="bg-white hover:bg-gray-100 text-black w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg">
+                <i class="fas fa-search-minus"></i>
+            </button>
+            <button type="button" onclick="resetZoom()" title="Reset Zoom (0)"
+                    class="bg-white hover:bg-gray-100 text-black w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg">
+                <i class="fas fa-redo"></i>
+            </button>
+        </div>
+        
+        <!-- Download Button -->
+        <a id="download-image" href="" download class="absolute bottom-4 left-4 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full flex items-center gap-2 transition-all duration-300 shadow-lg z-20">
+            <i class="fas fa-download"></i>
+            <span>Download</span>
+        </a>
+        
+        <!-- Image Container with Pan & Zoom -->
+        <div id="image-container" class="relative max-w-7xl max-h-full overflow-hidden">
+            <img id="modal-image" src="" alt="" class="max-w-full max-h-[90vh] object-contain transition-transform duration-300 select-none">
+        </div>
+        
+        <!-- Loading Spinner -->
+        <div id="modal-loading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10" style="display: none;">
+            <div class="flex flex-col items-center gap-4">
+                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+                <p class="text-white text-sm">Loading floor plan...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floor Plan Access Modal -->
+<div id="floor-plan-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden p-4" style="display: none; align-items: center; justify-content: center;">
+    <div class="bg-white rounded-xl max-w-md w-full shadow-xl">
+        <div class="flex justify-between items-center p-6 border-b border-gray-200">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900">Access Floor Plans</h3>
+                <p class="text-sm text-gray-600 mt-1">Fill the form to unlock floor plan images</p>
+            </div>
+            <button onclick="closeFloorPlanModal()" class="text-gray-500 hover:text-gray-700 text-xl" type="button">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="floor-plan-access-form" class="p-6 space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="project_id" value="{{ project.id }}">
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
+                    <div class="text-sm text-blue-800">
+                        <p class="font-semibold mb-1">How it works:</p>
+                        <p>Submit your details and the floor plan images will be visible immediately after form submission.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="block text-sm font-semibold mb-2 text-gray-700">Your Name *</label>
+                <input type="text" name="name" placeholder="Enter your name" class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="block text-sm font-semibold mb-2 text-gray-700">Email Address *</label>
+                <input type="email" name="email" placeholder="Enter your email" class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="block text-sm font-semibold mb-2 text-gray-700">Phone Number *</label>
+                <input type="tel" name="phone" placeholder="Enter your phone number" class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="block text-sm font-semibold mb-2 text-gray-700">Message (Optional)</label>
+                <textarea name="message" placeholder="Any specific questions about floor plans?" class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none" rows="3"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105">
+                <i class="fas fa-unlock mr-2"></i>Submit & View Floor Plans
+            </button>
+            
+            <p class="text-xs text-gray-500 text-center mt-2">
+                <i class="fas fa-lock mr-1"></i>Your information is secure and will only be used to contact you about this property.
+            </p>
+        </form>
     </div>
 </div>
 
 <script>
 // DOM Ready
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // Check if we should scroll to floor plans section after reload
+    if (sessionStorage.getItem('scrollToFloorPlans') === 'true') {
+        sessionStorage.removeItem('scrollToFloorPlans');
+        
+        // Wait a bit for page to fully load, then scroll
+        setTimeout(() => {
+            const floorPlansSection = document.getElementById('floor-plans-section');
+            if (floorPlansSection) {
+                floorPlansSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+                
+                // Add a highlight animation
+                floorPlansSection.style.animation = 'highlight-pulse 2s ease-in-out';
+            }
+        }, 500);
+    }
     
     // Fade in animation
     const observerOptions = {
@@ -2071,6 +2447,72 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Show/Hide Appointment Fields based on interest selection
+    const interestSelect = document.getElementById('interest-select');
+    const appointmentFields = document.getElementById('appointment-fields');
+    
+    console.log('=== APPOINTMENT FIELDS DEBUG ===');
+    console.log('Interest Select:', interestSelect);
+    console.log('Appointment Fields:', appointmentFields);
+    console.log('Current display style:', appointmentFields ? appointmentFields.style.display : 'N/A');
+    
+    if (interestSelect && appointmentFields) {
+        console.log('✅ Both elements found! Setting up event listener...');
+        console.log('Current dropdown value:', interestSelect.value);
+        
+        // Function to show/hide appointment fields
+        function toggleAppointmentFields(value) {
+            console.log('🔄 toggleAppointmentFields called with value:', value);
+            
+            if (value === 'site_visit') {
+                console.log('>>> SHOWING APPOINTMENT FIELDS');
+                appointmentFields.style.display = 'block';
+                console.log('Display set to:', appointmentFields.style.display);
+                console.log('Computed display:', window.getComputedStyle(appointmentFields).display);
+                
+                // Make date and time required
+                const dateInput = appointmentFields.querySelector('[name="appointment_date"]');
+                const timeInput = appointmentFields.querySelector('[name="appointment_time"]');
+                if (dateInput) {
+                    dateInput.setAttribute('required', 'required');
+                    console.log('Date input set to required');
+                }
+                if (timeInput) {
+                    timeInput.setAttribute('required', 'required');
+                    console.log('Time input set to required');
+                }
+            } else {
+                console.log('>>> HIDING APPOINTMENT FIELDS');
+                appointmentFields.style.display = 'none';
+                
+                // Remove required attribute
+                const dateInput = appointmentFields.querySelector('[name="appointment_date"]');
+                const timeInput = appointmentFields.querySelector('[name="appointment_time"]');
+                if (dateInput) dateInput.removeAttribute('required');
+                if (timeInput) timeInput.removeAttribute('required');
+            }
+        }
+        
+        // Add multiple event listeners to ensure it works
+        interestSelect.addEventListener('change', function() {
+            console.log('📢 CHANGE event fired! New value:', this.value);
+            toggleAppointmentFields(this.value);
+        });
+        
+        interestSelect.addEventListener('input', function() {
+            console.log('📢 INPUT event fired! New value:', this.value);
+            toggleAppointmentFields(this.value);
+        });
+        
+        interestSelect.addEventListener('click', function() {
+            console.log('🖱️ SELECT clicked, current value:', this.value);
+        });
+        
+        console.log('✅ Event listeners attached successfully!');
+    } else {
+        console.error('❌ Elements not found - Interest Select:', interestSelect, 'Appointment Fields:', appointmentFields);
+    }
+    
     // Form Submission
     const form = document.getElementById('project-inquiry-form');
     if (form) {
@@ -2086,11 +2528,23 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = formData.get('name').trim();
             const email = formData.get('email').trim();
             const phone = formData.get('phone').trim();
+            const interest = formData.get('interest') || '';
             
             // Validation
             if (!name || !email || !phone) {
                 alert('Please fill in all required fields.');
                 return;
+            }
+            
+            // Additional validation for site visit
+            if (interest === 'site_visit') {
+                const appointmentDate = formData.get('appointment_date');
+                const appointmentTime = formData.get('appointment_time');
+                
+                if (!appointmentDate || !appointmentTime) {
+                    alert('Please select both date and time for your site visit.');
+                    return;
+                }
             }
             
             // Email validation
@@ -2122,11 +2576,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     email: email,
                     phone: phone,
                     interest: formData.get('interest') || '',
-                    message: formData.get('message') || ''
+                    message: formData.get('message') || '',
+                    appointment_date: formData.get('appointment_date') || '',
+                    appointment_time: formData.get('appointment_time') || ''
                 };
                 
                 // Submit form
-                const response = await fetch(`/projects/project-inquiry/${projectId}/`, {
+                const response = await fetch(`/project/project-inquiry/${projectId}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2142,6 +2598,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Success message
                     alert(result.message || 'Thank you for your inquiry! We will contact you within 24 hours.');
                     form.reset();
+                    // Hide appointment fields after reset
+                    if (appointmentFields) {
+                        appointmentFields.style.display = 'none';
+                    }
                 } else {
                     // Error message
                     alert(result.error || 'Sorry, there was an error. Please try again.');
@@ -2159,6 +2619,145 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Floor Plan Access Form Submission
+    const floorPlanForm = document.getElementById('floor-plan-access-form');
+    if (floorPlanForm) {
+        floorPlanForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = floorPlanForm.querySelector('button[type="submit"]');
+            const btnText = submitBtn.textContent;
+            
+            // Get form data
+            const formData = new FormData(floorPlanForm);
+            const name = formData.get('name').trim();
+            const email = formData.get('email').trim();
+            const phone = formData.get('phone').trim();
+            
+            // Validation
+            if (!name || !email || !phone) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            // Phone validation
+            if (phone.length < 10) {
+                alert('Please enter a valid phone number.');
+                return;
+            }
+            
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            
+            try {
+                // Get CSRF token
+                const csrfToken = floorPlanForm.querySelector('[name=csrfmiddlewaretoken]').value;
+                const projectId = formData.get('project_id');
+                
+                console.log('Submitting floor plan access request:', {projectId, name, email, phone});
+                
+                // Prepare form data
+                const submitData = {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    message: formData.get('message') || ''
+                };
+                
+                // Submit form
+                const response = await fetch(`/project/floor-plan-access/${projectId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(submitData)
+                });
+                
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response data:', result);
+                
+                if (result.success) {
+                    // Success - close modal and show success message before reload
+                    closeFloorPlanModal();
+                    
+                    // Show success message
+                    const successDiv = document.createElement('div');
+                    successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-[70] flex items-center space-x-3';
+                    successDiv.innerHTML = `
+                        <i class="fas fa-check-circle text-2xl"></i>
+                        <div>
+                            <p class="font-bold">Access Granted!</p>
+                            <p class="text-sm">Floor plans are now visible. Page will refresh...</p>
+                        </div>
+                    `;
+                    document.body.appendChild(successDiv);
+                    
+                    // Set flag in sessionStorage to scroll to floor plans after reload
+                    sessionStorage.setItem('scrollToFloorPlans', 'true');
+                    
+                    // Reload page after 1.5 seconds to show floor plans
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    // Error message
+                    alert(result.error || 'Sorry, there was an error. Please try again.');
+                    console.error('Floor plan access error:', result.error);
+                }
+                
+            } catch (error) {
+                console.error('Floor plan access exception:', error);
+                alert('Sorry, there was an error. Please try again.');
+            } finally {
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = btnText;
+            }
+        });
+    }
+    
+    // Close floor plan modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeFloorPlanModal();
+        }
+    });
+    
+    // Close floor plan modal on outside click
+    const floorPlanModal = document.getElementById('floor-plan-modal');
+    if (floorPlanModal) {
+        floorPlanModal.addEventListener('click', function(e) {
+            // Close only if clicking on the backdrop (dark area), not the modal content
+            const modalContent = this.querySelector('.bg-white');
+            if (e.target === this || !modalContent.contains(e.target)) {
+                if (e.target === this) {
+                    closeFloorPlanModal();
+                }
+            }
+        });
+    }
+    
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('floor-plan-modal');
+            if (modal && modal.style.display === 'flex') {
+                closeFloorPlanModal();
+            }
+        }
+    });
+    
     // Initialize Map
     initializeMap();
 });
@@ -2171,24 +2770,193 @@ function scrollToForm() {
     });
 }
 
+function openFloorPlanModal() {
+    const modal = document.getElementById('floor-plan-modal');
+    if (modal) {
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        console.log('✓ Floor plan modal opened');
+    }
+}
+
+function closeFloorPlanModal() {
+    const modal = document.getElementById('floor-plan-modal');
+    if (modal) {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        console.log('✓ Floor plan modal closed');
+    }
+}
+
+// Enhanced Image Modal with Zoom & Pan
+let currentZoom = 1;
+let isDragging = false;
+let startX, startY, translateX = 0, translateY = 0;
+
 function openImageModal(src, alt) {
     const modal = document.getElementById('image-modal');
     const img = document.getElementById('modal-image');
+    const caption = document.getElementById('modal-caption');
+    const downloadBtn = document.getElementById('download-image');
+    const loading = document.getElementById('modal-loading');
+    const help = document.getElementById('modal-help');
+    const container = document.getElementById('image-container');
     
-    img.src = src;
-    img.alt = alt;
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    
-    document.body.style.overflow = 'hidden';
+    if (modal && img) {
+        // Show loading
+        loading.style.display = 'flex';
+        
+        // Reset zoom and position
+        currentZoom = 1;
+        translateX = 0;
+        translateY = 0;
+        img.style.transform = 'scale(1) translate(0, 0)';
+        container.classList.remove('zoomed');
+        
+        // Set image source
+        img.src = src;
+        img.alt = alt || 'Floor Plan Image';
+        
+        // Set caption
+        if (caption) {
+            caption.querySelector('p').textContent = alt || 'Floor Plan Image';
+        }
+        
+        // Set download link
+        if (downloadBtn) {
+            downloadBtn.href = src;
+            downloadBtn.download = alt ? `${alt.replace(/\s+/g, '_')}.jpg` : 'floor_plan.jpg';
+        }
+        
+        // Hide loading when image loads
+        img.onload = function() {
+            loading.style.display = 'none';
+            
+            // Show help instructions briefly
+            if (help) {
+                help.style.opacity = '1';
+                setTimeout(() => {
+                    help.style.opacity = '0';
+                }, 3000);
+            }
+        };
+        
+        // Show modal
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closeImageModal() {
     const modal = document.getElementById('image-modal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.style.overflow = 'auto';
+    if (modal) {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        
+        // Reset zoom
+        currentZoom = 1;
+        translateX = 0;
+        translateY = 0;
+    }
 }
+
+function zoomIn() {
+    const img = document.getElementById('modal-image');
+    const container = document.getElementById('image-container');
+    if (currentZoom < 3) {
+        currentZoom += 0.25;
+        updateImageTransform(img);
+        if (currentZoom > 1) {
+            container.classList.add('zoomed');
+        }
+    }
+}
+
+function zoomOut() {
+    const img = document.getElementById('modal-image');
+    const container = document.getElementById('image-container');
+    if (currentZoom > 0.5) {
+        currentZoom -= 0.25;
+        updateImageTransform(img);
+        if (currentZoom <= 1) {
+            container.classList.remove('zoomed');
+            translateX = 0;
+            translateY = 0;
+        }
+    }
+}
+
+function resetZoom() {
+    const img = document.getElementById('modal-image');
+    const container = document.getElementById('image-container');
+    currentZoom = 1;
+    translateX = 0;
+    translateY = 0;
+    updateImageTransform(img);
+    container.classList.remove('zoomed');
+}
+
+function updateImageTransform(img) {
+    img.style.transform = `scale(${currentZoom}) translate(${translateX / currentZoom}px, ${translateY / currentZoom}px)`;
+}
+
+// Pan functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const imageContainer = document.getElementById('image-container');
+    const img = document.getElementById('modal-image');
+    
+    if (imageContainer && img) {
+        imageContainer.addEventListener('mousedown', function(e) {
+            if (currentZoom > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                imageContainer.style.cursor = 'grabbing';
+            }
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging && currentZoom > 1) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateImageTransform(img);
+            }
+        });
+        
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+            if (imageContainer) {
+                imageContainer.style.cursor = 'move';
+            }
+        });
+        
+        // Mouse wheel zoom
+        imageContainer.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomIn();
+            } else {
+                zoomOut();
+            }
+        });
+        
+        // Double click to zoom
+        img.addEventListener('dblclick', function() {
+            if (currentZoom === 1) {
+                currentZoom = 2;
+            } else {
+                currentZoom = 1;
+                translateX = 0;
+                translateY = 0;
+            }
+            updateImageTransform(img);
+        });
+    }
+});
 
 // Map Initialization
 function initializeMap() {
@@ -2303,9 +3071,34 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Close modal on outside click
+// Click outside to close image modal
 document.getElementById('image-modal').addEventListener('click', function(e) {
-    if (e.target === this) {
+    // Close if clicking the backdrop (not the image or controls)
+    if (e.target === this || e.target.id === 'image-container') {
         closeImageModal();
+    }
+});
+
+// Keyboard shortcuts for image modal
+document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('image-modal');
+    if (modal && modal.style.display === 'flex') {
+        switch(e.key) {
+            case 'Escape':
+                closeImageModal();
+                break;
+            case '+':
+            case '=':
+                zoomIn();
+                break;
+            case '-':
+            case '_':
+                zoomOut();
+                break;
+            case '0':
+                resetZoom();
+                break;
+        }
     }
 });
 </script>

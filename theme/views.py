@@ -26,7 +26,7 @@ from Projects.models import Project, Category, ProjectType, City, Amenity
 from land_leads.models import LandRequirement
 from investment_leads.models import InvestmentRequirement
 from requirements.models import Requirement
-from .models import SiteConfig, ContactForm, Developer
+from .models import SiteConfig, ContactForm, Developer, Testimonial
 
 
 def home(request):
@@ -53,10 +53,17 @@ def home(request):
             is_active=True
         ).select_related('city', 'project_type').prefetch_related('amenities')[:6]
     
-    # Trending properties (most viewed)
+    # Trending properties (based on trending_tag field, not just most viewed)
     trending_projects = Project.objects.filter(
+        trending_tag__isnull=False,
         is_active=True
-    ).order_by('-views')[:8]
+    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
+    
+    # Most Viewed Properties
+    most_viewed_projects = Project.objects.filter(
+        is_most_viewed=True,
+        is_active=True
+    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
     
     # Ready to move properties
     ready_to_move_projects = Project.objects.filter(
@@ -117,6 +124,9 @@ def home(request):
     # Active developers for the developers section
     active_developers = Developer.objects.filter(is_active=True).order_by('order', 'name')
     
+    # Active testimonials (featured first, then by display order)
+    testimonials = Testimonial.objects.filter(is_active=True)
+    
     context = {
         'categories': categories,
         'cities': cities,
@@ -125,6 +135,7 @@ def home(request):
         'amenities': amenities,
         'featured_projects': featured_projects,
         'trending_projects': trending_projects,
+        'most_viewed_projects': most_viewed_projects,
         'ready_to_move_projects': ready_to_move_projects,
         'recently_viewed_projects': recently_viewed_projects,
         'hot_deal_projects': hot_deal_projects,
@@ -136,6 +147,7 @@ def home(request):
         'rent_projects': rent_projects,
         'lease_projects': lease_projects,
         'active_developers': active_developers,
+        'testimonials': testimonials,
     }
     
     return render(request, 'pages/home.html', context)
@@ -280,8 +292,10 @@ def search_properties(request):
         status_labels = {
             'ready_to_move': 'Ready to Move',
             'under_construction': 'Under Construction',
-            'upcoming': 'Upcoming',
-            'sold_out': 'Sold Out'
+            'upcoming_project': 'Upcoming Project',
+            'possession_soon': 'Possession Soon',
+            'sold_out': 'Sold Out',
+            'new_launched': 'New Launched'
         }
         applied_filters.append({
             'label': 'Status',
@@ -383,6 +397,7 @@ def land_requirement(request):
             'area': request.POST.get('area'),
             'area_unit': request.POST.get('area_unit'),
             'requirement_type': request.POST.get('requirement_type'),
+            'enquiry_from': request.POST.get('enquiry_from', ''),
             'agreed_to_terms': request.POST.get('agreed_to_terms') == 'on',
         }
         
@@ -495,7 +510,6 @@ def requirements_submission(request):
             
             # Additional fields from hero form
             enquiry_from = request.POST.get('enquiry_from', '')
-            property_details = request.POST.get('property_details', '')
             
             agreed_to_terms = request.POST.get('agreed_to_terms') == 'on'
             
@@ -521,7 +535,6 @@ def requirements_submission(request):
                 area_needed=area_needed,
                 specific_requirements=specific_requirements,
                 enquiry_from=enquiry_from,
-                property_details=property_details,
                 agreed_to_terms=agreed_to_terms
             )
             

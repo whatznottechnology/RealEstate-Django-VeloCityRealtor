@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .models import InteriorInquiry, InteriorService, PortfolioWork
 from .forms import InteriorInquiryForm
+from theme.models import SiteConfig, Testimonial
 
 def interior_page(request):
     """Interior services page with inquiry form"""
@@ -48,14 +49,22 @@ def interior_page(request):
     else:
         form = InteriorInquiryForm()
     
+    # Get site configuration from theme app
+    site_config = SiteConfig.get_config()
+    
     # Get active services and portfolio works
     services = InteriorService.objects.filter(is_active=True)
     portfolio_works = PortfolioWork.objects.filter(is_active=True)[:6]  # Show 6 recent works
     
+    # Get active testimonials (featured first, then by display order)
+    testimonials = Testimonial.objects.filter(is_active=True)[:6]
+    
     context = {
         'form': form,
+        'site_config': site_config,
         'services': services,
         'portfolio_works': portfolio_works,
+        'testimonials': testimonials,
     }
     return render(request, 'interior/interior.html', context)
 

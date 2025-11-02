@@ -66,7 +66,9 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',  # Modern admin interface - must be first
+    'unfold',  # Unfold admin theme - must be before django.contrib.admin
+    'unfold.contrib.filters',  # Optional: Advanced filters
+    'unfold.contrib.forms',  # Optional: Better form widgets
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -261,212 +263,40 @@ if not DEBUG:
         },
     }
 
-# Jazzmin Configuration - Modern Material Design Admin Theme
-JAZZMIN_SETTINGS = {
-    # title of the window (Will default to current_admin_site.site_title if absent or None)
-    "site_title": "VeloCity Realtor",
+# ============================================================================
+# UNFOLD ADMIN THEME CONFIGURATION
+# ============================================================================
+# Modern, clean admin interface with dark mode support
+# Documentation: https://unfoldadmin.com/
+
+UNFOLD = {
+    "SITE_TITLE": "VeloCity Realtor",
+    "SITE_HEADER": "VeloCity Realtor Admin",
+    "SITE_URL": "/",
+    "SITE_SYMBOL": "🏢",  # Emoji or Unicode symbol shown in dark mode
     
-    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_header": "VeloCity Realtor",
+    "SHOW_HISTORY": True,  # Show history/change logs
+    "SHOW_VIEW_ON_SITE": True,  # Show "View on site" link for models with get_absolute_url
     
-  
-    
-    # Logo to use for your site, must be present in static files, used for brand on top left
-    "site_logo": "images/logo@2x.png",
-    
-    # Logo to use for your site, must be present in static files, used for login form logo
-    "login_logo": "images/logo@2x.png",
-    
-    # Logo to use for login form in dark themes
-    "login_logo_dark": "images/logo@2x.png",
-    
-    # CSS classes that are applied to the logo above
-    "site_logo_classes": "img-circle",
-    
-    # Relative path to a favicon for your site, will default to site_logo if absent (ideally 32x32 px)
-    "site_icon": "images/favicon.png",
-    
-    # Welcome text on the login screen
-    "welcome_sign": "Welcome to Real EstVeloCity Realtor Admin",
-    
-    # Copyright on the footer
-    "copyright": "VeloCity Realtor",
-    
-    # List of model admins to search from the search bar, search bar omitted if excluded
-    "search_model": ["auth.User", "Projects.Project", "Projects.City"],
-    
-    # Field name on user model that contains avatar ImageField/URLField/Charfield or a callable that receives the user
-    "user_avatar": None,
-    
-    ############
-    # Top Menu #
-    ############
-    
-    # Links to put along the top menu
-    "topmenu_links": [
-        # Url that gets reversed (Permissions can be added)
-        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
-        # Removed user search from top nav for cleaner UI
-        {"app": "Projects"},
-    ],
-  
-    
-    #############
-    # Side Menu #
-    #############
-    
-    # Whether to display the side menu
-    "show_sidebar": True,
-    
-    # Whether to auto expand the menu
-    "navigation_expanded": True,
-    
-    # Hide these apps when generating side menu e.g (auth)
-    "hide_apps": ["admin", "django.contrib.admin", "Admin", "AdminPanel", "AdminPanelConfig"],
-    
-    # Hide these models when generating side menu (e.g auth.user)
-    "hide_models": [],
-    
-    # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
-    "order_with_respect_to": [
-        "Projects.project",  # Show Project first in Projects app
-        "Projects.city",
-        "Projects.category", 
-        "Projects.projecttype",
-        "Projects.amenity",
-        "Projects.tag",
-        "Projects.projectoverview",
-        "Projects.galleryimage",
-        "Projects.floorplan",
-        "Projects.nearestarea",
-        "Projects.constructionupdate",
-        "Projects.whychooseus",
-        "Projects.specificationcategory",
-        "Projects.specificationitem",
-        "Projects", 
-        "land_leads", 
-        "investment_leads", 
-        "auth"
-    ],
-    
-    # Custom links to append to app groups, keyed on app name
-    "custom_links": {
-        "Projects": [{
-            "name": "Make Messages", 
-            "url": "make_messages", 
-            "icon": "fas fa-comments",
-            "permissions": ["Projects.view_project"]
-        }]
+    "COLORS": {
+        "primary": {
+            "50": "220 252 231",
+            "100": "187 247 208", 
+            "200": "134 239 172",
+            "300": "74 222 128",
+            "400": "34 197 94",
+            "500": "22 163 74",  # Main primary color (green theme)
+            "600": "21 128 61",
+            "700": "20 83 45",
+            "800": "22 101 52",
+            "900": "20 83 45",
+            "950": "5 46 22",
+        },
     },
     
-    # Custom icons for side menu apps/models See https://fontawesome.com/icons?d=gallery&m=free&v=5.0.0,5.0.1,5.0.10,5.0.11,5.0.12,5.0.13,5.0.2,5.0.3,5.0.4,5.0.5,5.0.6,5.0.7,5.0.8,5.0.9,5.1.0,5.1.1,5.2.0,5.3.0,5.3.1,5.4.0,5.4.1,5.4.2,5.5.0,5.6.0,5.6.1,5.6.3,5.7.0,5.7.1,5.7.2,5.8.0,5.8.1,5.8.2,5.9.0,5.10.0,5.10.1,5.10.2,5.11.0,5.11.1,5.11.2,5.12.0,5.12.1,5.13.0,5.13.1,5.14.0,5.15.0,5.15.1,5.15.2,5.15.3,5.15.4&s=solid for inspiration
-    "icons": {
-        # Projects App
-        "Projects": "fas fa-building",
-        "Projects.project": "fas fa-building",
-        "Projects.city": "fas fa-map-marker-alt",
-        "Projects.category": "fas fa-folder",
-        "Projects.projecttype": "fas fa-home",
-        "Projects.amenity": "fas fa-swimming-pool",
-        "Projects.specificationcategory": "fas fa-list",
-        "Projects.tag": "fas fa-tags",
-        "Projects.projectoverview": "fas fa-info-circle",
-        "Projects.galleryimage": "fas fa-images",
-        "Projects.projectamenityimage": "fas fa-camera-retro",
-        "Projects.nearestarea": "fas fa-location-arrow",
-        "Projects.floorplan": "fas fa-drafting-compass",
-        "Projects.constructionupdate": "fas fa-hammer",
-        "Projects.whychooseus": "fas fa-thumbs-up",
-        "Projects.specificationitem": "fas fa-clipboard-list",
-        
-        # Land Leads App
-        "land_leads": "fas fa-seedling",
-        "land_leads.LandRequirement": "fas fa-map",
-        
-        # Investment Leads App  
-        "investment_leads": "fas fa-chart-line",
-        "investment_leads.InvestmentRequirement": "fas fa-dollar-sign",
-        
-        # Authentication (moved to bottom)
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.Group": "fas fa-users",
+    "SIDEBAR": {
+        "show_search": True,  # Show search in sidebar
+        "show_all_applications": True,  # Auto-discover and show all apps
     },
-    
-    # Icons that are used when one is not manually specified
-    "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
-    
-    #################
-    # Related Modal #
-    #################
-    # Use modals instead of popups
-    "related_modal_active": False,
-    
-    #############
-    # UI Tweaks #
-    #############
-    # Relative paths to custom CSS/JS scripts (must be present in static files)
-    "custom_css": "css/admin_custom.css",
-    
-    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
-    "use_google_fonts_cdn": True,
-    
-    # Whether to show the UI customizer on the sidebar
-    "show_ui_builder": True,
-    
-    ###############
-    # Change view #
-    ###############
-    # Render out the change view as a single form, or in tabs, current options are
-    # - single
-    # - horizontal_tabs (default)
-    # - vertical_tabs
-    # - collapsible
-    # - carousel
-    "changeform_format": "horizontal_tabs",
-    
-    # override change form on a per modeladmin basis
-    "changeform_format_overrides": {
-        "auth.user": "collapsible", 
-        "auth.group": "vertical_tabs",
-        "Projects.project": "single",  # Use single page form for projects
-        "land_leads.LandRequirement": "single",  # Use single page form for land leads
-        "investment_leads.InvestmentRequirement": "single",  # Use single page form for investment leads
-    },
-    
-    # Add a language dropdown into the admin
-    "language_chooser": False,
 }
-JAZZMIN_UI_TWEAKS = {
-    "navbar_small_text": False,
-    "footer_small_text": False,
-    "body_small_text": True,
-    "brand_small_text": False,
-    "brand_colour": "navbar-primary",
-    "accent": "accent-primary",
-    "navbar": "navbar-white navbar-light",
-    "no_navbar_border": True,
-    "navbar_fixed": False,
-    "layout_boxed": False,
-    "footer_fixed": False,
-    "sidebar_fixed": False,
-    "sidebar": "sidebar-dark-primary",
-    "sidebar_nav_small_text": False,
-    "sidebar_disable_expand": True,
-    "sidebar_nav_child_indent": True,
-    "sidebar_nav_compact_style": False,
-    "sidebar_nav_legacy_style": False,
-    "sidebar_nav_flat_style": False,
-    "theme": "default",
-    "dark_mode_theme": None,
-    "button_classes": {
-        "primary": "btn-primary",
-        "secondary": "btn-secondary",
-        "info": "btn-info",
-        "warning": "btn-warning",
-        "danger": "btn-danger",
-        "success": "btn-success"
-    },
-    "actions_sticky_top": True
-}
+

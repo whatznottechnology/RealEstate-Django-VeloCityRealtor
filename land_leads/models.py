@@ -15,6 +15,12 @@ class LandRequirement(models.Model):
         ('joint_venture', 'Joint Venture'),
     ]
     
+    ENQUIRY_FROM_CHOICES = [
+        ('agent', 'Agent'),
+        ('owner', 'Owner'),
+        ('individual', 'Individual'),
+    ]
+    
     STATUS_CHOICES = [
         ('new', 'New'),
         ('in_progress', 'In Progress'),
@@ -32,6 +38,7 @@ class LandRequirement(models.Model):
     area = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     area_unit = models.CharField(max_length=20, choices=AREA_UNIT_CHOICES, blank=True, null=True)
     requirement_type = models.CharField(max_length=20, choices=REQUIREMENT_TYPE_CHOICES)
+    enquiry_from = models.CharField(max_length=20, choices=ENQUIRY_FROM_CHOICES, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
     agreed_to_terms = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

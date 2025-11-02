@@ -209,7 +209,7 @@
                                         {% for fp in floor_plans %}
                                         <div class="col-md-4 mb-3">
                                             <img src="{{ fp.image.url }}" alt="{{ fp.name }}" class="img-thumbnail" style="height:120px;object-fit:cover;width:100%;">
-                                            <div><strong>{{ fp.name }}</strong> - {{ fp.area }} - ₹{{ fp.price|floatformat:0 }}</div>
+                                            <div><strong>{{ fp.name }}</strong> - {{ fp.area }} - ₹{{ fp.price|format_price }}</div>
                                         </div>
                                         {% endfor %}
                                     </div>

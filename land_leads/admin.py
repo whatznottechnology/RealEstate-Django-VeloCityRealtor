@@ -6,8 +6,8 @@ from .models import LandRequirement
 
 @admin.register(LandRequirement)
 class LandRequirementAdmin(admin.ModelAdmin):
-    list_display = ['name', 'contact_number', 'budget', 'requirement_type', 'status_badge', 'created_at', 'action_buttons']
-    list_filter = ['requirement_type', 'area_unit', 'status', 'agreed_to_terms', 'created_at']
+    list_display = ['name', 'contact_number', 'budget', 'requirement_type', 'enquiry_from', 'status_badge', 'created_at', 'action_buttons']
+    list_filter = ['requirement_type', 'enquiry_from', 'area_unit', 'status', 'agreed_to_terms', 'created_at']
     search_fields = ['name', 'contact_number', 'location']
     ordering = ['-created_at']
     readonly_fields = ['created_at']
@@ -42,7 +42,7 @@ class LandRequirementAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Personal Information', {
-            'fields': ('name', 'email', 'contact_number')
+            'fields': ('name', 'email', 'contact_number', 'enquiry_from')
         }),
         ('Requirement Details', {
             'fields': ('location', 'budget', 'area', 'area_unit', 'requirement_type')

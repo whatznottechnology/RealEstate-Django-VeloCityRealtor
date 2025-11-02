@@ -3,6 +3,9 @@ from django.utils.html import format_html
 from .models import InteriorInquiry, InquiryStatus, InteriorService, PortfolioWork
 
 
+# InteriorConfig removed - now using theme.SiteConfig for all contact information
+
+
 @admin.register(InteriorService)
 class InteriorServiceAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'badge_text', 'is_active', 'order', 'image_preview')

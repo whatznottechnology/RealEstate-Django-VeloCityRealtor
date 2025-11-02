@@ -6,7 +6,7 @@ from .models import Requirement
 class RequirementAdmin(admin.ModelAdmin):
     list_display = ['name', 'contact_number', 'requirement_type', 'property_type', 'enquiry_from', 'location', 'budget_display', 'created_at']
     list_filter = ['requirement_type', 'property_type', 'enquiry_from', 'budget_range', 'agreed_to_terms', 'created_at']
-    search_fields = ['name', 'contact_number', 'email', 'location', 'property_details', 'specific_requirements']
+    search_fields = ['name', 'contact_number', 'email', 'location', 'specific_requirements']
     readonly_fields = ['created_at']
     list_per_page = 20
     date_hierarchy = 'created_at'
@@ -35,7 +35,7 @@ class RequirementAdmin(admin.ModelAdmin):
             'classes': ('wide',),
         }),
         ('Property Requirements', {
-            'fields': ('specific_requirements', 'property_details'),
+            'fields': ('specific_requirements',),
             'classes': ('wide',),
         }),
         ('Agreement & Terms', {

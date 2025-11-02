@@ -76,6 +76,15 @@ class SiteConfig(models.Model):
         help_text="Main logo for the website (recommended: transparent PNG, 200x60px)"
     )
     
+    # Company Brochure
+    company_brochure = models.FileField(
+        upload_to='site/brochures/',
+        blank=True,
+        null=True,
+        verbose_name="Company Brochure (PDF)",
+        help_text="Upload company brochure PDF file for download on homepage"
+    )
+    
     # Promotional Popup
     promo_popup_image = models.ImageField(
         upload_to='site/promo_popup/',
@@ -163,6 +172,13 @@ class SiteConfig(models.Model):
         null=True,
         help_text="Primary contact phone number"
     )
+    sales_phone = models.CharField(
+        verbose_name="Sales/Support Phone",
+        max_length=20,
+        blank=True,
+        null=True,
+        help_text="Sales or support phone number for 'Call Us Now' button"
+    )
     office_address = models.TextField(
         verbose_name="Office Address",
         blank=True,
@@ -219,3 +235,96 @@ class SiteConfig(models.Model):
             clean_number = ''.join(filter(lambda x: x.isdigit() or x == '+', self.whatsapp_number))
             return f"https://wa.me/{clean_number.lstrip('+')}"
         return "#"
+
+
+class Testimonial(models.Model):
+    """Client testimonials for interior design services"""
+    RATING_CHOICES = (
+        (5, '5 Stars - Excellent'),
+        (4, '4 Stars - Very Good'),
+        (3, '3 Stars - Good'),
+        (2, '2 Stars - Fair'),
+        (1, '1 Star - Poor'),
+    )
+    
+    name = models.CharField(
+        max_length=100,
+        verbose_name="Client Name",
+        help_text="Full name of the client (Bengali names supported)"
+    )
+    location = models.CharField(
+        max_length=100,
+        verbose_name="Location",
+        help_text="City or area (e.g., Kolkata, Saltlake, New Town)"
+    )
+    designation = models.CharField(
+        max_length=100,
+        verbose_name="Designation/Profession",
+        blank=True,
+        null=True,
+        help_text="Client's profession or designation (optional)"
+    )
+    company = models.CharField(
+        max_length=100,
+        verbose_name="Company Name",
+        blank=True,
+        null=True,
+        help_text="Company name (optional)"
+    )
+    rating = models.IntegerField(
+        choices=RATING_CHOICES,
+        default=5,
+        verbose_name="Rating",
+        help_text="Client rating (1-5 stars)"
+    )
+    review_text = models.TextField(
+        verbose_name="Review Text",
+        help_text="Client's testimonial/review (Bengali and English supported)"
+    )
+    client_image = models.ImageField(
+        upload_to='testimonials/',
+        blank=True,
+        null=True,
+        verbose_name="Client Photo",
+        help_text="Client photo (optional, recommended: 200x200px)"
+    )
+    project_type = models.CharField(
+        max_length=100,
+        verbose_name="Project Type",
+        blank=True,
+        null=True,
+        help_text="Type of project (e.g., Residential, Commercial, Office)"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Is Active",
+        help_text="Show this testimonial on the website"
+    )
+    is_featured = models.BooleanField(
+        default=False,
+        verbose_name="Is Featured",
+        help_text="Featured testimonials appear first"
+    )
+    display_order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Display Order",
+        help_text="Order of display (lower numbers appear first)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Testimonial"
+        verbose_name_plural = "Testimonials"
+        ordering = ['-is_featured', 'display_order', '-created_at']
+    
+    def __str__(self):
+        return f"{self.name} - {self.location} ({self.rating}★)"
+    
+    def get_stars_html(self):
+        """Returns HTML for star rating display"""
+        full_stars = self.rating
+        empty_stars = 5 - self.rating
+        stars_html = '<i class="fas fa-star text-yellow-400"></i>' * full_stars
+        stars_html += '<i class="far fa-star text-gray-300"></i>' * empty_stars
+        return stars_html

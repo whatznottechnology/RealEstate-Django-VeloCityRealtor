@@ -56,7 +56,6 @@ class Requirement(models.Model):
     
     # Additional fields from hero form
     enquiry_from = models.CharField(max_length=20, choices=ENQUIRY_FROM_CHOICES, blank=True, null=True)
-    property_details = models.TextField(blank=True, null=True, help_text="Additional property details")
     
     agreed_to_terms = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -14,16 +14,16 @@
             </p>
         </div>
 
-        {% if developers %}
+        {% if active_developers %}
             <!-- Desktop Grid View (lg and above) -->
             <div class="hidden lg:grid lg:grid-cols-4 xl:grid-cols-6 gap-8 items-center justify-items-center">
-                {% for developer in developers %}
+                {% for developer in active_developers %}
                     <div class="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 w-full max-w-xs transform hover:scale-105">
                         <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
                         
                         <div class="relative z-10 text-center">
-                            {% if developer.website %}
-                                <a href="{{ developer.website }}" target="_blank" rel="noopener noreferrer" class="block">
+                            {% if developer.website_url %}
+                                <a href="{{ developer.website_url }}" target="_blank" rel="noopener noreferrer" class="block">
                             {% endif %}
                             
                             <div class="mb-4 overflow-hidden rounded-lg bg-gray-50 p-4">
@@ -37,11 +37,7 @@
                                 {{ developer.name }}
                             </h3>
                             
-                            {% if developer.position %}
-                                <p class="text-sm text-gray-500 mb-3">{{ developer.position }}</p>
-                            {% endif %}
-                            
-                            {% if developer.website %}
+                            {% if developer.website_url %}
                                 <div class="flex items-center justify-center text-blue-600 group-hover:text-purple-600 transition-colors">
                                     <i class="fas fa-external-link-alt text-xs mr-1"></i>
                                     <span class="text-xs font-medium">Visit Website</span>
@@ -57,13 +53,13 @@
             <div class="lg:hidden relative">
                 <div class="developers-carousel overflow-x-auto pb-6 scrollbar-hide">
                     <div class="flex space-x-6 w-max">
-                        {% for developer in developers %}
+                        {% for developer in active_developers %}
                             <div class="group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 w-72 flex-shrink-0 transform hover:scale-105">
                                 <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
                                 
                                 <div class="relative z-10 text-center">
-                                    {% if developer.website %}
-                                        <a href="{{ developer.website }}" target="_blank" rel="noopener noreferrer" class="block">
+                                    {% if developer.website_url %}
+                                        <a href="{{ developer.website_url }}" target="_blank" rel="noopener noreferrer" class="block">
                                     {% endif %}
                                     
                                     <div class="mb-4 overflow-hidden rounded-lg bg-gray-50 p-4">
@@ -77,11 +73,7 @@
                                         {{ developer.name }}
                                     </h3>
                                     
-                                    {% if developer.position %}
-                                        <p class="text-sm text-gray-500 mb-3">{{ developer.position }}</p>
-                                    {% endif %}
-                                    
-                                    {% if developer.website %}
+                                    {% if developer.website_url %}
                                         <div class="flex items-center justify-center text-blue-600 group-hover:text-purple-600 transition-colors">
                                             <i class="fas fa-external-link-alt text-xs mr-1"></i>
                                             <span class="text-xs font-medium">Visit Website</span>
@@ -96,7 +88,7 @@
                 
                 <!-- Mobile Scroll Indicators -->
                 <div class="flex justify-center space-x-2 mt-6">
-                    {% for developer in developers %}
+                    {% for developer in active_developers %}
                         <div class="w-2 h-2 bg-gray-300 rounded-full transition-colors duration-300" data-slide="{{ forloop.counter0 }}"></div>
                     {% endfor %}
                 </div>

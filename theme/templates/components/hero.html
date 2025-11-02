@@ -817,6 +817,19 @@
                             </div>
                         </div>
 
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
+                            <div>
+                                <label class="block text-sm font-bold text-white mb-1 bg-white/15 rounded-lg p-2 backdrop-blur-sm">Enquiry From</label>
+                                <select name="enquiry_from"
+                                    class="enhanced-select w-full px-3 sm:px-4 py-3 rounded-xl focus:outline-none bg-white text-sm appearance-none text-gray-900 font-medium">
+                                    <option value="">Select Type</option>
+                                    <option value="agent">Agent</option>
+                                    <option value="owner">Owner</option>
+                                    <option value="individual">Individual</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="mb-4 sm:mb-6">
                             <label class="block text-base font-bold text-white mb-3 bg-white/15 rounded-lg p-3 backdrop-blur-sm">Requirement Type</label>
                             <div class="flex flex-wrap gap-2 sm:gap-3">
@@ -891,23 +904,28 @@
                                     class="enhanced-input w-full px-3 sm:px-4 py-3 rounded-xl focus:outline-none bg-white text-sm text-gray-900 font-medium">
                             </div>
                             <div>
-                                <label class="block text-sm font-bold text-white mb-1 bg-white/15 rounded-lg p-2 backdrop-blur-sm">Budget</label>
-                                <select name="budget"
+                                <label class="block text-sm font-bold text-white mb-1 bg-white/15 rounded-lg p-2 backdrop-blur-sm">Budget Range</label>
+                                <select name="budget_range"
                                     class="enhanced-select w-full px-3 sm:px-4 py-3 rounded-xl focus:outline-none bg-white text-sm appearance-none text-gray-900 font-medium">
-                                    <option value="">Select Budget</option>
-                                    <option value="100-500">₹1Cr - ₹5Cr</option>
-                                    <option value="500-1000">₹5Cr - ₹10Cr</option>
-                                    <option value="1000-5000">₹10Cr - ₹50Cr</option>
-                                    <option value="5000+">₹50Cr+</option>
+                                    <option value="">Select Budget Range</option>
+                                    <option value="under_10l">Under 10 Lakhs</option>
+                                    <option value="10l_25l">10 - 25 Lakhs</option>
+                                    <option value="25l_50l">25 - 50 Lakhs</option>
+                                    <option value="50l_1cr">50 Lakhs - 1 Crore</option>
+                                    <option value="1cr_2cr">1 - 2 Crores</option>
+                                    <option value="2cr_5cr">2 - 5 Crores</option>
+                                    <option value="5cr_plus">5+ Crores</option>
                                 </select>
                             </div>
                             <div class="sm:col-span-2 md:col-span-1">
-                                <label class="block text-sm font-bold text-white mb-1 bg-white/15 rounded-lg p-2 backdrop-blur-sm">Requirement Type</label>
+                                <label class="block text-sm font-bold text-white mb-1 bg-white/15 rounded-lg p-2 backdrop-blur-sm">Requirement Type *</label>
                                 <select name="requirement_type"
                                     class="enhanced-select w-full px-3 sm:px-4 py-3 rounded-xl focus:outline-none bg-white text-sm appearance-none text-gray-900 font-medium">
                                     <option value="">Select Type</option>
                                     <option value="buy">Buy</option>
                                     <option value="sale">Sale</option>
+                                    <option value="rent">Rent</option>
+                                    <option value="lease">Lease</option>
                                     <option value="want_lease">Want Lease</option>
                                     <option value="for_lease">For Lease</option>
                                 </select>
@@ -916,16 +934,22 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
                             <div>
-                                <label class="block text-sm font-bold text-white mb-1 bg-white/15 rounded-lg p-2 backdrop-blur-sm">Property Type</label>
+                                <label class="block text-sm font-bold text-white mb-1 bg-white/15 rounded-lg p-2 backdrop-blur-sm">Property Type *</label>
                                 <select name="property_type"
                                     class="enhanced-select w-full px-3 sm:px-4 py-3 rounded-xl focus:outline-none bg-white text-sm appearance-none text-gray-900 font-medium">
                                     <option value="">Select Property Type</option>
+                                    <option value="residential">Residential</option>
+                                    <option value="commercial">Commercial</option>
+                                    <option value="industrial">Industrial</option>
+                                    <option value="land">Land</option>
+                                    <option value="office">Office Space</option>
+                                    <option value="retail">Retail Space</option>
+                                    <option value="warehouse">Warehouse</option>
                                     <option value="hotel">Hotel</option>
                                     <option value="restaurant">Restaurant</option>
                                     <option value="bar">Bar</option>
                                     <option value="banquet">Banquet</option>
                                     <option value="petrol_pump">Petrol Pump</option>
-                                    <option value="land">Land</option>
                                     <option value="showroom">Showroom</option>
                                 </select>
                             </div>
@@ -941,10 +965,16 @@
                             </div>
                         </div>
 
+                        <div class="mb-3 sm:mb-4">
+                            <label class="block text-sm font-bold text-white mb-1 bg-white/15 rounded-lg p-2 backdrop-blur-sm">Area Needed</label>
+                            <input type="text" name="area_needed" placeholder="e.g., 2000 sq ft, 1 acre"
+                                class="enhanced-input w-full px-3 sm:px-4 py-3 rounded-xl focus:outline-none bg-white text-sm text-gray-900 font-medium">
+                        </div>
+
                         <div class="mb-4 sm:mb-6">
-                            <label class="block text-base font-bold text-white mb-2 bg-white/15 rounded-lg p-3 backdrop-blur-sm">Property Details</label>
-                            <textarea name="property_details" rows="4"
-                                placeholder="Write your property details and requirements..."
+                            <label class="block text-base font-bold text-white mb-2 bg-white/15 rounded-lg p-3 backdrop-blur-sm">Specific Requirements</label>
+                            <textarea name="specific_requirements" rows="4"
+                                placeholder="Describe your specific requirements..."
                                 class="enhanced-input w-full px-3 sm:px-4 py-3 rounded-xl focus:outline-none bg-white resize-vertical text-sm text-gray-900 font-medium"></textarea>
                         </div>
 

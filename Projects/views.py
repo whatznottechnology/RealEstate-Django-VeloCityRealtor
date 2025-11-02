@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from .models import Project, Category, ProjectType, GalleryImage, FloorPlan, FloorPlanAccess
+from .models import Project, Category, ProjectType, GalleryImage, FloorPlan, FloorPlanAccess, ProjectInquiry
 from .forms import ProjectForm
 from theme.models import SiteConfig
 import json
@@ -40,6 +40,8 @@ def project_detail_view(request, project_id):
 
 def public_project_detail_view(request, project_id):
     """Public detailed view of a project using the new redesigned template"""
+    from datetime import date
+    
     project = get_object_or_404(Project, id=project_id, is_active=True)
     
     # Increment view count
@@ -77,6 +79,7 @@ def public_project_detail_view(request, project_id):
         'site_config': site_config,
         'related_projects': related_projects,
         'has_floor_plan_access': has_floor_plan_access,
+        'today_date': date.today(),  # For date input min attribute
         'title': f'{project.name} - Project Details',
     }
 
@@ -279,16 +282,24 @@ def submit_floor_plan_access(request, project_id):
             'message': 'Thank you! You can now view the floor plans.'
         })
         
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
         return JsonResponse({
             'success': False, 
-            'error': 'Invalid request format.'
-        })
+            'error': f'Invalid JSON format: {str(e)}'
+        }, status=400)
+    except Project.DoesNotExist:
+        return JsonResponse({
+            'success': False, 
+            'error': 'Project not found.'
+        }, status=404)
     except Exception as e:
+        import traceback
+        error_msg = str(e)
+        traceback.print_exc()
         return JsonResponse({
             'success': False, 
-            'error': 'An error occurred. Please try again.'
-        })
+            'error': f'Server error: {error_msg}'
+        }, status=500)
 
 
 @csrf_exempt
@@ -309,6 +320,8 @@ def submit_project_inquiry(request, project_id):
         phone = data.get('phone', '').strip()
         interest = data.get('interest', '').strip()
         message = data.get('message', '').strip()
+        appointment_date = data.get('appointment_date', '').strip()
+        appointment_time = data.get('appointment_time', '').strip()
         
         # Validate required fields
         if not name or not email or not phone:
@@ -333,6 +346,13 @@ def submit_project_inquiry(request, project_id):
                 'error': 'Please enter a valid phone number.'
             })
         
+        # Validate appointment fields if site visit is selected
+        if interest == 'site_visit' and (not appointment_date or not appointment_time):
+            return JsonResponse({
+                'success': False,
+                'error': 'Please select both date and time for site visit.'
+            })
+        
         # Get IP address and user agent
         ip_address = request.META.get('REMOTE_ADDR')
         if request.META.get('HTTP_X_FORWARDED_FOR'):
@@ -340,23 +360,29 @@ def submit_project_inquiry(request, project_id):
         
         user_agent = request.META.get('HTTP_USER_AGENT', '')
         
-        # Create inquiry record (you may want to create a ProjectInquiry model)
-        # For now, we'll use FloorPlanAccess as a general inquiry model
-        inquiry_message = f"Interest: {interest}\n\nMessage: {message}" if interest else message
-        
-        FloorPlanAccess.objects.create(
+        # Create inquiry record
+        inquiry = ProjectInquiry.objects.create(
             project=project,
             name=name,
             email=email,
             phone=phone,
-            message=inquiry_message,
+            interest=interest if interest else None,
+            message=message,
+            appointment_date=appointment_date if appointment_date else None,
+            appointment_time=appointment_time if appointment_time else None,
             ip_address=ip_address,
             user_agent=user_agent
         )
         
+        # Customize success message based on inquiry type
+        if appointment_date and appointment_time:
+            success_message = f'Thank you! Your site visit has been scheduled for {appointment_date} at {appointment_time}. We will contact you to confirm.'
+        else:
+            success_message = 'Thank you for your inquiry! We will contact you within 24 hours.'
+        
         return JsonResponse({
             'success': True, 
-            'message': 'Thank you for your inquiry! We will contact you within 24 hours.'
+            'message': success_message
         })
         
     except json.JSONDecodeError:

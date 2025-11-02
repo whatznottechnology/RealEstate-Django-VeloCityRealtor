@@ -6,7 +6,8 @@ from .models import (
     Project, City, Category, ProjectType, Tag, Amenity, 
     ProjectOverview, GalleryImage, NearestArea, FloorPlan, 
     ConstructionUpdate, WhyChooseUs, SpecificationCategory, 
-    SpecificationItem, ProjectAmenityImage, FloorPlanAccess
+    SpecificationItem, ProjectAmenityImage, FloorPlanAccess, AreaType,
+    ProjectInquiry
 )
 from django import forms
 from django.db import models as dj_models
@@ -136,10 +137,11 @@ class ProjectReviewInline(admin.TabularInline):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = (
-        'project_thumbnail', 'name', 'project_by', 'city', 'status_badge', 
+        'display_order', 'project_thumbnail', 'name', 'project_by', 'city', 'status_badge', 
         'bhk', 'formatted_price', 'reviews_count', 'views', 'feature_badges', 'edit_button', 'is_active', 'created_at'
     )
     list_display_links = ('project_thumbnail', 'name')
+    list_editable = ('display_order',)  # Allow inline editing of display order
     list_filter = (
         'status', 'category', 'project_type', 'city', 'is_featured', 
         'is_active', 'is_most_viewed', 'is_nearby_property', 'is_recently_viewed',
@@ -188,8 +190,10 @@ class ProjectAdmin(admin.ModelAdmin):
         colors = {
             'ready_to_move': '#28a745',
             'under_construction': '#ffc107', 
-            'upcoming': '#17a2b8',
-            'sold_out': '#dc3545'
+            'upcoming_project': '#17a2b8',
+            'possession_soon': '#6f42c1',
+            'sold_out': '#dc3545',
+            'new_launched': '#fd7e14'
         }
         return format_html(
             '<span style="background-color: {}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; white-space: nowrap;">{}</span>',
@@ -351,9 +355,10 @@ class ProjectAdmin(admin.ModelAdmin):
             'classes': ('wide', 'collapse'),
             'description': 'Search Engine Optimization fields for better discoverability'
         }),
-        ('📈 Tracking', {
-            'fields': ('views', 'is_active', 'created_at', 'updated_at'),
+        ('📈 Tracking & Display Order', {
+            'fields': ('display_order', 'views', 'is_active', 'created_at', 'updated_at'),
             'classes': ('wide', 'collapse'),
+            'description': 'Set display_order to control project position. Lower numbers appear first. Use 0 for default ordering.'
         }),
     )
     
@@ -361,7 +366,12 @@ class ProjectAdmin(admin.ModelAdmin):
     inlines = [
         ProjectOverviewInline,
         GalleryImageInline,
+        NearestAreaInline,
         FloorPlanInline,
+        ConstructionUpdateInline,
+        WhyChooseUsInline,
+        SpecificationItemInline,
+        ProjectAmenityImageInline,
         ProjectReviewInline,
     ]
 
@@ -741,6 +751,95 @@ class ProjectAmenityImageAdmin(admin.ModelAdmin):
     image_preview.short_description = 'Image Preview'
 
 
+@admin.register(ProjectInquiry)
+class ProjectInquiryAdmin(admin.ModelAdmin):
+    list_display = ('project', 'name', 'email', 'phone', 'interest_badge', 'appointment_info', 'is_contacted', 'status_badge', 'created_at')
+    list_display_links = ('name', 'email')
+    list_filter = ('interest', 'is_contacted', 'created_at', 'project', 'appointment_date')
+    search_fields = ('project__name', 'name', 'email', 'phone', 'message')
+    readonly_fields = ('ip_address', 'user_agent', 'created_at')
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+    list_editable = ('is_contacted',)
+    
+    fieldsets = (
+        ('📋 Project & Contact Information', {
+            'fields': ('project', 'name', 'email', 'phone', 'interest')
+        }),
+        ('💬 Inquiry Details', {
+            'fields': ('message',),
+        }),
+        ('📅 Appointment Details', {
+            'fields': ('appointment_date', 'appointment_time'),
+            'classes': ('collapse',),
+            'description': 'Only filled when interest is "Schedule Site Visit"'
+        }),
+        ('✅ Status & Follow-up', {
+            'fields': ('is_contacted', 'contacted_at', 'notes'),
+        }),
+        ('🔍 Technical Details', {
+            'fields': ('ip_address', 'user_agent', 'created_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def interest_badge(self, obj):
+        colors = {
+            'buying': '#28a745',
+            'investment': '#ffc107',
+            'site_visit': '#dc2626',
+            'floor_plans': '#007bff',
+            'pricing': '#6f42c1',
+        }
+        if obj.interest:
+            return format_html(
+                '<span style="background-color: {}; color: white; padding: 3px 10px; border-radius: 12px; font-size: 11px; white-space: nowrap;">{}</span>',
+                colors.get(obj.interest, '#6c757d'),
+                obj.get_interest_display()
+            )
+        return format_html('<span style="color: #999;">-</span>')
+    interest_badge.short_description = '🎯 Interest'
+    interest_badge.allow_tags = True
+    
+    def appointment_info(self, obj):
+        if obj.appointment_date and obj.appointment_time:
+            return format_html(
+                '<div style="text-align: center;">'
+                '<div style="font-weight: bold; color: #dc2626;">📅 {}</div>'
+                '<div style="font-size: 11px; color: #059669;">🕐 {}</div>'
+                '</div>',
+                obj.appointment_date.strftime('%b %d, %Y'),
+                obj.appointment_time
+            )
+        return format_html('<span style="color: #999;">-</span>')
+    appointment_info.short_description = '📅 Appointment'
+    appointment_info.allow_tags = True
+    
+    def status_badge(self, obj):
+        if obj.is_contacted:
+            return format_html(
+                '<span style="background-color: #28a745; color: white; padding: 3px 10px; border-radius: 12px; font-size: 11px;">✓ Contacted</span>'
+            )
+        return format_html(
+            '<span style="background-color: #dc3545; color: white; padding: 3px 10px; border-radius: 12px; font-size: 11px;">⏳ Pending</span>'
+        )
+    status_badge.short_description = '📊 Status'
+    status_badge.allow_tags = True
+    
+    actions = ['mark_as_contacted', 'mark_as_pending']
+    
+    def mark_as_contacted(self, request, queryset):
+        from django.utils import timezone
+        updated = queryset.update(is_contacted=True, contacted_at=timezone.now())
+        self.message_user(request, f'{updated} inquiry(ies) marked as contacted.')
+    mark_as_contacted.short_description = "✓ Mark selected as contacted"
+    
+    def mark_as_pending(self, request, queryset):
+        updated = queryset.update(is_contacted=False, contacted_at=None)
+        self.message_user(request, f'{updated} inquiry(ies) marked as pending.')
+    mark_as_pending.short_description = "⏳ Mark selected as pending"
+
+
 @admin.register(FloorPlanAccess)
 class FloorPlanAccessAdmin(admin.ModelAdmin):
     list_display = ('project', 'name', 'email', 'phone', 'accessed_at', 'access_count')
@@ -776,6 +875,57 @@ class FloorPlanAccessAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         # Usually floor plan access records are created through the website
         return False
+
+
+@admin.register(AreaType)
+class AreaTypeAdmin(admin.ModelAdmin):
+    list_display = ('area_icon', 'name', 'nearest_area_count', 'status_badge', 'order', 'created_at')
+    list_display_links = ('area_icon', 'name')
+    list_filter = ('is_active', 'created_at')
+    search_fields = ('name', 'font_awesome_icon')
+    readonly_fields = ('created_at', 'icon_preview')
+    list_per_page = 25
+    ordering = ('order', 'name')
+    
+    fieldsets = (
+        ('📍 Basic Information', {
+            'fields': ('name', 'icon', 'icon_preview', 'font_awesome_icon', 'order', 'is_active'),
+            'classes': ('wide',),
+        }),
+        ('📅 Timestamps', {
+            'fields': ('created_at',),
+            'classes': ('wide', 'collapse'),
+        }),
+    )
+    
+    def area_icon(self, obj):
+        if obj.icon:
+            return format_html(
+                '<img src="{}" width="40" height="40" style="border-radius: 50%; object-fit: cover;" />',
+                obj.icon.url
+            )
+        icon_class = obj.get_default_icon_class()
+        return format_html('<div style="width:40px;height:40px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#666;"><i class="{}"></i></div>', icon_class)
+    area_icon.short_description = '🖼️ Icon'
+    
+    def status_badge(self, obj):
+        if obj.is_active:
+            return format_html('<span style="background-color: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">Active</span>')
+        return format_html('<span style="background-color: #dc3545; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">Inactive</span>')
+    status_badge.short_description = '📊 Status'
+    
+    def nearest_area_count(self, obj):
+        return obj.nearest_areas.count()
+    nearest_area_count.short_description = 'Used in'
+    
+    def icon_preview(self, obj):
+        if obj.icon:
+            return format_html(
+                '<img src="{}" style="max-width: 150px; max-height: 150px; border-radius: 8px;" />',
+                obj.icon.url
+            )
+        return "No icon uploaded"
+    icon_preview.short_description = 'Icon Preview'
 
 
 # Jazzmin Admin Site Configuration

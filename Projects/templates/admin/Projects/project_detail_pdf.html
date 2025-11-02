@@ -56,7 +56,7 @@
     <div class="section">
         <div class="section-title">Floor Plans</div>
         {% for fp in floor_plans %}
-            <div><img src="{{ fp.image.url }}" class="img-thumb" /> <strong>{{ fp.name }}</strong> - {{ fp.area }} - ₹{{ fp.price|floatformat:0 }}</div>
+            <div><img src="{{ fp.image.url }}" class="img-thumb" /> <strong>{{ fp.name }}</strong> - {{ fp.area }} - ₹{{ fp.price|format_price }}</div>
         {% endfor %}
     </div>
     {% endif %}

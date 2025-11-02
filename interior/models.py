@@ -1,6 +1,82 @@
 from django.db import models
 from django.utils import timezone
 
+
+class InteriorConfig(models.Model):
+    """Interior page configuration for contact details and settings"""
+    
+    # Contact Information
+    phone_number = models.CharField(
+        max_length=20,
+        verbose_name="Phone Number",
+        default="+91 98765 43210"
+    )
+    email = models.EmailField(
+        verbose_name="Email Address",
+        default="interior@velocityrealtor.com"
+    )
+    office_address = models.TextField(
+        verbose_name="Office Address",
+        default="123 Design Street, Kolkata, West Bengal 700001"
+    )
+    whatsapp_number = models.CharField(
+        max_length=20,
+        verbose_name="WhatsApp Number (with country code)",
+        blank=True,
+        null=True,
+        help_text="e.g., +919876543210"
+    )
+    
+    # Meta Information
+    page_title = models.CharField(
+        max_length=200,
+        verbose_name="Page Title",
+        default="Interior Design Services"
+    )
+    page_description = models.TextField(
+        verbose_name="Page Description",
+        default="Transform your space with our professional interior design services"
+    )
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Interior Configuration"
+        verbose_name_plural = "Interior Configuration"
+        
+    def __str__(self):
+        return f"Interior Configuration - {self.phone_number}"
+    
+    def save(self, *args, **kwargs):
+        # Ensure only one InteriorConfig instance exists
+        if not self.pk and InteriorConfig.objects.exists():
+            raise ValueError("Only one Interior Configuration instance is allowed. Please update the existing one.")
+        super().save(*args, **kwargs)
+    
+    @classmethod
+    def get_config(cls):
+        """Get or create the interior configuration"""
+        config, created = cls.objects.get_or_create(
+            pk=1,
+            defaults={
+                'phone_number': '+91 98765 43210',
+                'email': 'interior@velocityrealtor.com',
+                'office_address': '123 Design Street, Kolkata, West Bengal 700001',
+            }
+        )
+        return config
+    
+    def get_whatsapp_url(self):
+        """Generate WhatsApp URL for web"""
+        if self.whatsapp_number:
+            # Remove any non-digit characters except +
+            clean_number = ''.join(filter(lambda x: x.isdigit() or x == '+', self.whatsapp_number))
+            return f"https://wa.me/{clean_number.lstrip('+')}"
+        return "#"
+
+
 class ServiceType(models.TextChoices):
     RESIDENTIAL = 'residential', 'Residential Interior'
     COMMERCIAL = 'commercial', 'Commercial Interior'

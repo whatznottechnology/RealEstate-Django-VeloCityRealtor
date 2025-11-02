@@ -112,7 +112,7 @@
                         </div>
 
                         <!-- Property Type and Requirement Type -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">Property Type *</label>
                                 <select name="property_type" required
@@ -131,6 +131,16 @@
                                     {% for value, label in requirement_types %}
                                     <option value="{{ value }}">{{ label }}</option>
                                     {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Enquiry From</label>
+                                <select name="enquiry_from"
+                                        class="w-full px-4 py-3 rounded-lg text-sm bg-gray-50 focus:bg-white focus:outline-none text-gray-900 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                                    <option value="">Select Type</option>
+                                    <option value="agent">Agent</option>
+                                    <option value="owner">Owner</option>
+                                    <option value="individual">Individual</option>
                                 </select>
                             </div>
                         </div>
