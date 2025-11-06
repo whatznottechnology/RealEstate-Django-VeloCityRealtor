@@ -51,7 +51,7 @@
             <div id="hotdeals-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
                 {% for project in hot_deal_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
+                        {% include 'components/unified_property_card.html' with project=project %}
                     </div>
                 {% endfor %}
             </div>
@@ -69,7 +69,7 @@
 {% endif %}
 
 <!-- Premium Projects -->
-{% if featured_projects %}
+{% if premium_projects %}
 <section class="py-8 lg:py-12 bg-gray-50">
     <!-- Enhanced Headline Section -->
     <div class="text-center mb-8 px-4 md:px-6 lg:px-8">
@@ -86,31 +86,31 @@
         <div class="w-full px-4 lg:px-8 relative">
             <!-- Navigation arrows - positioned absolutely for professional placement -->
             <div class="absolute top-1/2 -translate-y-1/2 left-2 z-10 ">
-                <button onclick="scrollCarousel('featured-carousel', -1)" class="carousel-scroll-btn flex items-center justify-center bg-red-600 backdrop-blur-sm border border-red-700 rounded-full p-2 md:p-3 hover:bg-red-700 hover:border-red-800 shadow-lg transition-all duration-300 shadow-lg hover:shadow-xl group">
+                <button onclick="scrollCarousel('premium-carousel', -1)" class="carousel-scroll-btn flex items-center justify-center bg-red-600 backdrop-blur-sm border border-red-700 rounded-full p-2 md:p-3 hover:bg-red-700 hover:border-red-800 shadow-lg transition-all duration-300 shadow-lg hover:shadow-xl group">
                     <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
                 </button>
             </div>
             <div class="absolute top-1/2 -translate-y-1/2 right-2 z-10 ">
-                <button onclick="scrollCarousel('featured-carousel', 1)" class="carousel-scroll-btn flex items-center justify-center bg-red-600 backdrop-blur-sm border border-red-700 rounded-full p-2 md:p-3 hover:bg-red-700 hover:border-red-800 shadow-lg transition-all duration-300 shadow-lg hover:shadow-xl group">
+                <button onclick="scrollCarousel('premium-carousel', 1)" class="carousel-scroll-btn flex items-center justify-center bg-red-600 backdrop-blur-sm border border-red-700 rounded-full p-2 md:p-3 hover:bg-red-700 hover:border-red-800 shadow-lg transition-all duration-300 shadow-lg hover:shadow-xl group">
                     <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </button>
             </div>
             
-            <div id="featured-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
-                {% for project in featured_projects %}
+            <div id="premium-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
+                {% for project in premium_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
+                        {% include 'components/unified_property_card.html' with project=project %}
                     </div>
                 {% endfor %}
         </div>
 
         <!-- Enhanced View All Button -->
         <div class="text-center mt-8">
-            <a href="{% url 'theme:search_properties' %}?featured=true" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
+            <a href="{% url 'theme:search_properties' %}?premium=true" class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 relative overflow-hidden group">
                 <span class="relative z-10">View All Premium Properties</span>
                 <i class="fas fa-arrow-right ml-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300"></i>
             </a>
@@ -155,7 +155,7 @@
             <div id="residential-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
                 {% for project in residential_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
+                        {% include 'components/unified_property_card.html' with project=project %}
                     </div>
                 {% endfor %}
             </div>
@@ -207,7 +207,7 @@
             <div id="commercial-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
                 {% for project in commercial_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
+                        {% include 'components/unified_property_card.html' with project=project %}
                     </div>
                 {% endfor %}
             </div>
@@ -264,7 +264,7 @@
             <div id="trending-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
                 {% for project in trending_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
+                        {% include 'components/unified_property_card.html' with project=project %}
                     </div>
                 {% endfor %}
             </div>
@@ -316,7 +316,7 @@
             <div id="mostviewed-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
                 {% for project in most_viewed_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
+                        {% include 'components/unified_property_card.html' with project=project %}
                     </div>
                 {% endfor %}
             </div>
@@ -369,7 +369,7 @@
         <div id="recent-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
             {% for project in recently_viewed_projects %}
                 <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                    {% include 'components/search_property_card.html' %}
+                    {% include 'components/unified_property_card.html' with project=project %}
                 </div>
             {% endfor %}
         </div>
@@ -426,7 +426,7 @@
             <div id="sell-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
                 {% for project in sell_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
+                        {% include 'components/unified_property_card.html' with project=project %}
                     </div>
                 {% endfor %}
             </div>
@@ -484,7 +484,7 @@
             <div id="rent-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
                 {% for project in rent_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
+                        {% include 'components/unified_property_card.html' with project=project %}
                     </div>
                 {% endfor %}
             </div>
@@ -542,7 +542,7 @@
             <div id="lease-carousel" class="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide scroll-snap-x pb-6">
                 {% for project in lease_projects %}
                     <div class="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] max-w-[280px] md:max-w-[320px] lg:max-w-[350px] scroll-snap-start">
-                        {% include 'components/search_property_card.html' %}
+                        {% include 'components/unified_property_card.html' with project=project %}
                     </div>
                 {% endfor %}
             </div>

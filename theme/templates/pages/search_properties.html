@@ -299,7 +299,7 @@
                 {% if projects %}
                     <div class="property-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-5">
                         {% for project in projects %}
-                            {% include 'components/search_property_card.html' %}
+                            {% include 'components/unified_property_card.html' with project=project %}
                         {% endfor %}
                     </div>
                 {% else %}

@@ -1,18 +1,3 @@
-def terms_and_conditions(request):
-    return render(request, 'pages/terms_and_conditions.html')
-
-def privacy_policy(request):
-    return render(request, 'pages/privacy_policy.html')
-
-def about_us(request):
-    # Get active developers for the developers section
-    active_developers = Developer.objects.filter(is_active=True).order_by('order', 'name')
-    
-    context = {
-        'active_developers': active_developers,
-    }
-    
-    return render(request, 'pages/about_us.html', context)
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
@@ -29,6 +14,23 @@ from requirements.models import Requirement
 from .models import SiteConfig, ContactForm, Developer, Testimonial
 
 
+def terms_and_conditions(request):
+    return render(request, 'pages/terms_and_conditions.html')
+
+def privacy_policy(request):
+    return render(request, 'pages/privacy_policy.html')
+
+def about_us(request):
+    # Get active developers for the developers section
+    active_developers = Developer.objects.filter(is_active=True).order_by('order', 'name')
+    
+    context = {
+        'active_developers': active_developers,
+    }
+    
+    return render(request, 'pages/about_us.html', context)
+
+
 def home(request):
     """Home page view"""
     # Get categories with featured projects
@@ -40,86 +42,75 @@ def home(request):
     commercial_types = ProjectType.objects.filter(category__name__icontains='commercial')
     amenities = Amenity.objects.filter(is_active=True)[:8]  # Show first 8 amenities
     
-    # Featured projects
-    featured_projects = Project.objects.filter(
-        is_featured=True, 
-        is_active=True
-    ).select_related('city', 'category', 'project_type').prefetch_related('amenities')[:6]
-    
-    # Add featured projects to categories
+    # Add featured projects to categories (showing active projects by category)
     for category in categories:
         category.featured_projects = Project.objects.filter(
             category=category,
             is_active=True
-        ).select_related('city', 'project_type').prefetch_related('amenities')[:6]
+        ).select_related('city', 'project_type').prefetch_related('amenities', 'tags')[:6]
     
-    # Trending properties (based on trending_tag field, not just most viewed)
-    trending_projects = Project.objects.filter(
-        trending_tag__isnull=False,
-        is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
+    # ===== HOMEPAGE PROMOTIONAL SECTIONS =====
+    # Each section aligns with a specific promotional toggle
     
-    # Most Viewed Properties
-    most_viewed_projects = Project.objects.filter(
-        is_most_viewed=True,
-        is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
-    
-    # Ready to move properties
-    ready_to_move_projects = Project.objects.filter(
-        status='ready_to_move',
-        is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
-    
-    # Recently Viewed Properties (can be based on session or default to newest)
-    recently_viewed_projects = Project.objects.filter(
-        is_active=True
-    ).order_by('-created_at')[:8]
-    
-    # Hot Deals
+    # HOT DEALS Section
     hot_deal_projects = Project.objects.filter(
-        is_hot_deal=True,
+        promo_hot_deals=True,
         is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:8]
     
-    # Premium Listings
+    # PREMIUM PROJECTS Section
     premium_projects = Project.objects.filter(
-        is_premium_listing=True,
+        promo_premium_projects=True,
         is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:8]
     
-    # Editor's Choice
-    editors_choice_projects = Project.objects.filter(
-        is_editors_choice=True,
-        is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
-    
-    # Projects by Category for horizontal scrolling
+    # RESIDENTIAL PROJECTS Section
     residential_projects = Project.objects.filter(
-        category__name__icontains='residential',
+        promo_residential_projects=True,
         is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:10]
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:10]
     
+    # COMMERCIAL PROJECTS Section
     commercial_projects = Project.objects.filter(
-        category__name__icontains='commercial',
+        promo_commercial_projects=True,
         is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:10]
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:10]
     
-    # Projects by Marketing Type
+    # TRENDING PROJECTS Section
+    trending_projects = Project.objects.filter(
+        promo_trending_projects=True,
+        is_active=True
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:8]
+    
+    # MOST VIEWED Section
+    most_viewed_projects = Project.objects.filter(
+        promo_most_viewed=True,
+        is_active=True
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:8]
+    
+    # RECENTLY VIEWED Section
+    recently_viewed_projects = Project.objects.filter(
+        promo_recently_viewed=True,
+        is_active=True
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:8]
+    
+    # PROPERTIES FOR SALE Section
     sell_projects = Project.objects.filter(
-        is_sell=True,
+        promo_for_sale=True,
         is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:8]
     
+    # PROPERTIES FOR RENT Section
     rent_projects = Project.objects.filter(
-        is_rent=True,
+        promo_for_rent=True,
         is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:8]
     
+    # PROPERTIES FOR LEASE Section
     lease_projects = Project.objects.filter(
-        is_lease=True,
+        promo_for_lease=True,
         is_active=True
-    ).select_related('city', 'project_type').prefetch_related('amenities')[:8]
+    ).select_related('city', 'category', 'project_type').prefetch_related('amenities', 'tags')[:8]
     
     # Active developers for the developers section
     active_developers = Developer.objects.filter(is_active=True).order_by('order', 'name')
@@ -133,16 +124,14 @@ def home(request):
         'residential_types': residential_types,
         'commercial_types': commercial_types,
         'amenities': amenities,
-        'featured_projects': featured_projects,
-        'trending_projects': trending_projects,
-        'most_viewed_projects': most_viewed_projects,
-        'ready_to_move_projects': ready_to_move_projects,
-        'recently_viewed_projects': recently_viewed_projects,
+        # Promotional Toggle Sections
         'hot_deal_projects': hot_deal_projects,
         'premium_projects': premium_projects,
-        'editors_choice_projects': editors_choice_projects,
         'residential_projects': residential_projects,
         'commercial_projects': commercial_projects,
+        'trending_projects': trending_projects,
+        'most_viewed_projects': most_viewed_projects,
+        'recently_viewed_projects': recently_viewed_projects,
         'sell_projects': sell_projects,
         'rent_projects': rent_projects,
         'lease_projects': lease_projects,
@@ -158,13 +147,15 @@ def search_properties(request):
     # Get all projects
     projects = Project.objects.filter(is_active=True).select_related(
         'city', 'category', 'project_type'
-    ).prefetch_related('amenities')
+    ).prefetch_related('amenities', 'tags')
     
     # Get filter options
     categories = Category.objects.all()
     cities = City.objects.filter(is_active=True)
     project_types = ProjectType.objects.all()
     amenities = Amenity.objects.filter(is_active=True)
+    from Projects.models import Tag
+    tags = Tag.objects.filter(is_active=True)
     
     # Store applied filters for display
     applied_filters = []
@@ -317,24 +308,110 @@ def search_properties(request):
                 'raw_value': str(amenity.id)
             })
     
-    # Special filters
-    if request.GET.get('featured'):
-        projects = projects.filter(is_featured=True)
+    # Promotional Toggle Filters
+    if request.GET.get('hot_deals'):
+        projects = projects.filter(promo_hot_deals=True)
         applied_filters.append({
             'label': 'Filter',
-            'value': 'Featured',
-            'param': 'featured',
+            'value': 'Hot Deals',
+            'param': 'hot_deals',
+            'raw_value': 'true'
+        })
+    
+    if request.GET.get('premium'):
+        projects = projects.filter(promo_premium_projects=True)
+        applied_filters.append({
+            'label': 'Filter',
+            'value': 'Premium Projects',
+            'param': 'premium',
             'raw_value': 'true'
         })
     
     if request.GET.get('trending'):
-        projects = projects.filter(trending_tag__isnull=False)
+        projects = projects.filter(promo_trending_projects=True)
         applied_filters.append({
             'label': 'Filter',
             'value': 'Trending',
             'param': 'trending',
             'raw_value': 'true'
         })
+    
+    if request.GET.get('most_viewed'):
+        projects = projects.filter(promo_most_viewed=True)
+        applied_filters.append({
+            'label': 'Filter',
+            'value': 'Most Viewed',
+            'param': 'most_viewed',
+            'raw_value': 'true'
+        })
+    
+    if request.GET.get('residential'):
+        projects = projects.filter(promo_residential_projects=True)
+        applied_filters.append({
+            'label': 'Filter',
+            'value': 'Residential',
+            'param': 'residential',
+            'raw_value': 'true'
+        })
+    
+    if request.GET.get('commercial'):
+        projects = projects.filter(promo_commercial_projects=True)
+        applied_filters.append({
+            'label': 'Filter',
+            'value': 'Commercial',
+            'param': 'commercial',
+            'raw_value': 'true'
+        })
+    
+    if request.GET.get('for_sale'):
+        projects = projects.filter(promo_for_sale=True)
+        applied_filters.append({
+            'label': 'Filter',
+            'value': 'For Sale',
+            'param': 'for_sale',
+            'raw_value': 'true'
+        })
+    
+    if request.GET.get('for_rent'):
+        projects = projects.filter(promo_for_rent=True)
+        applied_filters.append({
+            'label': 'Filter',
+            'value': 'For Rent',
+            'param': 'for_rent',
+            'raw_value': 'true'
+        })
+    
+    if request.GET.get('for_lease'):
+        projects = projects.filter(promo_for_lease=True)
+        applied_filters.append({
+            'label': 'Filter',
+            'value': 'For Lease',
+            'param': 'for_lease',
+            'raw_value': 'true'
+        })
+    
+    if request.GET.get('recently_viewed'):
+        projects = projects.filter(promo_recently_viewed=True)
+        applied_filters.append({
+            'label': 'Filter',
+            'value': 'Recently Viewed',
+            'param': 'recently_viewed',
+            'raw_value': 'true'
+        })
+    
+    # Tags filter
+    tag_ids = request.GET.getlist('tags')
+    if tag_ids:
+        projects = projects.filter(tags__id__in=tag_ids).distinct()
+        from Projects.models import Tag
+        selected_tags = Tag.objects.filter(id__in=tag_ids)
+        for tag in selected_tags:
+            applied_filters.append({
+                'label': 'Tag',
+                'value': tag.name,
+                'param': 'tags',
+                'raw_value': str(tag.id)
+            })
     
     # Sorting
     sort_by = request.GET.get('sort', '-created_at')
@@ -355,6 +432,7 @@ def search_properties(request):
         'cities': cities,
         'project_types': project_types,
         'amenities': amenities,
+        'tags': tags,
         'applied_filters': applied_filters,
     }
     

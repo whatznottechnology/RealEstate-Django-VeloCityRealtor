@@ -1,0 +1,195 @@
+{% load static %}
+{% load theme_filters %}
+
+{% comment %}
+    Unified Property Card Component
+    
+    Usage:
+        include 'components/unified_property_card.html' with project=project
+    
+    Optional Parameters:
+        - show_amenities: True/False (default: True)
+        - card_height: 'h-48' or 'h-52' (default: 'h-48')
+        - enable_hover_zoom: True/False (default: True)
+{% endcomment %}
+
+<style>
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .scrollbar-hide {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+</style>
+
+<div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 property-card {% if enable_hover_zoom %}hover:scale-105{% endif %}">
+    
+    <!-- Image Section with Badges -->
+    <div class="relative overflow-hidden">
+        <div class="aspect-w-16 aspect-h-10 relative">
+            {% if project.banner_image %}
+                <img src="{{ project.banner_image.url }}" 
+                     alt="{{ project.name }}"
+                     class="w-full {{ card_height|default:'h-48' }} object-cover"
+                     loading="lazy">
+            {% else %}
+                <div class="w-full {{ card_height|default:'h-48' }} bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <div class="text-center">
+                        <svg class="w-16 h-16 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                        <p class="text-xs text-gray-500">No Image Available</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Gradient overlay for better text visibility -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+        
+        <!-- LEFT SIDE BADGES - Tags Only (Scrollable) -->
+        <div class="absolute top-3 left-3 bottom-3 z-10 flex flex-col gap-1 max-h-[calc(100%-1.5rem)] overflow-y-auto scrollbar-hide pr-2">
+            
+            <!-- Project Tags (from Tag model) - From Admin Panel: 🏷️ Categorization & Features > Tags -->
+            {% if project.tags.all %}
+                {% for tag in project.tags.all %}
+                    <span class="px-2 py-1 text-white rounded-md text-xs font-bold shadow-lg flex-shrink-0
+                        {% cycle 'bg-gradient-to-r from-indigo-600 to-purple-600' 'bg-gradient-to-r from-blue-600 to-cyan-600' 'bg-gradient-to-r from-green-600 to-emerald-600' 'bg-gradient-to-r from-orange-600 to-red-600' 'bg-gradient-to-r from-pink-600 to-rose-600' 'bg-gradient-to-r from-violet-600 to-purple-600' 'bg-gradient-to-r from-teal-600 to-cyan-600' 'bg-gradient-to-r from-amber-600 to-orange-600' %}">
+                        <i class="fas fa-tag mr-1"></i>{{ tag.name }}
+                    </span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- RIGHT SIDE BADGES - Status Only -->
+        <div class="absolute top-3 right-3 z-10 flex flex-col gap-1 items-end">
+            {% comment %}
+                Status Badge - Project construction/availability status
+            {% endcomment %}
+            
+            <!-- Status Badge -->
+            {% if project.status %}
+                {% if project.status == 'ready_to_move' %}
+                    <span class="px-2 py-1 bg-green-600 text-white rounded-md text-xs font-bold shadow-lg">
+                        <i class="fas fa-key mr-1"></i>Ready
+                    </span>
+                {% elif project.status == 'under_construction' %}
+                    <span class="px-2 py-1 bg-red-600 text-white rounded-md text-xs font-bold shadow-lg">
+                        <i class="fas fa-hammer mr-1"></i>Construction
+                    </span>
+                {% elif project.status == 'upcoming_project' %}
+                    <span class="px-2 py-1 bg-blue-600 text-white rounded-md text-xs font-bold shadow-lg">
+                        <i class="fas fa-clock mr-1"></i>Coming Soon
+                    </span>
+                {% elif project.status == 'possession_soon' %}
+                    <span class="px-2 py-1 bg-purple-600 text-white rounded-md text-xs font-bold shadow-lg">
+                        <i class="fas fa-calendar-check mr-1"></i>Possession Soon
+                    </span>
+                {% elif project.status == 'sold_out' %}
+                    <span class="px-2 py-1 bg-gray-600 text-white rounded-md text-xs font-bold shadow-lg">
+                        <i class="fas fa-times-circle mr-1"></i>Sold Out
+                    </span>
+                {% elif project.status == 'new_launched' %}
+                    <span class="px-2 py-1 bg-orange-600 text-white rounded-md text-xs font-bold shadow-lg">
+                        <i class="fas fa-rocket mr-1"></i>New Launch
+                    </span>
+                {% endif %}
+            {% endif %}
+        </div>
+        
+        <!-- BOTTOM LEFT - Price -->
+        {% if project.onwards_price %}
+            <div class="absolute bottom-3 left-3 z-10">
+                <span class="bg-white bg-opacity-95 text-gray-900 px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg">
+                    {{ project.onwards_price|format_price }} Onwards
+                </span>
+            </div>
+        {% endif %}
+        
+        <!-- BOTTOM RIGHT - Views Count -->
+        <div class="absolute bottom-3 right-3 z-10">
+            <span class="bg-black bg-opacity-60 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg">
+                <i class="fas fa-eye mr-1"></i>{{ project.views|default:0 }}
+            </span>
+        </div>
+    </div>
+    
+    <!-- Content Section -->
+    <div class="p-5">
+        <!-- Project Name and Developer -->
+        <div class="mb-3">
+            <h3 class="text-lg font-bold text-gray-900 mb-1 line-clamp-2 hover:text-blue-600 transition-colors">
+                <a href="{% url 'theme:project_detail' project.slug %}">{{ project.name }}</a>
+            </h3>
+            {% if project.project_by %}
+                <p class="text-sm text-gray-600">
+                    <i class="fas fa-user-tie mr-1"></i>{{ project.project_by }}
+                </p>
+            {% endif %}
+        </div>
+        
+        <!-- Location -->
+        {% if project.location or project.city %}
+            <div class="flex items-start text-sm text-gray-600 mb-3">
+                <i class="fas fa-map-marker-alt text-red-500 mt-0.5 mr-2"></i>
+                <span class="line-clamp-1">
+                    {% if project.location %}{{ project.location }}{% endif %}
+                    {% if project.city %}{% if project.location %}, {% endif %}{{ project.city.name }}{% endif %}
+                </span>
+            </div>
+        {% endif %}
+        
+        <!-- Project Specifications Grid -->
+        <div class="grid grid-cols-2 gap-2 mb-4 text-sm">
+            {% if project.bhk %}
+                <div class="flex items-center text-gray-700">
+                    <i class="fas fa-bed text-blue-500 mr-2"></i>
+                    <span class="font-medium">{{ project.bhk }}</span>
+                </div>
+            {% endif %}
+            {% if project.project_type %}
+                <div class="flex items-center text-gray-700">
+                    <i class="fas fa-building text-purple-500 mr-2"></i>
+                    <span class="font-medium">{{ project.project_type.name }}</span>
+                </div>
+            {% endif %}
+            {% if project.build_up_area %}
+                <div class="flex items-center text-gray-700">
+                    <i class="fas fa-ruler-combined text-green-500 mr-2"></i>
+                    <span class="font-medium">{{ project.build_up_area }}</span>
+                </div>
+            {% endif %}
+            {% if project.category %}
+                <div class="flex items-center text-gray-700">
+                    <i class="fas fa-th-large text-orange-500 mr-2"></i>
+                    <span class="font-medium">{{ project.category.name }}</span>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Amenities (If enabled) -->
+        {% if show_amenities|default:True and project.amenities.all %}
+            <div class="flex flex-wrap gap-2 mb-4">
+                {% for amenity in project.amenities.all|slice:":3" %}
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
+                        <i class="fas fa-check-circle text-green-500 mr-1"></i>{{ amenity.name }}
+                    </span>
+                {% endfor %}
+                {% if project.amenities.count > 3 %}
+                    <span class="px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs font-medium">
+                        +{{ project.amenities.count|add:"-3" }} more
+                    </span>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        <!-- CTA Button -->
+        <a href="{% url 'theme:project_detail' project.slug %}" 
+           class="block w-full text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-2.5 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg">
+            <i class="fas fa-arrow-right mr-2"></i>EXPLORE NOW
+        </a>
+    </div>
+</div>

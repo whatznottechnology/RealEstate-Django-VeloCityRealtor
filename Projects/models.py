@@ -196,29 +196,17 @@ class Project(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, related_name='projects')
     amenities = models.ManyToManyField(Amenity, blank=True, related_name='projects')
     
-    # Promotional & Marketing Tags
-    TRENDING_CHOICES = [
-        ('just_launched', 'Just Launched'),
-        ('hot', 'Hot'),
-        ('premium', 'Premium'),
-        ('ultra_luxury', 'Ultra Luxury'),
-        ('ready_to_move', 'Ready to Move'),
-        ('affordable', 'Affordable'),
-    ]
-    
-    # Marketing & Promotion Fields
-    is_sell = models.BooleanField(default=False, help_text="Available for Sell")
-    is_rent = models.BooleanField(default=False, help_text="Available for Rent") 
-    is_lease = models.BooleanField(default=False, help_text="Available for Lease")
-    is_most_viewed = models.BooleanField(default=False, help_text="Mark as Most Viewed")
-    trending_tag = models.CharField(max_length=20, choices=TRENDING_CHOICES, blank=True, null=True, help_text="Trending status")
-    is_nearby_property = models.BooleanField(default=False, help_text="Show in Nearby Properties")
-    is_recently_viewed = models.BooleanField(default=False, help_text="Mark as Recently Viewed")
-    
-    # Additional promotional fields
-    is_hot_deal = models.BooleanField(default=False, help_text="Hot Deal Badge")
-    is_premium_listing = models.BooleanField(default=False, help_text="Premium Listing")
-    is_editors_choice = models.BooleanField(default=False, help_text="Editor's Choice")
+    # New Promotional Toggles - Multiple can be enabled simultaneously
+    promo_hot_deals = models.BooleanField(default=False, verbose_name="HOT DEALS", help_text="Show in Hot Deals section")
+    promo_premium_projects = models.BooleanField(default=False, verbose_name="PREMIUM PROJECTS", help_text="Show in Premium Projects section")
+    promo_residential_projects = models.BooleanField(default=False, verbose_name="RESIDENTIAL PROJECTS", help_text="Show in Residential Projects section")
+    promo_commercial_projects = models.BooleanField(default=False, verbose_name="COMMERCIAL PROJECTS", help_text="Show in Commercial Projects section")
+    promo_trending_projects = models.BooleanField(default=False, verbose_name="TRENDING PROJECTS", help_text="Show in Trending Projects section")
+    promo_most_viewed = models.BooleanField(default=False, verbose_name="MOST VIEWED", help_text="Show in Most Viewed section")
+    promo_recently_viewed = models.BooleanField(default=False, verbose_name="RECENTLY VIEWED", help_text="Show in Recently Viewed section")
+    promo_for_sale = models.BooleanField(default=False, verbose_name="PROPERTIES FOR SALE", help_text="Show in Properties for Sale section")
+    promo_for_rent = models.BooleanField(default=False, verbose_name="PROPERTIES FOR RENT", help_text="Show in Properties for Rent section")
+    promo_for_lease = models.BooleanField(default=False, verbose_name="PROPERTIES FOR LEASE", help_text="Show in Properties for Lease section")
     
     # Metadata fields
     description = models.TextField(blank=True, null=True, help_text="Project description for SEO")
@@ -229,7 +217,6 @@ class Project(models.Model):
     # Tracking
     views = models.PositiveIntegerField(default=0, help_text="For Most Viewed sorting")
     display_order = models.PositiveIntegerField(default=0, help_text="Display position (lower number = higher priority). Use 0 for default ordering by created date.")
-    is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -242,6 +229,14 @@ class Project(models.Model):
             models.Index(fields=['status', 'is_active']),
             models.Index(fields=['-views']),
             models.Index(fields=['-created_at']),
+            # Promotional toggles indexes for better query performance
+            models.Index(fields=['promo_hot_deals', 'is_active'], name='idx_hot_deals_active'),
+            models.Index(fields=['promo_premium_projects', 'is_active'], name='idx_premium_active'),
+            models.Index(fields=['promo_trending_projects', 'is_active'], name='idx_trending_active'),
+            models.Index(fields=['promo_most_viewed', 'is_active'], name='idx_mostviewed_active'),
+            models.Index(fields=['promo_for_sale', 'is_active'], name='idx_forsale_active'),
+            models.Index(fields=['promo_for_rent', 'is_active'], name='idx_forrent_active'),
+            models.Index(fields=['promo_for_lease', 'is_active'], name='idx_forlease_active'),
         ]
     
     def __str__(self):

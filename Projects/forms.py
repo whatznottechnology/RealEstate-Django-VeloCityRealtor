@@ -86,10 +86,12 @@ class ProjectForm(forms.ModelForm):
             'location', 'city', 'developers', 'build_up_area', 'bhk',
             'no_of_blocks', 'no_of_units', 'status', 'possession_date',
             'onwards_price', 'latitude', 'longitude', 'category',
-            'project_type', 'tags', 'amenities', 'is_most_viewed',
-            'trending_tag', 'is_nearby_property', 'is_recently_viewed',
-            'is_hot_deal', 'is_premium_listing', 'is_editors_choice',
-            'is_featured', 'is_active'
+            'project_type', 'tags', 'amenities',
+            # New promotional toggles
+            'promo_hot_deals', 'promo_premium_projects', 'promo_residential_projects',
+            'promo_commercial_projects', 'promo_trending_projects', 'promo_most_viewed',
+            'promo_recently_viewed', 'promo_for_sale', 'promo_for_rent', 'promo_for_lease',
+            'is_active'
         ]
         
         widgets = {
@@ -114,14 +116,17 @@ class ProjectForm(forms.ModelForm):
             'project_type': forms.Select(attrs={'class': 'form-select'}),
             'tags': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
             'amenities': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
-            'trending_tag': forms.Select(attrs={'class': 'form-select'}),
-            'is_most_viewed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'is_nearby_property': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'is_recently_viewed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'is_hot_deal': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'is_premium_listing': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'is_editors_choice': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'is_featured': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            # New promotional toggles
+            'promo_hot_deals': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'promo_premium_projects': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'promo_residential_projects': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'promo_commercial_projects': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'promo_trending_projects': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'promo_most_viewed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'promo_recently_viewed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'promo_for_sale': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'promo_for_rent': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'promo_for_lease': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
     

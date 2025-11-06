@@ -144,10 +144,14 @@ class ProjectAdmin(ModelAdmin):
     list_display_links = ('project_thumbnail', 'name')
     list_editable = ()  # Removed display_order from inline editing
     list_filter = (
-        'status', 'category', 'project_type', 'city', 'is_featured', 
-        'is_active', 'is_most_viewed', 'is_nearby_property', 'is_recently_viewed',
-        'is_hot_deal', 'is_premium_listing', 'is_editors_choice',
-        'trending_tag', 'is_sell', 'is_rent', 'is_lease', 'tags', 'created_at', 'updated_at'
+        'status', 'category', 'project_type', 'city', 'is_active',
+        # New promotional toggles
+        'promo_hot_deals', 'promo_premium_projects', 
+        'promo_residential_projects', 'promo_commercial_projects',
+        'promo_trending_projects', 'promo_most_viewed', 'promo_recently_viewed',
+        'promo_for_sale', 'promo_for_rent', 'promo_for_lease',
+        # Other filters
+        'tags', 'created_at', 'updated_at'
     )
     search_fields = ('name', 'project_by', 'location', 'developers')
     readonly_fields = ('views', 'created_at', 'updated_at', 'project_preview')
@@ -232,25 +236,29 @@ class ProjectAdmin(ModelAdmin):
     def feature_badges(self, obj):
         badges = []
         
-        # Show only primary/most important features (max 4)
-        if obj.is_featured:
-            badges.append('<span style="background: #3b82f6; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">★ Featured</span>')
-        if obj.is_premium_listing:
-            badges.append('<span style="background: #f59e0b; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">👑 Premium</span>')
-        if obj.is_hot_deal:
+        # Show promotional toggle badges (max 4 primary ones)
+        if obj.promo_premium_projects:
+            badges.append('<span style="background: #8b5cf6; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">👑 Premium</span>')
+        if obj.promo_hot_deals:
             badges.append('<span style="background: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">� Hot Deal</span>')
-        if obj.is_editors_choice:
-            badges.append('<span style="background: #8b5cf6; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">✨ Editor\'s Choice</span>')
+        if obj.promo_trending_projects:
+            badges.append('<span style="background: #ec4899; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">📈 Trending</span>')
+        if obj.promo_most_viewed:
+            badges.append('<span style="background: #10b981; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; display: inline-block; margin: 2px;">👁️ Most Viewed</span>')
         
-        # Count remaining features
+        # Count remaining promotional features
         other_features = 0
-        if obj.is_most_viewed:
+        if obj.promo_residential_projects:
             other_features += 1
-        if obj.is_nearby_property:
+        if obj.promo_commercial_projects:
             other_features += 1
-        if obj.is_recently_viewed:
+        if obj.promo_recently_viewed:
             other_features += 1
-        if obj.trending_tag:
+        if obj.promo_for_sale:
+            other_features += 1
+        if obj.promo_for_rent:
+            other_features += 1
+        if obj.promo_for_lease:
             other_features += 1
         
         tags_count = obj.tags.count()
@@ -349,16 +357,15 @@ class ProjectAdmin(ModelAdmin):
             'classes': ('wide',),
             'description': 'Project category, type, tags and amenities'
         }),
-        ('🎯 Marketing & Promotional Tags', {
+        ('🎯 Homepage Promotional Sections', {
             'fields': (
-                ('is_sell', 'is_rent', 'is_lease'),
-                ('is_featured', 'is_hot_deal', 'is_premium_listing'),
-                ('is_editors_choice', 'is_most_viewed'),
-                ('trending_tag',),
-                ('is_nearby_property', 'is_recently_viewed')
+                ('promo_hot_deals', 'promo_premium_projects'),
+                ('promo_residential_projects', 'promo_commercial_projects'),
+                ('promo_trending_projects', 'promo_most_viewed', 'promo_recently_viewed'),
+                ('promo_for_sale', 'promo_for_rent', 'promo_for_lease'),
             ),
             'classes': ('wide',),
-            'description': 'Enable promotional badges and marketing features that appear on project cards in the frontend'
+            'description': '✨ Enable multiple promotional sections simultaneously. Each toggle maps to a specific homepage section.'
         }),
         ('📊 SEO & Metadata', {
             'fields': ('description', 'meta_title', 'meta_description', 'keywords'),

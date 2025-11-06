@@ -54,17 +54,50 @@ def public_project_detail_view(request, slug):
     session_key = f'floor_plan_access_{project.id}'
     has_floor_plan_access = request.session.get(session_key, False)
     
-    # Get related projects (same category or city)
+    # Get related projects using intelligent matching:
+    # Priority: Shared tags > Promotional toggles > Category > City
+    from django.db.models import Q, Count
+    
+    # Start with all active projects except current
     related_projects = Project.objects.filter(
         is_active=True
-    ).exclude(id=project.id)
+    ).exclude(id=project.id).select_related('city', 'category', 'project_type').prefetch_related('tags', 'amenities')
     
+    # Get project tags for comparison
+    project_tags = list(project.tags.values_list('id', flat=True))
+    
+    # Build complex filter using Q objects
+    filters = Q()
+    
+    # Highest Priority: Projects with shared tags
+    if project_tags:
+        filters |= Q(tags__id__in=project_tags)
+    
+    # Medium Priority: Same promotional toggles
+    if project.promo_hot_deals:
+        filters |= Q(promo_hot_deals=True)
+    if project.promo_premium_projects:
+        filters |= Q(promo_premium_projects=True)
+    if project.promo_trending_projects:
+        filters |= Q(promo_trending_projects=True)
+    if project.promo_residential_projects:
+        filters |= Q(promo_residential_projects=True)
+    if project.promo_commercial_projects:
+        filters |= Q(promo_commercial_projects=True)
+    
+    # Lower Priority: Same category or city
     if project.category:
-        related_projects = related_projects.filter(category=project.category)
-    elif project.city:
-        related_projects = related_projects.filter(city=project.city)
+        filters |= Q(category=project.category)
+    if project.city:
+        filters |= Q(city=project.city)
     
-    related_projects = related_projects[:4]
+    # Apply filters and annotate with tag match count for ordering
+    if project_tags:
+        related_projects = related_projects.filter(filters).annotate(
+            tag_matches=Count('tags', filter=Q(tags__id__in=project_tags))
+        ).order_by('-tag_matches', '-created_at').distinct()[:6]
+    else:
+        related_projects = related_projects.filter(filters).order_by('-created_at').distinct()[:6]
     
     context = {
         'project': project,

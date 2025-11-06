@@ -2148,33 +2148,9 @@
     <section class="section" style="background: var(--light-gray);">
         <div class="container">
             <h2 class="title-section">Similar Properties</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {% for related in related_projects|slice:":4" %}
-                <div class="card card-compact">
-                    <div class="relative mb-2">
-                        {% if related.banner_image %}
-                            <img src="{{ related.banner_image.url }}" alt="{{ related.name }}" 
-                                 class="w-full h-32 object-cover rounded-lg">
-                        {% else %}
-                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=200&fit=crop" 
-                                 alt="{{ related.name }}" class="w-full h-32 object-cover rounded-lg">
-                        {% endif %}
-                        {% if related.trending_tag %}
-                        <span class="absolute top-2 left-2 badge badge-hot text-xs">
-                            {{ related.get_trending_tag_display }}
-                        </span>
-                        {% endif %}
-                    </div>
-                    <h3 class="font-bold text-sm mb-1">{{ related.name }}</h3>
-                    <p class="text-xs text-gray-600 mb-2">{{ related.location }}</p>
-                    {% if related.onwards_price %}
-                    <p class="font-bold text-red-600 text-sm mb-2">₹{{ related.onwards_price|floatformat:0 }}</p>
-                    {% endif %}
-                    <a href="{% url 'Projects:public_project_detail' slug=related.slug %}" 
-                       class="btn btn-primary w-full text-xs py-2">
-                        View Details
-                    </a>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-5">
+                {% for project in related_projects %}
+                    {% include 'components/unified_property_card.html' with project=project show_amenities=False %}
                 {% endfor %}
             </div>
         </div>
